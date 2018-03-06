@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:11:42 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 14:45:12 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 14:55:24 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,16 @@ void	*ft_memory_warp(void *arena, uint64_t base, uint64_t seek, uint64_t size,
 	}
 }
 
-void	*ft_rev_mem_warp(void *arena, uint64_t base, int seek, int size,
+void	*ft_rev_mem_warp(void *arena, int64_t base, int seek, int size,
 	int *frag)
 {
 	void	*new;
 	int		tmp;
 
-	if ((base - seek) >= 0)
+	if ((base + seek) >= 0)
 	{
 		//Check forwards space boundary?
-		new = (arena + (base - seek));
+		new = (arena + (base + seek));
 	}
 	else
 	{

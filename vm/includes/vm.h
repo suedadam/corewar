@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 10:41:11 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 15:00:46 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ typedef struct		s_op
 typedef struct	s_process
 {
 	int					regs[REG_NUMBER + 1]; // (I refuse to do reg - 1 each time).
-	uint64_t			pc;
-	uint8_t				carry; //What does this actually do?
+	int64_t				pc;
+	uint8_t				carry;
 	size_t				run_op;
 	uint8_t				opcode;
 	uint8_t				die_check;
