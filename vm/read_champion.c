@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 03:07:59 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 08:45:34 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ static int	validate_header(void *player, size_t size)
 ** I always like to pad the end of my shit with a byte ;P 
 */
 
-static int	load_to_mem(int fd, size_t size, void *arena, int playerID,
-						int totalPlayers)
+static int	load_to_mem(int fd, size_t size, void *arena, int playerID)
 {
 	void	*player;
 	size_t	placement;
@@ -78,8 +77,8 @@ static int	load_to_mem(int fd, size_t size, void *arena, int playerID,
 	}
 	size -= sizeof(header_t);
 	player += sizeof(header_t);
-	printf("totalPlayers = %d\n", totalPlayers);
-	placement = (playerID * (MEM_SIZE / totalPlayers));
+	printf("totalPlayers = %d\n", taskmanager->totalPlayers);
+	placement = (playerID * (MEM_SIZE / taskmanager->totalPlayers));
 	printf("[ID: %d] offset = %d size = %zu\n", playerID, placement, size);
 	if (placement + size > MEM_SIZE)
 	{
@@ -90,14 +89,14 @@ static int	load_to_mem(int fd, size_t size, void *arena, int playerID,
 	free(player - sizeof(header_t));
 	if (!(((taskmanager->players)[playerID])->processes = ft_memalloc(sizeof(t_process))))
 		return (-1);
+	(taskmanager->players)[playerID]->processes->regs[1] = playerID;
 	// if (!((taskmanager->players)[playerID]->processes = ft_memalloc(sizeof(t_player))))
 	// 	return (-1);
 	((taskmanager->players)[playerID])->processes->pc = placement;
 	return (0);
 }
 
-int			read_champion(char *filename, void *arena, int playerID,
-						int totalPlayers)
+int			read_champion(char *filename, void *arena, int playerID)
 {
 	int		fd;
 	off_t	size;
@@ -111,7 +110,7 @@ int			read_champion(char *filename, void *arena, int playerID,
 		return (-1);
 	}
 	printf("Was okay in size :tada:\n");
-	if (load_to_mem(fd, size, arena, playerID, totalPlayers) == -1)
+	if (load_to_mem(fd, size, arena, playerID) == -1)
 		return (-1);
 	return (0);
 }

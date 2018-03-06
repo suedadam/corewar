@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:49:32 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 04:41:47 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 10:23:05 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	*init(int champc, char **champv)
 	if (!(taskmanager = ft_memalloc(sizeof(t_taskmanager))))
 		return (NULL);
 	taskmanager->c_to_die = CYCLE_TO_DIE;
+	taskmanager->totalPlayers = champc;
+	taskmanager->lastlive = -1;
 	i = 0;
 	if (!(taskmanager->players = ft_memalloc(sizeof(t_player *) * (champc + 1))))
 		return (NULL);
@@ -38,7 +40,7 @@ void	*init(int champc, char **champv)
 		}
 		(taskmanager->players)[i]->pID = i;
 		printf("[ID: %d] Champ = \"%s\"\n", i, champv[champc - i]);
-		if (read_champion(champv[champc - i], arena, i, champc) == -1)
+		if (read_champion(champv[champc - i], arena, i) == -1)
 		{
 			printf("wow fail\n");
 			free(arena);

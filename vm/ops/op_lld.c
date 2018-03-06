@@ -1,31 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   op_live.c                                          :+:      :+:    :+:   */
+/*   op_lld.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/06 05:29:10 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 10:24:09 by asyed            ###   ########.fr       */
+/*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
+/*   Updated: 2018/03/06 07:25:28 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-int	op_live(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
+int	op_lld(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 {
-	int	p_input;
-
-	p_input = cmd_input->args[0];
-	printf("Player = %d\n", p_input);
-	child->die_check = 1;
-	if (p_input <= taskmanager->totalPlayers)
-	{
-		if (!((taskmanager->players)[p_input]))
-			printf("Player is dead!\n");
-		else
-			taskmanager->lastlive = p_input;
-	}
-	// exit(1);
-	return (0);
+	return (-1);
 }

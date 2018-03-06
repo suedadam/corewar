@@ -1,31 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   op_live.c                                          :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/06 05:29:10 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 10:24:09 by asyed            ###   ########.fr       */
+/*   Created: 2018/03/05 19:11:42 by asyed             #+#    #+#             */
+/*   Updated: 2018/03/06 10:11:17 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-int	op_live(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
-{
-	int	p_input;
+/*
+** I need to handle negative seeks............ lame
+*/
 
-	p_input = cmd_input->args[0];
-	printf("Player = %d\n", p_input);
-	child->die_check = 1;
-	if (p_input <= taskmanager->totalPlayers)
+void	*ft_memory_warp(void *arena, uint64_t base, uint64_t seek, uint64_t size,
+	int *frag)
+{
+	void	*new;
+
+	if (base + seek >= MEM_SIZE)
 	{
-		if (!((taskmanager->players)[p_input]))
-			printf("Player is dead!\n");
-		else
-			taskmanager->lastlive = p_input;
+		new = (arena + (seek - ((uint64_t)MEM_SIZE - base)));
+		return (new);
 	}
-	// exit(1);
-	return (0);
+	else
+	{
+		if (base + seek + size >= MEM_SIZE)
+			*frag = ((base + seek + size) % MEM_SIZE);
+		new = (arena + base + seek);
+		return (new);
+	}
 }

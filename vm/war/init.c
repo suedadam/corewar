@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 05:01:11 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 07:18:49 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,27 @@ static int	remove_dead(void)
 		}
 		if (p_left)
 			left++;
+		else
+		{
+			free((taskmanager->players)[player]);
+			(taskmanager->players)[player] = NULL;
+		}
 		player++;
 	}
 	return (left);
 }
 
+/*
+** Itterate and run through ->processes (children/forks) 
+** that are present.
+*/
+
 int	init_war(void *arena)
 {
 	//Lets start this BITCHESSS.'C:'
-	int	i;
-	int	p_left;
+	int			i;
+	int			p_left;
+	t_process	*child;
 
 	i = 0;
 	while (1)
@@ -82,7 +93,12 @@ int	init_war(void *arena)
 		}
 		if ((taskmanager->players)[i] && (taskmanager->players)[i]->processes)
 		{
-			run_operation(i, arena);
+			child = (taskmanager->players)[i]->processes;
+			while (child)
+			{
+				run_operation(i, arena, child);
+				child = child->next;
+			}
 			// printf("playerID = %d\n", (taskmanager->players)[i]->pID);
 			i++;
 		}
