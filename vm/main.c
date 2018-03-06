@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:49:32 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 03:07:53 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 04:31:12 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,16 @@ void	*init(int champc, char **champv)
 		printf("[ID: %d] PC = %llu\n", (taskmanager->players)[i]->pID, (taskmanager->players)[i]->processes->pc);
 		i++;
 	}
-	// printf("Printing arena: \n");
-	// int j;
-	// unsigned char* byte_array = arena;
+	printf("Printing arena: \n");
+	int j;
+	unsigned char* byte_array = arena;
 
-	// j = 0;
-	// while (j < MEM_SIZE)
-	// {
-	// 	printf("%02X",(unsigned)byte_array[j]);
-	// 	j++;
-	// }
+	j = 0;
+	while (j < MEM_SIZE)
+	{
+		printf("%02X",(unsigned)byte_array[j]);
+		j++;
+	}
 	// exit(1);
 	return (arena);
 }

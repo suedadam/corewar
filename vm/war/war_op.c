@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 03:52:27 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 04:35:01 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 */
 
 static int fetch_input(unsigned char *enc, t_operation *cmd_input,
-							uint8_t opcode)
+							uint8_t opcode, size_t mem_base)
 {
 	size_t	size;
 
@@ -54,7 +54,7 @@ static int fetch_input(unsigned char *enc, t_operation *cmd_input,
 */
 
 static int decode_encoding(unsigned char *enc, t_operation *cmd_input,
-							uint8_t opcode)
+							uint8_t opcode, size_t mem_base)
 {
 	int				i;
 	int				j;
@@ -117,6 +117,20 @@ static int decode_encoding(unsigned char *enc, t_operation *cmd_input,
 	return (size);
 }
 
+static int	memory_move(uint64_t base, size_t j_size, unsigned char **move_pointer, void *arena)
+{
+	if (base + j_size >= MEM_SIZE)
+	{
+		(*move_pointer) = (arena + (j_size - ((uint64_t)MEM_SIZE - base)));
+		return (1);
+	}
+	else
+	{
+		(*move_pointer) += j_size;
+		return (0);
+	}
+}	
+
 int	run_operation(int pID, void *arena)
 {
 	unsigned char	*ophex;
@@ -129,17 +143,20 @@ int	run_operation(int pID, void *arena)
 	{
 		ophex = (unsigned char *)(arena + (taskmanager->players)[pID]->processes->pc);
 		// ophex = (unsigned *)(arena + (taskmanager->players)[pID]->processes->pc);
-		printf("[ID: %d] Calling HextoDec(%02X)\n", pID, *ophex);
+		// printf("[ID: %d] Calling HextoDec(%02X)\n", pID, *ophex);
 		opcode = (int)*ophex;
-		if (opcode > 15)
+		if (opcode > 15 || opcode <= 0)
 		{
-			printf("Invalid opcode\n");
-			((taskmanager->players)[pID]->processes->pc)++;
+			// printf("Invalid opcode\n");
+			if ((taskmanager->players)[pID]->processes->pc == (MEM_SIZE - 1))
+				(taskmanager->players)[pID]->processes->pc = 0;
+			else
+				(taskmanager->players)[pID]->processes->pc++;
 			return (-1);
 		}
 		else
 		{
-			printf("Operation = %s\n", op_tab[opcode - 1].op_name);
+			printf("Operation = %s code = %d\n", op_tab[opcode - 1].op_name, opcode);
 			(taskmanager->players)[pID]->processes->opcode = opcode;
 			(taskmanager->players)[pID]->processes->run_op = taskmanager->currCycle + 
 				op_tab[opcode - 1].waitcycles;
@@ -155,46 +172,46 @@ int	run_operation(int pID, void *arena)
 		if ((int)*ophex == opcode)
 		{
 			printf("Correct okay bitch\n");
-			ophex++;
+			// ophex++;
+			memory_move((taskmanager->players)[pID]->processes->pc, 1, &ophex, arena);
 		}
 		else
 			printf("O_O :O;Still need to do thisssss\n");
 		if (op_tab[opcode - 1].encbool)
 		{
 			printf("Has an encoding byte!!!!\n");
-			// If we find out that we seek the size of the incorrect ACB
-			// Then simply remove the tmp buffer setting functionality and it'll seek.
-			// tmp = ophex;
 			printf("{B} Enc = %p\n", ophex);
-			if ((size = decode_encoding(ophex, &cmd_input, opcode)) == -1)
+			if ((size = decode_encoding(ophex, &cmd_input, opcode, (taskmanager->players)[pID]->processes->pc)) == -1)
 			{
 				printf("Bad encoding byte!\n");
-				(taskmanager->players)[pID]->processes->pc++;
-				// ophex = tmp + 1;
+				if ((taskmanager->players)[pID]->processes->pc == (MEM_SIZE - 1))
+					(taskmanager->players)[pID]->processes->pc = 0;
+				else
+					(taskmanager->players)[pID]->processes->pc++;
+				// memory_move((taskmanager->players)[pID]->processes->pc, 1, ophex, arena);
+				// (taskmanager->players)[pID]->processes->pc++;
 			}
-			// else
-			// {
-			// 	printf("{B} pc = %d\n", (taskmanager->players)[pID]->processes->pc);
-			// 	// (taskmanager->players)[pID]->processes->pc += size + 1; // + 1 for the opcode byte.
-			// 	// (taskmanager->players)[pID]->processes->pc += ((void *)ophex - (arena + (taskmanager->players)[pID]->processes->pc));
-			// 	printf("{A} pc = %d\n", (taskmanager->players)[pID]->processes->pc);
-			// 	//Debugging
-			// 	ophex = (unsigned char *)(arena + (taskmanager->players)[pID]->processes->pc);
-			// 	printf("next op = %d\n", (int)*ophex); 
-			// 	// printf("next op = \"%s\"\n", op_tab[((int)*ophex) - 1].op_name);
-			// }
 		}
 		else
 		{
 			printf("No encoding byte :O\n");
-			if ((size = fetch_input(ophex, &cmd_input, opcode)) == -1)
+			if ((size = fetch_input(ophex, &cmd_input, opcode, (taskmanager->players)[pID]->processes->pc)) == -1)
 			{
 				printf("Bad fetch_input\n");
-				(taskmanager->players)[pID]->processes->pc++;
+				if ((taskmanager->players)[pID]->processes->pc == (MEM_SIZE - 1))
+					(taskmanager->players)[pID]->processes->pc = 0;
+				else
+					(taskmanager->players)[pID]->processes->pc++;
 			}
 		}
 		if (size >= 0)
-			(taskmanager->players)[pID]->processes->pc += size + 1;
+		{
+			printf("%llu + %zu > %d\n", (taskmanager->players)[pID]->processes->pc, size, MEM_SIZE - 1);
+			if (((taskmanager->players)[pID]->processes->pc + size) >= (MEM_SIZE - 1))
+				(taskmanager->players)[pID]->processes->pc = (size - (MEM_SIZE - (taskmanager->players)[pID]->processes->pc));
+			else
+				(taskmanager->players)[pID]->processes->pc += size + 1;
+		}
 		ophex = (unsigned char *)(arena + (taskmanager->players)[pID]->processes->pc);
 		printf("next op = %d\n", (int)*ophex); 
 		if (op_tab[opcode - 1].trunc)
