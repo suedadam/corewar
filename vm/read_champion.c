@@ -6,11 +6,10 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/05 19:45:46 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 03:07:59 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "op.h"
 #include "vm.h"
 #include <fcntl.h>
 
@@ -23,7 +22,7 @@ static int	size_check(int fd)
 	size = lseek(fd, 0, SEEK_END);
 	if ((size - start) > CHAMP_MAX_SIZE) //Cast to off_t?
 	{
-		printf("too large? %d > %d\n", size-start, CHAMP_MAX_SIZE);
+		printf("too large? %lld > %d\n", size-start, CHAMP_MAX_SIZE);
 		return (-1);
 	}
 	if (lseek(fd, start, SEEK_SET) == -1)
@@ -34,9 +33,32 @@ static int	size_check(int fd)
 	return (size - start);
 }
 
-static int	load_to_mem(int fd, size_t size)
+static int	validate_header(void *player, size_t size)
+{
+	header_t	*playerHeader;
+
+	playerHeader = (header_t *)player;
+	if (playerHeader->magic != ntohl(COREWAR_EXEC_MAGIC))
+		return (-1);
+	if (ntohl(playerHeader->prog_size) != size - sizeof(header_t))
+		return (-1);
+	// printf("magic = %x\n", playerHeader->magic);
+	// printf("prog_name = %s\n", playerHeader->prog_name);
+	// printf("prog_size = %u\n", playerHeader->prog_size);
+	// printf("comment = %s\n", playerHeader->comment);
+	// exit(1);
+	return (0);
+}
+
+/*
+** I always like to pad the end of my shit with a byte ;P 
+*/
+
+static int	load_to_mem(int fd, size_t size, void *arena, int playerID,
+						int totalPlayers)
 {
 	void	*player;
+	size_t	placement;
 
 	if (!(player = ft_memalloc(size + 1)))
 	{
@@ -49,10 +71,33 @@ static int	load_to_mem(int fd, size_t size)
 		free(player);
 		return (-1);
 	}
+	if (validate_header(player, size))
+	{
+		printf("Header mismatch!\n");
+		return (-1);
+	}
+	size -= sizeof(header_t);
+	player += sizeof(header_t);
+	printf("totalPlayers = %d\n", totalPlayers);
+	placement = (playerID * (MEM_SIZE / totalPlayers));
+	printf("[ID: %d] offset = %d size = %zu\n", playerID, placement, size);
+	if (placement + size > MEM_SIZE)
+	{
+		printf("woa there big boi ;)\n");
+		exit(1);
+	}
+	ft_memcpy(arena + placement, player, size);
+	free(player - sizeof(header_t));
+	if (!(((taskmanager->players)[playerID])->processes = ft_memalloc(sizeof(t_process))))
+		return (-1);
+	// if (!((taskmanager->players)[playerID]->processes = ft_memalloc(sizeof(t_player))))
+	// 	return (-1);
+	((taskmanager->players)[playerID])->processes->pc = placement;
 	return (0);
 }
 
-int			read_champion(char *filename, void *arena)
+int			read_champion(char *filename, void *arena, int playerID,
+						int totalPlayers)
 {
 	int		fd;
 	off_t	size;
@@ -66,7 +111,7 @@ int			read_champion(char *filename, void *arena)
 		return (-1);
 	}
 	printf("Was okay in size :tada:\n");
-	if (load_to_mem(fd, size) == -1)
+	if (load_to_mem(fd, size, arena, playerID, totalPlayers) == -1)
 		return (-1);
 	return (0);
 }

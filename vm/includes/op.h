@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/10/04 11:33:27 by zaz               #+#    #+#             */
-/*   Updated: 2018/03/05 19:46:18 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 02:44:07 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,12 @@
 ** Sizes are in bytes; Assumed int = 32bit. Validate with sizeof();
 */
 
+#define F_IND_SIZE				IND_SIZE
+#define F_REG_SIZE				1
+#define F_DIR_SIZE				REG_SIZE
+
 #define IND_SIZE				2
-#define REG_SIZE				4
+#define REG_SIZE				4 // 1 byte. (fetching)
 #define DIR_SIZE				REG_SIZE
 
 
@@ -56,6 +60,10 @@
 */
 
 typedef char	t_arg_type;
+
+#define SHIFT_T_REG				0x40
+#define SHIFT_T_DIR				0x80
+#define SHIFT_T_IND				0xC0
 
 #define T_REG					1
 #define T_DIR					2

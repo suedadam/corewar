@@ -6,45 +6,77 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:49:32 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/05 19:24:13 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 03:07:53 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
-#include "op.h"
 
-int	init(int champc, char **champv)
+t_taskmanager	*taskmanager;
+
+void	*init(int champc, char **champv)
 {
-	void	*arena;
+	void			*arena;
+	int				i;
+	t_taskmanager	*l_taskmanager;
 
+	taskmanager = l_taskmanager;
 	if (!(arena = init_arena()))
-		return (-1);
-	while (champc)
+		return (NULL);
+	if (!(taskmanager = ft_memalloc(sizeof(t_taskmanager))))
+		return (NULL);
+	i = 0;
+	if (!(taskmanager->players = ft_memalloc(sizeof(t_player *) * (champc + 1))))
+		return (NULL);
+	while (i < champc)
 	{
-		if (read_champion(champv[champc], arena) == -1)
+		if (!((taskmanager->players)[i] = ft_memalloc(sizeof(t_player))))
+		{
+			free(arena);
+			return (NULL);
+		}
+		(taskmanager->players)[i]->pID = i;
+		printf("[ID: %d] Champ = \"%s\"\n", i, champv[champc - i]);
+		if (read_champion(champv[champc - i], arena, i, champc) == -1)
 		{
 			printf("wow fail\n");
-			return (-1);
+			free(arena);
+			return (NULL);
 		}
 		else
-			printf("Read champion \"%s\" into memory\n", champv[champc]);
-		champc--;
+			printf("Read champion \"%s\" into memory\n", champv[champc - i]);
+		printf("[ID: %d] PC = %llu\n", (taskmanager->players)[i]->pID, (taskmanager->players)[i]->processes->pc);
+		i++;
 	}
-	return (0);
+	// printf("Printing arena: \n");
+	// int j;
+	// unsigned char* byte_array = arena;
+
+	// j = 0;
+	// while (j < MEM_SIZE)
+	// {
+	// 	printf("%02X",(unsigned)byte_array[j]);
+	// 	j++;
+	// }
+	// exit(1);
+	return (arena);
 }
 
 int	main(int argc, char *argv[])
 {
+	void	*arena;
+
 	//Make a library parse flags func.
 	if (argc < 2)
 	{
 		printf("No champions listed\n");
 		return (-1);
 	}
-	if (init(argc - 1, argv) == -1)
+	if (!(arena = init(argc - 1, argv)))
 	{
 		printf("Failed to read.\n");
 		return (-1);
 	}
+	init_war(arena);
 	return (0);
 }

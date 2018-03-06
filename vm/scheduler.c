@@ -6,23 +6,23 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:31:46 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/05 18:37:40 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 03:08:00 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-t_scheduler	scheduler;
+// t_scheduler	scheduler;
 
 int	init_scheduler(void)
 {
-	t_scheduler *scheduler;
+	// t_scheduler *scheduler;
 
-	if (!(scheduler = ft_memalloc(sizeof(t_scheduler))))
-	{
-		printf("scheduler = ft_memalloc(%s)\n", strerror(errno));
-		return (-1);
-	}
+	// if (!(scheduler = ft_memalloc(sizeof(t_scheduler))))
+	// {
+	// 	printf("scheduler = ft_memalloc(%s)\n", strerror(errno));
+	// 	return (-1);
+	// }
 	return (0);
 }
 
