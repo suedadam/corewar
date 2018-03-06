@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 11:28:48 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 14:10:56 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,15 @@ int	op_and(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 {
 	unsigned char	tmp;
 	unsigned char	byte;
-	uint64_t		val1;
-	int				*storage; //Max size :P 
+	int				val1;
+	int				*storage;
+	int				val2;		
 	int				i;
 
 	val1 = 0;
 	byte = cmd_input->encbyte;
 	i = 0;
-	bzero(storage, REG_SIZE);
+	storage = NULL;
 	while (byte)
 	{
 		tmp = byte;
@@ -55,9 +56,8 @@ int	op_and(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 				ft_memcpy(&val1, (arena + child->pc + (cmd_input->args)[i]), IND_SIZE);
 			else if (i == 1)
 			{
-				storage = ft_memcpy(storage, (arena + child->pc + (cmd_input->args)[i]), IND_SIZE);
-				val1 = val1 & *(uint16_t *)storage;
-				bzero(storage, REG_SIZE);	
+				ft_memcpy(&val2, (arena + child->pc + (cmd_input->args)[i]), IND_SIZE);
+				val1 = val1 & val2;
 			}
 			else
 			{
@@ -78,7 +78,32 @@ int	op_and(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 			}
 		}
 		byte = byte << 2;
+		i++;
 	}
-	*storage = (int)val1;
-	return (-1);
+	if (!storage)
+	{
+		printf("RIP I couldn't find storage?\n");
+		exit(1);
+	}
+	*storage = val1;
+	child->carry = 1;
+	printf("val = %d\n", val1);
+	int j;
+	j = 1;
+	while (j <= REG_NUMBER)
+	{
+		printf("R[%d] = %d\n", j, (child->regs)[j++]);
+	}
+	// printf("Printing arena: \n");
+	// int j;
+	// unsigned char* byte_array = arena;
+
+	// j = 0;
+	// while (j < MEM_SIZE)
+	// {
+	// 	printf("%02X ",(unsigned)byte_array[j]);
+	// 	j++;
+	// }
+	// exit(1);
+	return (0);
 }

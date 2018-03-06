@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 11:42:34 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 13:42:26 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,10 @@ int	run_operation(int pID, void *arena, t_process *child)
 			printf("Operation = %s code = %d\n", op_tab[opcode - 1].op_name, opcode);
 			child->opcode = opcode;
 			child->run_op = taskmanager->currCycle + op_tab[opcode - 1].waitcycles;
+			if (child->pc == (MEM_SIZE - 1))
+				child->pc = 0;
+			else
+				child->pc++;
 		}
 	}
 	else if (child->run_op == taskmanager->currCycle)
@@ -187,6 +191,7 @@ int	run_operation(int pID, void *arena, t_process *child)
 		}
 		else
 			printf("O_O :O;Still need to do thisssss\n");
+		// child->pc++;
 		if (op_tab[opcode - 1].encbool)
 		{
 			printf("Has an encoding byte!!!!\n");
@@ -196,8 +201,8 @@ int	run_operation(int pID, void *arena, t_process *child)
 				printf("Bad encoding byte!\n");
 				if (child->pc == (MEM_SIZE - 1))
 					child->pc = 0;
-				else
-					child->pc++;
+				// else
+				// 	child->pc++;
 				// memory_move((taskmanager->players)[pID]->processes->pc, 1, ophex, arena);
 				// (taskmanager->players)[pID]->processes->pc++;
 			}
@@ -210,14 +215,14 @@ int	run_operation(int pID, void *arena, t_process *child)
 				printf("Bad fetch_input\n");
 				if (child->pc == (MEM_SIZE - 1))
 					child->pc = 0;
-				else
-					child->pc++;
+				// else
+				// 	child->pc++;
 			}
 		}
 		if (opdispatch[opcode - 1].func(&cmd_input, arena, pID, child) == -1)
 		{
 			printf("Failed to execute the fckin command wtf ;_;\n");
-			child->pc++;
+			// child->pc++;
 			size = -1;
 		}
 		else
@@ -231,7 +236,7 @@ int	run_operation(int pID, void *arena, t_process *child)
 			if ((child->pc + size) >= (MEM_SIZE - 1))
 				child->pc = (size - (MEM_SIZE - child->pc));
 			else
-				child->pc += size + 1;
+				child->pc += size;
 		}
 		ophex = (unsigned char *)(arena + child->pc);
 		printf("next op = %d\n", (int)*ophex); 
@@ -242,16 +247,16 @@ int	run_operation(int pID, void *arena, t_process *child)
 		child->run_op = 0;
 		child->opcode = 0;
 		printf("made it\n");
-	// printf("Printing arena: \n");
-	// int j;
-	// unsigned char* byte_array = arena;
+	printf("Printing arena: \n");
+	int j;
+	unsigned char* byte_array = arena + child->pc;
 
-	// j = 0;
-	// while (j < MEM_SIZE)
-	// {
-	// 	printf("%02X",(unsigned)byte_array[j]);
-	// 	j++;
-	// }
+	j = 0;
+	while (j < (MEM_SIZE - child->pc))
+	{
+		printf("%02X",(unsigned)byte_array[j]);
+		j++;
+	}
 		// exit(1);
 	}
 	return (0);
