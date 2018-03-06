@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 03:07:46 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 05:27:12 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct	s_process
 	uint8_t				carry; //What does this actually do?
 	size_t				run_op;
 	uint8_t				opcode;
+	uint8_t				die_check;
 	struct s_process	*next;
 }				t_process;
 
@@ -56,8 +57,17 @@ typedef struct	s_player
 typedef struct	s_taskmanager
 {
 	size_t		currCycle;
+	size_t		lastnbrlive;
 	t_player	**players;
+	uint8_t		lastlive;
+	size_t		c_to_die;
 }				t_taskmanager;
+
+typedef struct	s_opdispatch
+{
+	int			opcode;
+	int 		(*func)(t_operation *cmd_input, void *arena);
+}				t_opdispatch;
 
 typedef struct	s_operation
 {

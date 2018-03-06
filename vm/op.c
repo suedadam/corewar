@@ -6,13 +6,13 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/10/04 11:43:01 by zaz               #+#    #+#             */
-/*   Updated: 2018/03/06 03:07:56 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 05:26:46 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-t_op    op_tab[17] =
+t_op    		op_tab[17] =
 {
 	{"live", 1, {T_DIR}, 1, 10, "alive", 0, 0},
 	{"ld", 2, {T_DIR | T_IND, T_REG}, 2, 5, "load", 1, 0},
@@ -37,4 +37,24 @@ t_op    op_tab[17] =
 	{"lfork", 1, {T_DIR}, 15, 1000, "long fork", 0, 1},
 	{"aff", 1, {T_REG}, 16, 2, "aff", 1, 0},
 	{0, 0, {0}, 0, 0, 0, 0, 0}
+};
+
+t_opdispatch	opdispatch[17] = {
+	{1, &op_live},
+	{2, &op_ld},
+	{3, &op_st},
+	{4, &op_add},
+	{5, &op_sub},
+	{6, &op_and},
+	{7, &op_or},
+	{8, &op_xor},
+	{9, &op_zjmp},
+	{10, &op_ldi},
+	{11, &op_sti},
+	{12, &op_fork},
+	{13, &op_lld},
+	{14, &op_lldi},
+	{15, &op_lfork},
+	{16, &op_aff},
+	{NULL, NULL};
 };
