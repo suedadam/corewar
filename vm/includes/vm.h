@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 15:00:46 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 16:08:28 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef struct	s_taskmanager
 typedef struct	s_operation
 {
 	unsigned char	encbyte;
-	uint32_t		args[3];
+	int32_t			args[3];
 }				t_operation;
 
 typedef struct	s_opdispatch

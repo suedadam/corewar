@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 08:45:34 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/06 16:16:38 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,6 @@ static int	validate_header(void *player, size_t size)
 		return (-1);
 	if (ntohl(playerHeader->prog_size) != size - sizeof(header_t))
 		return (-1);
-	// printf("magic = %x\n", playerHeader->magic);
-	// printf("prog_name = %s\n", playerHeader->prog_name);
-	// printf("prog_size = %u\n", playerHeader->prog_size);
-	// printf("comment = %s\n", playerHeader->comment);
-	// exit(1);
 	return (0);
 }
 
@@ -79,7 +74,7 @@ static int	load_to_mem(int fd, size_t size, void *arena, int playerID)
 	player += sizeof(header_t);
 	printf("totalPlayers = %d\n", taskmanager->totalPlayers);
 	placement = (playerID * (MEM_SIZE / taskmanager->totalPlayers));
-	printf("[ID: %d] offset = %d size = %zu\n", playerID, placement, size);
+	printf("[ID: %d] offset = %zu size = %zu\n", playerID, placement, size);
 	if (placement + size > MEM_SIZE)
 	{
 		printf("woa there big boi ;)\n");
@@ -90,8 +85,6 @@ static int	load_to_mem(int fd, size_t size, void *arena, int playerID)
 	if (!(((taskmanager->players)[playerID])->processes = ft_memalloc(sizeof(t_process))))
 		return (-1);
 	(taskmanager->players)[playerID]->processes->regs[1] = playerID;
-	// if (!((taskmanager->players)[playerID]->processes = ft_memalloc(sizeof(t_player))))
-	// 	return (-1);
 	((taskmanager->players)[playerID])->processes->pc = placement;
 	return (0);
 }
