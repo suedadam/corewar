@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/07 02:11:40 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/07 04:04:46 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,33 +32,82 @@ static int	invalid_ACB(t_process *child)
 	return (0);
 }
 
-static int	fetch_input(unsigned char *p, t_operation *cmd_input, t_process *child)
+static int	copy_memory_fwd_off(void *dest, unsigned char *arena, t_process *child, size_t size, int offset)
 {
-	size_t	size;
+	int		frag;
+	int		memloc;
+	void	*new;
+
+	frag = 0;
+	memloc = child->pc + offset;
+	if (memloc >= (MEM_SIZE - 1))
+		memloc = (memloc + offset) % (MEM_SIZE - 1);
+	new = arena + memloc;
+	if ((memloc + size) >= (MEM_SIZE - 1))
+		frag = size = ((memloc + size) % (MEM_SIZE - 1));
+	if (frag)
+	{
+		memcpy(dest, new, frag);
+		new = arena;
+	}
+	memcpy(dest, new + frag, size - frag);
+}
+
+static int	copy_memory_fwd(void *dest, unsigned char *arena, t_process *child, size_t size)
+{
+	int		frag;
+	int		memloc;
+	void	*new;
+
+	frag = 0;
+	memloc = child->pc;
+	if (memloc >= (MEM_SIZE - 1))
+		memloc = 0;
+	new = arena + memloc;
+	if ((memloc + size) >= (MEM_SIZE - 1))
+		frag = size - ((memloc + size) % (MEM_SIZE - 1));
+	if (frag)
+	{
+		memcpy(dest, new, frag);
+		new = arena;
+	}
+	memcpy(dest, new + frag, size - frag);
+	return (0);
+}
+
+static int	fetch_input(unsigned char *arena, t_operation *cmd_input, t_process *child)
+{
+	size_t			size;
+	// unsigned char	buf;
 
 	size = 1; //Skip the opcode.
-	printf("First byte = %02x\n", *(p + size));
+	printf("First byte = %02x\n", *(arena + size));
 	if (op_tab[child->opcode - 1].encbyte[0] == T_DIR)
 	{
 		if (op_tab[child->opcode - 1].trunc)
 		{
-			(cmd_input->args)[0] = ntohs(*(short *)((unsigned char *)(p + size)));
-			printf("Fetched IND %d\n", (short)(cmd_input->args)[0]);
-			// printf("Fetched indirect size = %d\n", *(int *)(p + size));
+			(cmd_input->args)[0] = 0;
+			copy_memory_fwd_off(&((cmd_input->args)[0]), arena, child, sizeof(short), size);
+			(cmd_input->args)[0] = ntohs((cmd_input->args)[0]);
+			printf("Fetched indirect size = %d %x\n", (cmd_input->args)[0], (cmd_input->args)[0]);
 			// exit(1);
 			size += F_IND_SIZE;
 		}
 		else
 		{
-			(cmd_input->args)[0] = ntohl(*((int *)(p + size)));
+			(cmd_input->args)[0] = 0;
+			copy_memory_fwd_off(&((cmd_input->args)[0]), arena, child, sizeof(int), size);
+			(cmd_input->args)[0] = ntohl((cmd_input->args)[0]);
+			// (cmd_input->args)[0] = ntohl(*((int *)(p + size)));
 			size += F_DIR_SIZE;
-			printf("Fetched DIR %d\n", (cmd_input->args)[0]);
+			printf("Fetched DIR %d %x\n", (cmd_input->args)[0], (cmd_input->args)[0]);
 		}
 	}
 	else
 	{
 		// invalid_opcode(child);
 		printf("Undefined? %s\n", op_tab[child->opcode - 1].op_name);
+		exit(200);
 		return (-1);
 	}
 	return (size);
@@ -107,14 +156,19 @@ static int	fetch_input(unsigned char *p, t_operation *cmd_input, t_process *chil
 ** If truncation then always fetch as T_IND
 ** Change this to be circular! <--- !!!
 */
-
-static int	decode_ACB(unsigned char *p, t_operation *cmd_input, t_process *child)
+//static int	copy_memory_fwd(void *dest, unsigned char *arena, t_process *child, size_t size);
+// static int	copy_memory_fwd_off(void *dest, unsigned char *arena, t_process *child, size_t size, int offset)
+static int	decode_ACB(unsigned char *arena, t_operation *cmd_input, t_process *child)
 {
 	int				j;
 	size_t			size;
 	unsigned char	byte;
 	unsigned char	tmp;
+	unsigned char	p[3];
 
+	bzero(p, 3);
+	copy_memory_fwd(p, arena, child, 2);
+	printf("Hex of p inputs: %02x %d\n", p, (int)*p);
 	cmd_input->encbyte = *(p + 1);
 	byte = *(p + 1);
 	j = 0;
@@ -132,9 +186,12 @@ static int	decode_ACB(unsigned char *p, t_operation *cmd_input, t_process *child
 				invalid_opcode(child);
 				return (-1);
 			}
-			(cmd_input->args)[j++] = *(unsigned char *)(p + size);
+			(cmd_input->args)[j] = 0;
+			copy_memory_fwd_off(&((cmd_input->args)[j++]), arena, child, 1, size);
+			// (cmd_input->args)[j++] = *(unsigned char *)(p + size);
 			size += F_REG_SIZE;
-			printf("Fetched REG with val \"%d\"\n", (cmd_input->args)[j - 1]);
+			printf("Fetched REG with val \"%d\" %x\n", (cmd_input->args)[j - 1], (cmd_input->args)[j - 1]);
+			// exit(1);
 		}
 		else if (tmp == (unsigned char)SHIFT_T_DIR && !op_tab[child->opcode - 1].trunc)
 		{
@@ -143,9 +200,14 @@ static int	decode_ACB(unsigned char *p, t_operation *cmd_input, t_process *child
 				invalid_opcode(child);
 				return (-1);
 			}
-			(cmd_input->args)[j++] = ntohl(*((int *)(p + size)));
+			(cmd_input->args)[j] = 0;
+			copy_memory_fwd_off(&((cmd_input->args)[j]), arena, child, sizeof(int), size);
+			(cmd_input->args)[j] = ntohl((cmd_input->args)[j]);
+			j++;
+			// (cmd_input->args)[j++] = ntohl(*((int *)(p + size)));
 			size += F_DIR_SIZE;
 			printf("Fetched DIR with val \"%d\" %x\n", (cmd_input->args)[j - 1], (cmd_input->args)[j - 1]);
+			// exit(1);
 		}
 		else if (tmp == (unsigned char)F_IND_SIZE || (tmp == (unsigned char)SHIFT_T_DIR && op_tab[child->opcode - 1].trunc))
 		{
@@ -154,9 +216,13 @@ static int	decode_ACB(unsigned char *p, t_operation *cmd_input, t_process *child
 				invalid_opcode(child);
 				return (-1);
 			}
-			(cmd_input->args)[j++] = ntohs(*(short *)(p + size));
+			(cmd_input->args)[j] = 0;
+			copy_memory_fwd_off(&((cmd_input->args)[j]), arena, child, sizeof(short), size);
+			(cmd_input->args)[j] = ntohs((cmd_input->args)[j]);
+			j++;
+			// (cmd_input->args)[j++] = ntohs(*(short *)(p + size));
 			size += F_IND_SIZE;
-			printf("Fetched IND with val \"%d\"\n", (cmd_input->args)[j - 1]);
+			printf("Fetched IND with val \"%d\" %x\n", (cmd_input->args)[j - 1], (cmd_input->args)[j - 1]);
 		}
 		byte = byte << 2;
 	}
@@ -177,7 +243,8 @@ int	run_operation(int pID, void *arena, t_process *child)
 
 	if (!(child->run_op))
 	{
-		opcode = (int)(*(unsigned char *)(arena + child->pc));
+		copy_memory_fwd(&opcode, (unsigned char *)arena, child, sizeof(char));
+		// opcode = (int)(*(unsigned char *)(arena + child->pc));
 		if (opcode > 15 || opcode <= 0)
 		{
 			invalid_opcode(child);
@@ -189,19 +256,20 @@ int	run_operation(int pID, void *arena, t_process *child)
 	}
 	else if (child->run_op == taskmanager->currCycle)
 	{
-		opcode = (int)(*(unsigned char *)(arena + child->pc));
+		copy_memory_fwd(&opcode, (unsigned char *)arena, child, sizeof(char));
+		// opcode = (int)(*(unsigned char *)(arena + child->pc));
 		printf("Runtime for %s\n", op_tab[opcode - 1].op_name);
 		printf("opcode %d == opcode = %d\n", child->opcode, opcode);
 		if (op_tab[child->opcode - 1].encbool)
 		{
-			if ((size = decode_ACB((unsigned char *)(arena + child->pc), &cmd_input, child)) == -1)
+			if ((size = decode_ACB((unsigned char *)arena, &cmd_input, child)) == -1)
 			{
 				invalid_ACB(child);
 				return (-1);
 			}
 		}
 		else
-			if ((size = fetch_input((unsigned char *)(arena + child->pc), &cmd_input, child)) == -1)
+			if ((size = fetch_input((unsigned char *)arena, &cmd_input, child)) == -1)
 				return (-1);
 		printf("{B} %p -- %d\n", arena + child->pc, child->pc);
 		unsigned char* byte_array = (arena + child->pc);
