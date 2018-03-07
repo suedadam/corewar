@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/07 02:41:50 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/07 04:24:30 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ int				add_scheduler(uint8_t opcode);
 /*
 ** utils.c
 */
+int				copy_memory_fwd_off(void *dest, unsigned char *arena, t_process *child, size_t size, int offset);
 
 void			*ft_memory_warp(void *arena, uint64_t base, uint64_t seek, uint64_t size,
 								int *frag);

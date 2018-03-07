@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/07 04:04:46 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/07 04:27:57 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,27 +30,6 @@ static int	invalid_ACB(t_process *child)
 	else
 		child->pc++;
 	return (0);
-}
-
-static int	copy_memory_fwd_off(void *dest, unsigned char *arena, t_process *child, size_t size, int offset)
-{
-	int		frag;
-	int		memloc;
-	void	*new;
-
-	frag = 0;
-	memloc = child->pc + offset;
-	if (memloc >= (MEM_SIZE - 1))
-		memloc = (memloc + offset) % (MEM_SIZE - 1);
-	new = arena + memloc;
-	if ((memloc + size) >= (MEM_SIZE - 1))
-		frag = size = ((memloc + size) % (MEM_SIZE - 1));
-	if (frag)
-	{
-		memcpy(dest, new, frag);
-		new = arena;
-	}
-	memcpy(dest, new + frag, size - frag);
 }
 
 static int	copy_memory_fwd(void *dest, unsigned char *arena, t_process *child, size_t size)
@@ -78,7 +57,6 @@ static int	copy_memory_fwd(void *dest, unsigned char *arena, t_process *child, s
 static int	fetch_input(unsigned char *arena, t_operation *cmd_input, t_process *child)
 {
 	size_t			size;
-	// unsigned char	buf;
 
 	size = 1; //Skip the opcode.
 	printf("First byte = %02x\n", *(arena + size));
@@ -276,6 +254,7 @@ int	run_operation(int pID, void *arena, t_process *child)
 		if (opdispatch[child->opcode - 1].func(&cmd_input, arena, pID, child) == -1)
 		{
 			printf("Invalid operation\n");
+			exit(1);
 			return (-1);
 		}
 		if (child->opcode != 9)
@@ -288,7 +267,7 @@ int	run_operation(int pID, void *arena, t_process *child)
 		printf("{A} %p -- %d\n", arena + child->pc, child->pc);
 		child->run_op = 0;
 		child->opcode = 0;
-		printf("====\n");
+		printf("==== ");
 		int j;
 
 		j = 0;

@@ -3,14 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:11:42 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 16:03:21 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/07 04:24:21 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
+
+int	copy_memory_fwd_off(void *dest, unsigned char *arena, t_process *child, size_t size, int offset)
+{
+	int		frag;
+	int		memloc;
+	void	*new;
+
+	frag = 0;
+	memloc = child->pc + offset;
+	if (memloc >= (MEM_SIZE - 1))
+		memloc = (memloc + offset) % (MEM_SIZE - 1);
+	new = arena + memloc;
+	if ((memloc + size) >= (MEM_SIZE - 1))
+		frag = size = ((memloc + size) % (MEM_SIZE - 1));
+	if (frag)
+	{
+		memcpy(dest, new, frag);
+		new = arena;
+	}
+	memcpy(dest, new + frag, size - frag);
+	return (0);
+}
 
 /*
 ** I need to handle negative seeks............ lame
