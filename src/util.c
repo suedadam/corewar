@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 21:46:04 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/05 21:56:07 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/07 07:30:54 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,31 @@ unsigned int	reverse_bytes(unsigned int n, ssize_t size)
 	i = 0;
 	bytes = (char *)&n;
 	ft_memset(res, 0, 4);
-	while (i < 4)
+	while (i < size)
 	{
 		res[i] = bytes[size - i - 1];
 		++i;
 	}
 	return (*(unsigned int *)res);
+}
+
+#define IS_WSPACE(x,i)	x[i] && (x[i] == ' ' || x[i] == '\t')
+
+int				trim(char *arg)
+{
+	char	*tmp;
+	int		off;
+	int		len;
+
+	off = 0;
+	while (IS_WSPACE(arg, off))
+		++off;
+	tmp = arg + off;
+	if ((len = ft_strlen(tmp)))
+		--len;
+	while (IS_WSPACE((tmp), len))
+		--len;
+	ft_memmove(arg, tmp, ++len);
+	arg[len] = '\0';
+	return (off);
 }

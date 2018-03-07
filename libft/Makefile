@@ -13,7 +13,9 @@ SRC = \
 	ft_memalloc\
 	ft_memcpy\
 	ft_memdel\
+	ft_memmove\
 	ft_memset\
+	ft_strchr\
 	ft_strcmp\
 	ft_stpcpy\
 	ft_strlen\
