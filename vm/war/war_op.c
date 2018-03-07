@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   war_op.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 18:22:44 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/07 02:11:40 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,15 @@ static int	fetch_input(unsigned char *p, t_operation *cmd_input, t_process *chil
 	{
 		if (op_tab[child->opcode - 1].trunc)
 		{
-			(cmd_input->args)[0] = ntohl(*((int *)(p + size)));
+			(cmd_input->args)[0] = ntohs(*(short *)((unsigned char *)(p + size)));
+			printf("Fetched IND %d\n", (short)(cmd_input->args)[0]);
+			// printf("Fetched indirect size = %d\n", *(int *)(p + size));
+			// exit(1);
 			size += F_IND_SIZE;
-			printf("Fetched IND %d\n", (cmd_input->args)[0]);
 		}
 		else
 		{
-			(cmd_input->args)[0] = ntohs(*((short *)(p + size)));
+			(cmd_input->args)[0] = ntohl(*((int *)(p + size)));
 			size += F_DIR_SIZE;
 			printf("Fetched DIR %d\n", (cmd_input->args)[0]);
 		}
@@ -112,14 +114,12 @@ static int	decode_ACB(unsigned char *p, t_operation *cmd_input, t_process *child
 	size_t			size;
 	unsigned char	byte;
 	unsigned char	tmp;
-	uint8_t			invalid;
 
 	cmd_input->encbyte = *(p + 1);
 	byte = *(p + 1);
 	j = 0;
 	size = 2; //Skip the encoding byte.
 	printf("%02x vs %02x\n", byte, *(p + size));
-	invalid = 0;
 	while (byte)
 	{
 		tmp = byte;
@@ -203,31 +203,33 @@ int	run_operation(int pID, void *arena, t_process *child)
 		else
 			if ((size = fetch_input((unsigned char *)(arena + child->pc), &cmd_input, child)) == -1)
 				return (-1);
-		if ((child->pc + 1) >= (MEM_SIZE - 1))
-			child->pc = 0;
-		else
-			child->pc++;
+		printf("{B} %p -- %d\n", arena + child->pc, child->pc);
+		unsigned char* byte_array = (arena + child->pc);
 		if (opdispatch[child->opcode - 1].func(&cmd_input, arena, pID, child) == -1)
 		{
 			printf("Invalid operation\n");
 			return (-1);
 		}
-		printf("Size skip = %d\n", size - 1);
-		if ((child->pc + size  - 1) >= (MEM_SIZE - 1))
-			child->pc = ((size - 1) - (MEM_SIZE - child->pc));
-		else
-			child->pc += (size - 1);
+		if (child->opcode != 9)
+		{
+			if ((child->pc + size) >= (MEM_SIZE - 1))
+				child->pc = ((child->pc + size) % (MEM_SIZE - 1));
+			else
+				child->pc += size;			
+		}
+		printf("{A} %p -- %d\n", arena + child->pc, child->pc);
 		child->run_op = 0;
 		child->opcode = 0;
+		printf("====\n");
 		int j;
-		unsigned char* byte_array = arena + child->pc;
 
 		j = 0;
-		while (j < 100)
+		while (j < size)
 		{
 			printf("%02X ",(unsigned)byte_array[j]);
 			j++;
 		}
+		printf("=====\n");
 	}
 	return (0);
 }

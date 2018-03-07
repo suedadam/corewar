@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   op_zjmp.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 16:02:06 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/07 02:09:53 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int	op_zjmp(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 	{
 		printf("carry present puta madre %d\n", (short)cmd_input->args[0]);
 		printf("before = %p\n", arena + child->pc);
-		child->pc--;
 		if ((short)cmd_input->args[0] < 0)
 		{
 			negswap = (short)cmd_input->args[0] & 0x8000;
@@ -45,6 +44,7 @@ int	op_zjmp(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 				child->pc += (short)cmd_input->args[0];
 			//Positive.
 		}
+		printf("After = %p\n", arena + child->pc);
 	}
 	return (0);
 }
