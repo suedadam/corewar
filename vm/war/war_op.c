@@ -14,7 +14,7 @@
 
 static int	invalid_opcode(t_process *child)
 {
-	printf("{%d} Invalid OPCode\n", child->opcode);
+	printf("{%d} Invalid OPCode {%d}\n", child->opcode, child->opcode);
 	if (child->pc == (MEM_SIZE - 1))
 		child->pc = 0;
 	else
@@ -43,10 +43,12 @@ static int	copy_memory_fwd(void *dest, unsigned char *arena, t_process *child, s
 	if (memloc >= (MEM_SIZE - 1))
 		memloc = 0;
 	new = arena + memloc;
+	printf("%d vs %d + %d >= %d\n", memloc, child->pc, size, MEM_SIZE - 1);
 	if ((memloc + size) >= (MEM_SIZE - 1))
 		frag = size - ((memloc + size) % (MEM_SIZE - 1));
 	if (frag)
 	{
+		printf("Frag = %d new = %p and arena = %p\n", frag, new, arena);
 		memcpy(dest, new, frag);
 		new = arena;
 	}
@@ -90,45 +92,6 @@ static int	fetch_input(unsigned char *arena, t_operation *cmd_input, t_process *
 	}
 	return (size);
 }
-
-// /*
-// ** We don't really need to handle anything other than T_DIR :/
-// */
-
-// static int fetch_input(unsigned char *enc, t_operation *cmd_input,
-// 							uint8_t opcode, size_t mem_base)
-// {
-// 	size_t	size;
-
-// 	size = 0;
-// 	if (op_tab[opcode - 1].encbyte[0] == T_DIR)
-// 	{
-// 		if (op_tab[opcode - 1].trunc)
-// 		{
-// 			printf("fetched as IND %x\n", *(uint16_t *)enc);
-// 			(cmd_input->args)[0] = ntohs(*(uint16_t *)enc);
-// 			size = F_IND_SIZE;
-// 		}
-// 		else
-// 		{
-// 			printf("fetched as DIR %x\n", *(uint32_t *)enc);
-// 			(cmd_input->args)[0] = ntohl(*(uint32_t *)enc);
-// 			printf("playerID = %d\n", (cmd_input->args)[0]);
-// 			size = F_DIR_SIZE;
-// 		}
-// 	}
-// 	else if (op_tab[opcode - 1].encbyte[0] == T_IND)
-// 	{
-// 		(cmd_input->args)[0] = ntohs(*(uint16_t *)enc);
-// 		size = F_IND_SIZE;
-// 	}
-// 	else if (op_tab[opcode - 1].encbyte[0] == T_REG)
-// 	{
-// 		(cmd_input->args)[0] = *(unsigned char *)enc;
-// 		size = 1;
-// 	}
-// 	return (size);
-// }
 
 /*
 ** If truncation then always fetch as T_IND
@@ -175,6 +138,7 @@ static int	decode_ACB(unsigned char *arena, t_operation *cmd_input, t_process *c
 		{
 			if ((op_tab[child->opcode - 1].encbyte[j] & T_DIR) != T_DIR)
 			{
+				printf("O.o\n");
 				invalid_opcode(child);
 				return (-1);
 			}
@@ -191,6 +155,7 @@ static int	decode_ACB(unsigned char *arena, t_operation *cmd_input, t_process *c
 		{
 			if (((op_tab[child->opcode - 1].encbyte[j] & T_IND) != T_IND) && !op_tab[child->opcode - 1].trunc)
 			{
+				printf("PENIS\n");
 				invalid_opcode(child);
 				return (-1);
 			}
@@ -200,16 +165,47 @@ static int	decode_ACB(unsigned char *arena, t_operation *cmd_input, t_process *c
 			j++;
 			// (cmd_input->args)[j++] = ntohs(*(short *)(p + size));
 			size += F_IND_SIZE;
-			printf("Fetched IND with val \"%d\" %x\n", (cmd_input->args)[j - 1], (cmd_input->args)[j - 1]);
+			printf("Fetched IND with val \"%d\" %x\n", (short)(cmd_input->args)[j - 1], (cmd_input->args)[j - 1]);
 		}
 		byte = byte << 2;
 	}
 	if (j != op_tab[child->opcode - 1].argc)
 	{
+		printf("w0w 3 many for me\n");
 		invalid_opcode(child);
 		return (-1);
 	}
 	return (size);
+}
+
+void	raincheck(void *arena, t_process *child)
+{
+	int	opcode;
+
+	opcode = 0;
+	copy_memory_fwd(&opcode, (unsigned char *)arena, child, sizeof(unsigned char));
+	if (opcode > 15 || opcode <= 0)
+	{
+		// printf("hmmm - raincheck? %d\n", child->pc);
+		invalid_opcode(child);
+		// 		int j;
+		// 		unsigned char* byte_array = arena + child->pc;
+
+		// 		j = 0;
+		// 		while (j < 1024)
+		// 		// while (j < 1024)
+		// 		{
+		// 			printf("%02x ",(unsigned)byte_array[j]);
+		// 			j++;
+		// 		}
+		// 		exit(1);
+		// exit(1);
+		return ;
+		// return (-1);
+	}
+	child->opcode = opcode;
+	child->run_op = taskmanager->currCycle + op_tab[(opcode - 1)].waitcycles;
+	// printf("CurrCycle: %d requested: %d Scheduled %d for %d\n", taskmanager->currCycle, op_tab[opcode - 1].waitcycles, opcode, child->run_op);
 }
 
 int	run_operation(int pID, void *arena, t_process *child)
@@ -219,19 +215,25 @@ int	run_operation(int pID, void *arena, t_process *child)
 	t_operation		cmd_input;
 	int				size;
 
+	opcode = 0;
 	if (!(child->run_op))
-	{
-		copy_memory_fwd(&opcode, (unsigned char *)arena, child, sizeof(char));
-		// opcode = (int)(*(unsigned char *)(arena + child->pc));
-		if (opcode > 15 || opcode <= 0)
-		{
-			invalid_opcode(child);
-			return (-1);
-		}
-		printf("opcode = %d (%s)\n", opcode, op_tab[opcode - 1].op_name);
-		child->opcode = opcode;
-		child->run_op = taskmanager->currCycle + op_tab[opcode - 1].waitcycles;
-	}
+		raincheck(arena, child);
+	// {
+	// 	// printf("Copying memory from %d\n", child->pc);
+	// 	copy_memory_fwd(&opcode, (unsigned char *)arena, child, sizeof(unsigned char));
+	// 	// opcode = (int)(*(unsigned char *)(arena + child->pc));
+	// 	if (opcode > 15 || opcode <= 0)
+	// 	{
+	// 		// printf("bitch? opcode = %d %x\n", (int)opcode, opcode);
+	// 		invalid_opcode(child);
+	// 		exit(1);
+	// 		return (-1);
+	// 	}
+	// 	// printf("opcode = %d (%s)\n", opcode, op_tab[opcode - 1].op_name);
+	// 	child->opcode = opcode;
+	// 	child->run_op = taskmanager->currCycle + op_tab[opcode - 1].waitcycles; //Does this work?
+	// 	// printf("will run at %d + %d = %d\n", taskmanager->currCycle, op_tab[opcode - 1].waitcycles, child->run_op);
+	// }
 	else if (child->run_op == taskmanager->currCycle)
 	{
 		copy_memory_fwd(&opcode, (unsigned char *)arena, child, sizeof(char));
@@ -248,7 +250,10 @@ int	run_operation(int pID, void *arena, t_process *child)
 		}
 		else
 			if ((size = fetch_input((unsigned char *)arena, &cmd_input, child)) == -1)
+			{
+				printf("Invalid fetched output\n");
 				return (-1);
+			}
 		printf("{B} %p -- %d\n", arena + child->pc, child->pc);
 		unsigned char* byte_array = (arena + child->pc);
 		if (opdispatch[child->opcode - 1].func(&cmd_input, arena, pID, child) == -1)
@@ -257,7 +262,7 @@ int	run_operation(int pID, void *arena, t_process *child)
 			exit(1);
 			return (-1);
 		}
-		if (child->opcode != 9)
+		if (child->opcode != 9 || (child->opcode == 9 && !child->carry))
 		{
 			if ((child->pc + size) >= (MEM_SIZE - 1))
 				child->pc = ((child->pc + size) % (MEM_SIZE - 1));
@@ -267,137 +272,20 @@ int	run_operation(int pID, void *arena, t_process *child)
 		printf("{A} %p -- %d\n", arena + child->pc, child->pc);
 		child->run_op = 0;
 		child->opcode = 0;
-		printf("==== ");
-		int j;
+		// printf("==== ");
+		// int j;
 
-		j = 0;
-		while (j < size)
-		{
-			printf("%02X ",(unsigned)byte_array[j]);
-			j++;
-		}
-		printf("=====\n");
+		// j = 0;
+		// while (j < size)
+		// {
+		// 	printf("%02X ",(unsigned)byte_array[j]);
+		// 	j++;
+		// }
+		// printf("=====\n");
+		// printf("Next op = %x (%d)\n", *(unsigned char *)(arena + child->pc), *(unsigned char *)(arena + child->pc));
+		raincheck(arena, child); //Need a raincheck :) 
 	}
+	else
+		printf("Scheduled for cycle %d (%d) (%d)\n", child->run_op, taskmanager->currCycle, child->pc);
 	return (0);
 }
-
-// int	run_operation(int pID, void *arena, t_process *child)
-// {
-// 	unsigned char	*ophex;
-// 	unsigned char	*tmp;
-// 	ssize_t			size;
-// 	int				opcode;
-// 	t_operation		cmd_input;
-
-// 	// if (!((taskmanager->players)[pID]->processes->run_op))
-// 	if (!(child->run_op))
-// 	{
-// 		ophex = (unsigned char *)(arena + child->pc);
-// 		// ophex = (unsigned *)(arena + (taskmanager->players)[pID]->processes->pc);
-// 		// printf("[ID: %d] Calling HextoDec(%02X)\n", pID, *ophex);
-// 		opcode = (int)*ophex;
-// 		if (opcode > 15 || opcode <= 0)
-// 		{
-// 			printf("Invalid opcode\n");
-// 			if (child->pc == (MEM_SIZE - 1))
-// 				child->pc = 0;
-// 			else
-// 				child->pc++;
-// 			return (-1);
-// 		}
-// 		else
-// 		{
-// 			printf("Operation = %s code = %d\n", op_tab[opcode - 1].op_name, opcode);
-// 			child->opcode = opcode;
-// 			child->run_op = taskmanager->currCycle + op_tab[opcode - 1].waitcycles;
-// 			if (child->pc == (MEM_SIZE - 1))
-// 				child->pc = 0;
-// 			else
-// 				child->pc++;
-// 		}
-// 	}
-// 	else if (child->run_op == taskmanager->currCycle)
-// 	{
-// 		printf("BAM MOTHER FUCKA\n");
-// 		// ophex = (unsigned char *)(arena + (taskmanager->players)[pID]->processes->pc + 1); //Use this to skip validation of the opcode (not necessary).
-// 		ophex = (unsigned char *)(arena + child->pc);
-// 		opcode = child->opcode;
-// 		printf("OPCODe = \"%s\"\n", op_tab[opcode - 1].op_name);
-// 		if ((int)*ophex == opcode)
-// 		{
-// 			printf("Correct okay bitch\n");
-// 			// ophex++;
-// 			memory_move(child->pc, 1, &ophex, arena);
-// 		}
-// 		else
-// 			printf("O_O :O;Still need to do thisssss\n");
-// 		// child->pc++;
-// 		if (op_tab[opcode - 1].encbool)
-// 		{
-// 			printf("Has an encoding byte!!!!\n");
-// 			printf("{B} Enc = %p\n", ophex);
-// 			if ((size = decode_encoding(ophex, &cmd_input, opcode, child->pc)) == -1)
-// 			{
-// 				printf("Bad encoding byte!\n");
-// 				if (child->pc == (MEM_SIZE - 1))
-// 					child->pc = 0;
-// 				// else
-// 				// 	child->pc++;
-// 				// memory_move((taskmanager->players)[pID]->processes->pc, 1, ophex, arena);
-// 				// (taskmanager->players)[pID]->processes->pc++;
-// 			}
-// 		}
-// 		else
-// 		{
-// 			printf("No encoding byte :O\n");
-// 			if ((size = fetch_input(ophex, &cmd_input, opcode, (taskmanager->players)[pID]->processes->pc)) == -1)
-// 			{
-// 				printf("Bad fetch_input\n");
-// 				if (child->pc == (MEM_SIZE - 1))
-// 					child->pc = 0;
-// 				// else
-// 				// 	child->pc++;
-// 			}
-// 		}
-// 		if (opdispatch[opcode - 1].func(&cmd_input, arena, pID, child) == -1)
-// 		{
-// 			printf("Failed to execute the fckin command wtf ;_;\n");
-// 			// child->pc++;
-// 			size = -1;
-// 		}
-// 		else
-// 		{
-// 			printf("passed the command motherfuckaaaa %d\n", size);
-// 		}
-// 		// execute_command(&cmd_input, arena, pID, child);
-// 		if (size >= 0)
-// 		{
-// 			printf("%llu + %zu > %d\n", child->pc, size, MEM_SIZE - 1);
-// 			if ((child->pc + size) >= (MEM_SIZE - 1))
-// 				child->pc = (size - (MEM_SIZE - child->pc));
-// 			else
-// 				child->pc += size;
-// 		}
-// 		ophex = (unsigned char *)(arena + child->pc);
-// 		printf("next op = %d\n", (int)*ophex); 
-// 		if (op_tab[opcode - 1].trunc)
-// 		{
-// 			printf("Fucking truncation\n");
-// 		}
-// 		child->run_op = 0;
-// 		child->opcode = 0;
-// 		printf("made it\n");
-// 	printf("Printing arena: \n");
-// 	int j;
-// 	unsigned char* byte_array = arena + child->pc;
-
-// 	j = 0;
-// 	while (j < (MEM_SIZE - child->pc))
-// 	{
-// 		printf("%02X",(unsigned)byte_array[j]);
-// 		j++;
-// 	}
-// 		// exit(1);
-// 	}
-// 	return (0);
-// }

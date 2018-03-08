@@ -87,13 +87,13 @@ int	op_and(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 	}
 	*storage = val1;
 	child->carry = 1;
-	printf("val = %d\n", val1);
-	int j;
-	j = 1;
-	while (j <= REG_NUMBER)
-	{
-		printf("R[%d] = %d\n", j, (child->regs)[j++]);
-	}
+	// printf("val = %d\n", val1);
+	// int j;
+	// j = 1;
+	// while (j <= REG_NUMBER)
+	// {
+	// 	printf("R[%d] = %d\n", j, (child->regs)[j++]);
+	// }
 	// printf("Printing arena: \n");
 	// int j;
 	// unsigned char* byte_array = arena;

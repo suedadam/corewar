@@ -14,5 +14,6 @@
 
 int	op_aff(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 {
-	return (-1);
+	write(1, &(child->regs[(cmd_input->args)[0]]), 1);
+	return (0);
 }

@@ -39,6 +39,7 @@ typedef struct		s_op
 
 typedef struct	s_process
 {
+	uint8_t				pID;
 	int					regs[REG_NUMBER + 1]; // (I refuse to do reg - 1 each time).
 	int64_t				pc;
 	uint8_t				carry;
@@ -48,19 +49,13 @@ typedef struct	s_process
 	struct s_process	*next;
 }				t_process;
 
-typedef struct	s_player
-{
-	uint8_t		pID;
-	t_process	*processes;
-}				t_player;
-
 typedef struct	s_taskmanager
 {
 	size_t		currCycle;
 	void		*arena;
 	size_t		lastnbrlive;
 	uint32_t	totalPlayers;
-	t_player	**players;
+	t_process	*processes;
 	int8_t		lastlive; //Default -1;
 	size_t		c_to_die;
 }				t_taskmanager;
@@ -95,7 +90,8 @@ int				copy_memory_fwd_off(void *dest, unsigned char *arena, t_process *child, s
 
 void			*ft_memory_warp(void *arena, uint64_t base, uint64_t seek, uint64_t size,
 								int *frag);
-
+void			*ft_rev_mem_warp(void *arena, int64_t base, int seek, int size,
+								int *frag);
 /*
 ** war/
 */
@@ -103,6 +99,11 @@ void			*ft_memory_warp(void *arena, uint64_t base, uint64_t seek, uint64_t size,
 int				init_war(void *arena);
 int				run_operation(int pID, void *arena, t_process *child);
 int 			HextoDec(unsigned char hex);
+void			raincheck(void *arena, t_process *child);
+
+void 			rev_write_memory(void *arena, unsigned char *src, int offset, int size);
+void			write_memory(void *arena, unsigned char *src, int offset, int size);
+void	test_copy_memory_fwd_off(void *dst, unsigned char *src, int offset, int size);
 
 /*
 ** op/

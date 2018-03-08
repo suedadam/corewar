@@ -20,7 +20,7 @@ static int	size_check(int fd)
 
 	start = lseek(fd, 0, SEEK_CUR);
 	size = lseek(fd, 0, SEEK_END);
-	if ((size - start) > CHAMP_MAX_SIZE) //Cast to off_t?
+	if (((size - start) - sizeof(header_t)) > CHAMP_MAX_SIZE) //Cast to off_t?
 	{
 		printf("too large? %lld > %d\n", size-start, CHAMP_MAX_SIZE);
 		return (-1);
@@ -51,8 +51,9 @@ static int	validate_header(void *player, size_t size)
 
 static int	load_to_mem(int fd, size_t size, void *arena, int playerID)
 {
-	void	*player;
-	size_t	placement;
+	void		*player;
+	size_t		placement;
+	t_process	*child;
 
 	if (!(player = ft_memalloc(size + 1)))
 	{
@@ -82,10 +83,20 @@ static int	load_to_mem(int fd, size_t size, void *arena, int playerID)
 	}
 	ft_memcpy(arena + placement, player, size);
 	free(player - sizeof(header_t));
-	if (!(((taskmanager->players)[playerID])->processes = ft_memalloc(sizeof(t_process))))
-		return (-1);
-	(taskmanager->players)[playerID]->processes->regs[1] = playerID;
-	((taskmanager->players)[playerID])->processes->pc = placement;
+	if (!(child = (taskmanager->processes)))
+	{
+		child = ft_memalloc(sizeof(t_process));
+		taskmanager->processes = child;
+	}
+	else
+	{
+		while (child && child->next)
+			child = child->next;
+		child->next = ft_memalloc(sizeof(t_process));
+	}
+	child->pID = playerID;
+	child->regs[1] = playerID;
+	child->pc = placement;
 	return (0);
 }
 

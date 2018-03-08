@@ -15,44 +15,39 @@
 static int	remove_dead(void)
 {
 	int			player;
-	int			left;
-	int			p_left;
+	t_process	*prevp;
 	t_process	*children;
 	void		*tmp;
 
 	player = 0;
-	left = 0;
-	while ((taskmanager->players)[player])
+	children = taskmanager->processes;
+	while (children)
 	{
-		p_left = 0;
-		children = (taskmanager->players)[player]->processes;
-		while (children)
+		if (!children->die_check)
 		{
-			if (!children->die_check)
+			if (children == taskmanager->processes)
 			{
-				tmp = children;
-				children = children->next;
-				free(tmp);
-				if ((taskmanager->players)[player]->processes == tmp)
-					(taskmanager->players)[player]->processes = children;
+				taskmanager->processes = children->next;
+				free(children);
+				prevp = NULL;
+				children = taskmanager->processes;
 			}
 			else
 			{
-				p_left++;
-				children->die_check = 0;
-				children = children->next;
+				prevp->next = children->next;
+				free(children);
+				children = prevp->next;
 			}
 		}
-		if (p_left)
-			left++;
 		else
 		{
-			free((taskmanager->players)[player]);
-			(taskmanager->players)[player] = NULL;
+			player++;
+			children->die_check = 0;
+			prevp = children;
+			children = children->next;
 		}
-		player++;
 	}
-	return (left);
+	return (player);
 }
 
 /*
@@ -84,28 +79,42 @@ int	init_war(void *arena)
 		}
 		if ((taskmanager->currCycle - taskmanager->lastnbrlive) == NBR_LIVE)
 		{
-			printf("REDUCED!!!\n");
-			if (taskmanager->c_to_die - CYCLE_DELTA >= taskmanager->c_to_die)
-				taskmanager->c_to_die = 0;
-			else
-				taskmanager->c_to_die -= CYCLE_DELTA;
-			taskmanager->lastnbrlive = taskmanager->currCycle;
+			// printf("REDUCED!!!\n");
+			// if (taskmanager->c_to_die - CYCLE_DELTA >= taskmanager->c_to_die)
+			// 	taskmanager->c_to_die = 0;
+			// else
+			// 	taskmanager->c_to_die -= CYCLE_DELTA;
+			// taskmanager->lastnbrlive = taskmanager->currCycle;
 		}
-		if ((taskmanager->players)[i] && (taskmanager->players)[i]->processes)
+		if (!(child = taskmanager->processes))
 		{
-			child = (taskmanager->players)[i]->processes;
-			while (child)
-			{
-				run_operation(i, arena, child);
-				child = child->next;
-			}
-			// printf("playerID = %d\n", (taskmanager->players)[i]->pID);
-			i++;
+			printf("Everyjuan is dead O.o\n");
+			return (0);
 		}
-		else
+		while (child)
+		{
+			// printf("Running operation for player: %d\n", child->pID);
+			run_operation(child->pID, arena, child);
+			child = child->next;
+		}
+		if (!child)
 		{
 			(taskmanager->currCycle)++;
-			i = 0;
+			// if (taskmanager->currCycle > 2829) //1126
+			if (taskmanager->currCycle > 3000) //1126
+			{
+				int j;
+				unsigned char* byte_array = arena;
+
+				j = 0;
+				while (j < MEM_SIZE)
+				// while (j < 1024)
+				{
+					printf("%02x ",(unsigned)byte_array[j]);
+					j++;
+				}
+				exit(1);
+			}
 		}
 	}
 }

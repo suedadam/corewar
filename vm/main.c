@@ -29,16 +29,8 @@ void	*init(int champc, char **champv)
 	taskmanager->totalPlayers = champc;
 	taskmanager->lastlive = -1;
 	i = 0;
-	if (!(taskmanager->players = ft_memalloc(sizeof(t_player *) * (champc + 1))))
-		return (NULL);
 	while (i < champc)
 	{
-		if (!((taskmanager->players)[i] = ft_memalloc(sizeof(t_player))))
-		{
-			free(arena);
-			return (NULL);
-		}
-		(taskmanager->players)[i]->pID = i;
 		printf("[ID: %d] Champ = \"%s\"\n", i, champv[champc - i]);
 		if (read_champion(champv[champc - i], arena, i) == -1)
 		{
@@ -48,7 +40,7 @@ void	*init(int champc, char **champv)
 		}
 		else
 			printf("Read champion \"%s\" into memory\n", champv[champc - i]);
-		printf("[ID: %d] PC = %llu\n", (taskmanager->players)[i]->pID, (taskmanager->players)[i]->processes->pc);
+		printf("[ID: %d] loaded into memory!\n", i);
 		i++;
 	}
 	printf("Printing arena: \n");

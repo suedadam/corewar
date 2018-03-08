@@ -12,6 +12,44 @@
 
 #include "vm.h"
 
+void rev_write_memory(void *arena, unsigned char *src, int offset, int size)
+{
+	unsigned char	*dst;
+
+	offset = (MEM_SIZE + offset - 1) % MEM_SIZE;
+	dst = arena;
+	while (size--)
+	{
+		if (offset > (MEM_SIZE - 1))
+			offset = 0;
+		*(dst + offset++) = *src++;
+	}
+}
+
+void	write_memory(void *arena, unsigned char *src, int offset, int size)
+{
+	if (offset > (MEM_SIZE - 1))
+		offset = offset % MEM_SIZE;
+	while (size--)
+	{
+		if (offset > (MEM_SIZE - 1))
+			offset = 0;
+		*((unsigned char *)arena + offset++) = *src++;
+	}
+}
+
+void	test_copy_memory_fwd_off(void *dst, unsigned char *src, int offset, int size)
+{
+	if (offset > (MEM_SIZE - 1))
+		offset = offset % MEM_SIZE;
+	while (size--)
+	{
+		if (offset > (MEM_SIZE - 1))
+			offset = 0;
+		*((unsigned char *)dst++) = *(src + offset++);  
+	}
+}
+
 int	copy_memory_fwd_off(void *dest, unsigned char *arena, t_process *child, size_t size, int offset)
 {
 	int		frag;
@@ -43,15 +81,15 @@ void	*ft_memory_warp(void *arena, uint64_t base, uint64_t seek, uint64_t size,
 {
 	void	*new;
 
-	if (base + seek >= MEM_SIZE)
+	if (base + seek >= (MEM_SIZE - 1))
 	{
-		new = (arena + (seek - ((uint64_t)MEM_SIZE - base)));
+		new = (arena + (seek - ((uint64_t)(MEM_SIZE - 1) - base)));
 		return (new);
 	}
 	else
 	{
-		if (base + seek + size >= MEM_SIZE)
-			*frag = ((base + seek + size) % MEM_SIZE);
+		if (base + seek + size >= (MEM_SIZE - 1))
+			*frag = ((base + seek + size) % (MEM_SIZE - 1));
 		new = (arena + base + seek);
 		return (new);
 	}
@@ -70,9 +108,13 @@ void	*ft_rev_mem_warp(void *arena, int64_t base, int seek, int size,
 	}
 	else
 	{
-		new = arena + (MEM_SIZE + (base + seek));
-		if ((tmp = (MEM_SIZE + (base + seek) + size) % MEM_SIZE))
-			*frag = size - tmp;
+		new = arena + ((MEM_SIZE - 1) + (base + seek));
+		if (((MEM_SIZE - 1) + (base + seek)) >= (MEM_SIZE - 1))
+		// if ((tmp = (MEM_SIZE + (base + seek) + size) % MEM_SIZE))
+		{
+			printf("Size = %d tmp = %d\n", size, tmp);
+			*frag = (MEM_SIZE - 1) - ((MEM_SIZE - 1) + (base + seek));
+		}
 	}
 	return (new);
 }
