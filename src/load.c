@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 18:57:42 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/07 12:00:27 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/07 18:02:12 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static char		*strip_comments(char *arg)
 	{
 		if (comment)
 			arg[i] = '\0';
-		else if (arg[i] == '#')
+		else if (arg[i] == COMMENT_CHAR)
 			comment = TRUE;
 		else
 			++i;

@@ -4,43 +4,24 @@
 # SETTINGS                                                                     #
 ################################################################################
 
-NAME = libft.a
+ASM = asm
+COREWAR = corewar
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -O3 -funroll-loops -march=native -pipe
-INC = -I inc
+CFLAGS = -Wall -Werror -Wextra
+INC = -I inc -I libft/inc
+LIBFT = libft/libft.a
 SRC_DIR = src
-SRC = \
-	char_print\
-	char_util\
-	float_print\
-	float_util\
-	ft_isdigit\
-	ft_islower\
-	ft_isupper\
-	ft_memalloc\
-	ft_memcpy\
-	ft_memdel\
-	ft_memmove\
-	ft_memset\
-	ft_printf\
-	ft_printf_parser\
-	ft_stpcpy\
-	ft_strchr\
-	ft_strcmp\
-	ft_strdup\
-	ft_strlen\
-	ft_strnlen\
-	ft_strsub\
-	ft_strupcase\
-	ft_tolower\
-	ft_toupper\
-	get_next_line\
-	int_handlers\
-	int_handlers_deprecated\
-	int_print\
-	int_util
+ASM_SRC = \
+	asm\
+	fsm\
+	fsm_header\
+	load\
+	token\
+	util
+CORE_SRC = \
 OBJ_DIR = $(SRC_DIR)/obj
-OBJ = $(patsubst %, $(OBJ_DIR)/%.o, $(SRC))
+CORE_OBJ = $(patsubst %, $(OBJ_DIR)/%.o, $(CORE_SRC))
+ASM_OBJ = $(patsubst %, $(OBJ_DIR)/%.o, $(ASM_SRC))
 
 ################################################################################
 # COLORS                                                                       #
@@ -49,26 +30,43 @@ OBJ = $(patsubst %, $(OBJ_DIR)/%.o, $(SRC))
 NC = \033[0m
 GREEN = \033[1;32m
 RED = \033[1;31m
+YELLOW = \033[1;33m
 
 ################################################################################
 # RULES                                                                        #
 ################################################################################
 
-all: $(NAME)
+all: $(ASM) $(COREWAR)
 
-$(NAME): $(OBJ)
-	@ar -rcs $@ $(OBJ)
+$(ASM): $(LIBFT) $(ASM_OBJ)
+	@printf "$(YELLOW)%-35s$(NC)" "Building $@... "
+	@$(CC) $(CFLAGS) $(LIBFT) $(ASM_OBJ) -o $@
 	@echo "$(GREEN)DONE$(NC)"
+
+$(COREWAR): $(LIBFT) $(CORE_OBJ)
+	@printf "$(YELLOW)%-35s$(NC)" "Building $@... "
+	@$(CC) $(CFLAGS) $(LIBFT) $(CORE_OBJ) -o $@
+	@echo "$(GREEN)DONE$(NC)"
+
+$(LIBFT):
+	@printf "$(YELLOW)%-35s$(NC)" "Building $@... "
+	@make -C libft
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
+	@echo " > Compiling $<..."
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
 	@rm -rf $(OBJ_DIR)
+	@make -C libft clean
+	@echo "$(RED)Object files removed$(NC)"
 
 fclean: clean
-	@rm -f $(NAME)
-	@echo "$(RED)$(NAME) removed$(NC)"
+	@make -C libft fclean
+	@rm -f $(ASM)
+	@echo "$(RED)$(ASM) removed"
+	@rm -f $(COREWAR)
+	@echo "$(COREWAR) removed$(NC)"
 
 re: fclean all

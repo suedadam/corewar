@@ -6,77 +6,111 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 18:07:31 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/05 23:10:46 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 00:32:41 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
 #include "core.h"
+#include "ft_printf.h"
 
 /*
 ** STATES             EVENTS
 ** ------             ------
-** BUILD_DLABEL,      EV_COLON,
-** BUILD_SYM,         EV_COMMENT,
-** CAT_LABEL,         EV_DIRECT,
-** CAT_OP,            EV_ALPHA,
-** ERROR,             EV_NULL_TERM,
-** QUIT,              EV_NUMBER,
-** START              EV_PERIOD,
-**                    EV_REGISTER,
-**                    EV_WHITESP
+** BUILD_HEADER,      EV_LABEL,
+** BUILD_LABEL,       EV_OP,
+** BUILD_OP,          EV_PERIOD
+** QUIT,
+** START
 */
 
-t_state (*g_trans[NSTATES][NEVENTS])(t_parse *parse) = {
-	{
-		
+t_state			(*g_trans[NSTATES][NEVENTS])(t_parse *parse) = {
+	{ // BUILD_HEADER
+		NULL,
+		NULL,
+		NULL
+	},
+	{ // BUILD_LABEL
+		NULL,
+		NULL,
+		NULL
+	},
+	{  // BUILD_OP
+		NULL,
+		NULL,
+		NULL
+	},
+	{ // QUIT
+		NULL,
+		NULL,
+		NULL
+	},
+	{ // START
+		fsm_syntax_error,
+		fsm_syntax_error,
+		fsm_build_header
 	}
-}
+};
 
-char	*g_errmsg[NSTATES][NEVENTS] = {
-	{
+char			*g_symnames[NSYMBOLS] = {
+	"COMMAND_NAME",
+	"COMMAND_COMMENT",
+	"DIRECT_PARAM",
+	"DIRECT_LABEL",
+	"INDIRECT_PARAM",
+	"INDIRECT_LABEL",
+	"LABEL",
+	"INSTRUCTION",
+	"REGISTER",
+	"UNDEFINED"
+};
 
-	}
-}
-
-t_state			fsm_error(t_parse *parse)
+static t_event	get_event(t_token *tok)
 {
-	UNUSED(parse);
-	FATAL_ERROR(parse->err_msg);
-	return (QUIT);
+	char	*data;
+
+	data = tok->data;
+	if (data[tok->len - 1] == LABEL_CHAR)
+	{
+		tok->type = SYM_LABEL;
+		return (EV_LABEL);
+	}
+	else if (!ft_strcmp(data, NAME_CMD_STRING))
+	{
+		tok->type = SYM_COMMAND_NAME;
+		return (EV_PERIOD);
+	}
+	else if (!ft_strcmp(data, COMMENT_CMD_STRING))
+	{
+		tok->type = SYM_COMMAND_COMMENT;
+		return (EV_PERIOD);
+	}
+	else
+	{
+		tok->type = SYM_OP;
+		return (EV_OP);
+	}
 }
 
 void			fsm_run(t_parse *parse)
 {
-	t_state	state;
-	t_event	event;
-
-	state = START;
-	while (state != QUIT)
+	parse->state = START;
+	parse->curr = parse->tokens;
+	while (parse->curr)
 	{
-		event = get_event(calc->base, *calc->pos);
-		state = g_trans[state][event](calc);
-		calc->pos++;
+		parse->event = get_event(parse->curr);
+		parse->state = g_trans[parse->state][parse->event](parse);
+		parse->curr = parse->curr->next;
 	}
 }
 
-static t_event	get_event(char c)
+t_state			fsm_syntax_error(t_parse *parse)
 {
-	if (!c)
-		return (EV_NULL_TERM);
-	else if (c == 'r')
-		return (EV_REGISTER);
-	else if (c == ':')
-		return (EV_COLON);
-	else if (c == '%')
-		return (EV_DIRECT);
-	else if (c == ' ' || c == '\n' || c == '\t')
-		return (EV_WHITESP);
-	else if (c == '.')
-		return (EV_PERIOD);
-	else if (c == '#')
-		return (EV_COMMENT);
-	else if ((unsigned int)(c - 'a') < 26)
-		return (EV_ALPHA);
-	else if ((unsigned int)(c - '0') < 10)
-		return (EV_NUMBER);
+	t_token	*curr;
+
+	curr = parse->curr;
+	ft_printf("Syntax error at token [TOKEN][%03d:%03d] %s \"%s\"\n",
+		curr->line_num, curr->col_num, g_symnames[curr->type], curr->data);
+	exit(1);
+	return (QUIT);
 }
