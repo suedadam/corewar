@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 06:13:12 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 07:53:30 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define CORE_H
 # include "libft.h"
 # include <errno.h>
-# include <stdio.h> // REMOVE BEFORE SUBMISSION
 
 # define FATAL_ERROR(msg)	fatal_error(msg)
 # define DEFAULT_ERROR		FATAL_ERROR(strerror(errno))
@@ -29,6 +28,10 @@
 # define LABEL_CHARS		"abcdefghijklmnopqrstuvwxyz_0123456789"
 # define NAME_CMD_STRING	".name"
 # define COMMENT_CMD_STRING	".comment"
+# define T_REG				1
+# define T_DIR				2
+# define T_IND				4
+# define T_LAB				8
 
 typedef enum		e_event
 {
@@ -86,9 +89,10 @@ typedef enum		e_optype
 typedef struct		s_op
 {
 	char		*name;
-	int			args;
-	int			id;
 	t_optype	type;
+	int			id;
+	int			num_args;
+	int			allowed[3];
 	t_bool		coding;
 	t_bool		truncate;
 }					t_op;

@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:44:41 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 06:36:47 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 07:54:34 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,29 @@
 #include "ft_printf.h"
 
 const t_op	g_ops[] = {
-	{ "live", 1, 1, OP_LIVE, FALSE, FALSE },
-	{ "ld", 2, 2, OP_LD, TRUE, FALSE },
-	{ "st", 2, 3, OP_ST, TRUE, FALSE },
-	{ "add", 3, 4, OP_ADD, TRUE, FALSE },
-	{ "sub", 3, 5, OP_SUB, TRUE, FALSE },
-	{ "and", 3, 6, OP_AND, TRUE, FALSE },
-	{ "or", 3, 7, OP_OR, TRUE, FALSE },
-	{ "xor", 3, 8, OP_XOR, TRUE, FALSE },
-	{ "zjmp", 1, 9, OP_ZJMP, FALSE, TRUE },
-	{ "ldi", 3, 10, OP_LDI, TRUE, TRUE },
-	{ "sti", 3, 11, OP_STI, TRUE, TRUE },
-	{ "fork", 1, 12, OP_FORK, FALSE, TRUE },
-	{ "lld", 2, 13, OP_LLD, TRUE, FALSE },
-	{ "lldi", 3, 14, OP_LLDI, TRUE, TRUE },
-	{ "lfork", 1, 15, OP_LFORK, FALSE, TRUE },
-	{ "aff", 1, 16, OP_AFF, TRUE, FALSE },
-	{ 0, 0, 0, 0, FALSE, FALSE }
+	{ "live", OP_LIVE, 1, 1, { T_DIR }, FALSE, FALSE },
+	{ "ld", OP_LD, 2, 2, { T_DIR | T_IND, T_REG }, TRUE, FALSE },
+	{ "st", OP_ST, 3, 2, { T_REG, T_IND | T_REG }, TRUE, FALSE },
+	{ "add", OP_ADD, 4, 3, { T_REG, T_REG, T_REG }, TRUE, FALSE },
+	{ "sub", OP_SUB, 5, 3, { T_REG, T_REG, T_REG }, TRUE, FALSE },
+	{ "and", OP_AND, 6, 3,
+		{ T_REG | T_DIR | T_IND, T_REG | T_IND | T_DIR, T_REG }, TRUE, FALSE },
+	{ "or", OP_OR, 7, 3,
+		{ T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG }, TRUE, FALSE },
+	{ "xor", OP_XOR, 8, 3,
+		{ T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG }, TRUE, FALSE },
+	{ "zjmp", OP_ZJMP, 9, 1, { T_DIR }, FALSE, TRUE },
+	{ "ldi", OP_LDI, 10, 3, { T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG },
+		TRUE, TRUE },
+	{ "sti", OP_STI, 11, 3, { T_REG, T_REG | T_DIR | T_IND, T_DIR | T_REG },
+		TRUE, TRUE },
+	{ "fork", OP_FORK, 12, 1, { T_DIR }, FALSE, TRUE },
+	{ "lld", OP_LLD, 13, 2, { T_DIR | T_IND, T_REG }, TRUE, FALSE },
+	{ "lldi", OP_LLDI, 14, 3, { T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG },
+		TRUE, TRUE },
+	{ "lfork", OP_LFORK, 15, 1, { T_DIR }, FALSE, TRUE },
+	{ "aff", OP_AFF, 16, 1, { T_REG }, TRUE, FALSE },
+	{ 0, 0, 0, 0, { 0 }, FALSE, FALSE }
 };
 
 static void	invalid_op(t_token *tok)
@@ -45,6 +51,7 @@ static void	invalid_op(t_token *tok)
 t_state		fsm_build_op(t_parse *parse)
 {
 	t_token	*tok;
+	int		arg;
 	int		i;
 
 	i = 0;
@@ -52,10 +59,14 @@ t_state		fsm_build_op(t_parse *parse)
 	while (g_ops[i].name)
 	{
 		if (!ft_strcmp(tok->data, g_ops[i].name))
-			break;
+			break ;
 		i++;
 	}
 	if (!g_ops[i].name)
 		invalid_op(tok);
+	tok->data = (char *)&g_ops[i].id;
+	arg = 0;
+	while (arg++ < g_ops[i].num_args)
+		parse->curr = parse->curr->next;
 	return (BUILD_OP);
 }

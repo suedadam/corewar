@@ -6,13 +6,14 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 20:50:57 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 04:37:11 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 07:54:11 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include "core.h"
+#include "ft_printf.h"
 
 static void	print_usage(char *prog_name)
 {
@@ -26,16 +27,16 @@ static void	print_debug(t_parse *parse)
 {
 	t_token	*tokens;
 
-	printf("Name: %s\nDesc: %s\n", parse->header.name, parse->header.desc);
-	printf("-----------------------------------\n");
+	ft_printf("Name: %s\nDesc: %s\n", parse->header.name, parse->header.desc);
+	ft_printf("-----------------------------------\n");
 	tokens = parse->tokens;
 	while (tokens)
 	{
-		printf("%02d:%02d (%02d) %s\n", tokens->line_num, tokens->col_num,
+		ft_printf("%02d:%02d (%02d) %s\n", tokens->line_num, tokens->col_num,
 			tokens->len, tokens->data);
 		tokens = tokens->next;
 	}
-	printf("-----------------------------------\n");
+	ft_printf("-----------------------------------\n");
 }
 
 static void	init_parse(t_parse *parse, char *file)
