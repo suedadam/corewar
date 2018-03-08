@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:44:41 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 07:54:34 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 08:20:32 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "core.h"
 #include "ft_printf.h"
 
-const t_op	g_ops[] = {
+const t_op		g_ops[] = {
 	{ "live", OP_LIVE, 1, 1, { T_DIR }, FALSE, FALSE },
 	{ "ld", OP_LD, 2, 2, { T_DIR | T_IND, T_REG }, TRUE, FALSE },
 	{ "st", OP_ST, 3, 2, { T_REG, T_IND | T_REG }, TRUE, FALSE },
@@ -40,7 +40,7 @@ const t_op	g_ops[] = {
 	{ 0, 0, 0, 0, { 0 }, FALSE, FALSE }
 };
 
-static void	invalid_op(t_token *tok)
+static t_token	*invalid_op(t_token *tok)
 {
 	ft_printf("%s[%03d:%03d] INSTRUCTION \"%s\"\n",
 		"Invalid instruction at token [TOKEN]",
@@ -48,25 +48,29 @@ static void	invalid_op(t_token *tok)
 	exit(1);
 }
 
-t_state		fsm_build_op(t_parse *parse)
+static t_token	*validate_params(t_token *tok, const t_op *op)
 {
-	t_token	*tok;
-	int		arg;
-	int		i;
+	UNUSED(tok);
+	UNUSED(op);
+	return (tok);
+}
 
-	i = 0;
+t_state			fsm_build_op(t_parse *parse)
+{
+	t_token		*tok;
+	const t_op	*op;
+
+	op = &g_ops[0];
 	tok = parse->curr;
-	while (g_ops[i].name)
+	while (op->name)
 	{
-		if (!ft_strcmp(tok->data, g_ops[i].name))
+		if (!ft_strcmp(tok->data, op->name))
 			break ;
-		i++;
+		++op;
 	}
-	if (!g_ops[i].name)
+	if (!op->name)
 		invalid_op(tok);
-	tok->data = (char *)&g_ops[i].id;
-	arg = 0;
-	while (arg++ < g_ops[i].num_args)
-		parse->curr = parse->curr->next;
+	tok->data = (char *)&op->id;
+	parse->curr = validate_params(tok, op);
 	return (BUILD_OP);
 }
