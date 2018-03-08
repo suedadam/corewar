@@ -25,6 +25,7 @@ static int	remove_dead(void)
 	{
 		if (!children->die_check)
 		{
+			printf("(%d) {KILLED} %d\n", taskmanager->currCycle, children->pc);
 			if (children == taskmanager->processes)
 			{
 				taskmanager->processes = children->next;
@@ -115,12 +116,12 @@ int	init_war(void *arena)
 				{
 					printf("%d players left\n", p_left);
 				}
-				if (taskmanager->currCycle == 21806)
-				{
-					printf("%d >= %d\n", taskmanager->lastnbrlive, NBR_LIVE);
-					printf("penis\n");
-					exit(1);
-				}
+				// if (taskmanager->currCycle == 21806)
+				// {
+				// 	printf("%d >= %d\n", taskmanager->lastnbrlive, NBR_LIVE);
+				// 	printf("penis\n");
+				// 	exit(1);
+				// }
 				if (taskmanager->lastnbrlive >= NBR_LIVE || (taskmanager->c_checks + 1) == MAX_CHECKS)
 				{
 					printf("{GCCF} (%d;%d) %d -> %d\n", taskmanager->currCycle, taskmanager->c_diecycles, taskmanager->c_to_die, taskmanager->c_to_die - CYCLE_DELTA);
@@ -133,23 +134,31 @@ int	init_war(void *arena)
 				taskmanager->c_diecycles = 0;
 			}
 			// if (!(taskmanager->lastnbrlive % NBR_LIVE) && taskmanager->lastnbrlive > 0)
+			t_process *PIDList;
+			PIDList = taskmanager->processes;
+			while (PIDList)
+			{
+				printf("(%d) {PIDList} UID: %d PID: %d PC: %d Wait: %d\n", taskmanager->currCycle, PIDList->randID, PIDList->pID, PIDList->pc, PIDList->run_op);
+				PIDList = PIDList->next;
+			}
 			(taskmanager->currCycle)++;
 			(taskmanager->c_diecycles)++;
 			// if (taskmanager->currCycle > 2829) //1126
-			// if (taskmanager->currCycle > 60000) //1126
-			// {
-			// 	int j;
-			// 	unsigned char* byte_array = arena;
+			// if (taskmanager->currCycle > 2855 + 1) //1126
+			if (taskmanager->currCycle > 3000 + 1) //1126
+			{
+				int j;
+				unsigned char* byte_array = arena;
 
-			// 	j = 0;
-			// 	while (j < MEM_SIZE)
-			// 	// while (j < 1024)
-			// 	{
-			// 		printf("%02x ",(unsigned)byte_array[j]);
-			// 		j++;
-			// 	}
-			// 	exit(1);
-			// }
+				j = 0;
+				while (j < MEM_SIZE)
+				// while (j < 1024)
+				{
+					printf("%02x ",(unsigned)byte_array[j]);
+					j++;
+				}
+				exit(1);
+			}
 		}
 	}
 }

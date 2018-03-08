@@ -28,7 +28,7 @@ int	op_sti(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 	int				src;
 	unsigned char	*dest;
 
-	printf("{STI} %p\n", &src);
+	printf("{STI} %p \n", &src);
 	j = 0;
 	val = 0;
 	byte = cmd_input->encbyte;
@@ -40,11 +40,11 @@ int	op_sti(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 			if (op_tab[child->opcode - 1].encbool)
 			{
 				val += ((short)((cmd_input->args)[j]));
-				printf("{TRUNC} IND = %d\n", (short)((cmd_input->args)[j]));
+				// printf("{TRUNC} IND = %d\n", (short)((cmd_input->args)[j]));
 			}
 			else
 			{
-				printf("DIR = %d\n", (cmd_input->args)[j]);
+				// printf("DIR = %d\n", (cmd_input->args)[j]);
 				val += (cmd_input->args)[j];				
 			}
 
@@ -53,13 +53,14 @@ int	op_sti(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 		else if (tmp == (unsigned char)SHIFT_T_IND)
 		{
 			val2 = 0;
-			copy_memory_fwd_off(&val2, arena, child, F_IND_SIZE, (cmd_input->args)[j]);
+			copy_memory_fwd_off(&val2, arena, (child->pc + (cmd_input->args)[j] % IDX_MOD), F_IND_SIZE);
+			// copy_memory_fwd_off(&val2, arena, child, F_IND_SIZE, (cmd_input->args)[j]);
 			val += (short)val2;
-			printf("IND = %d\n", val2);
+			// printf("IND = %d\n", val2);
 		}
 		else
 		{
-			printf("REG\n");
+			// printf("REG\n");
 			if (!j)
 				src = (int)child->regs[(cmd_input->args)[j]];
 			else
@@ -68,12 +69,13 @@ int	op_sti(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 		j++;
 		byte = byte << 2;
 	}
-	printf("Src  - %d (%02x); offset = %d (%d)\n", src, src, val, child->pc + val % IDX_MOD);
+	// printf("Src  - %d (%02x); offset = %d (%d)\n", src, src, val, child->pc + val % IDX_MOD);
 	val2 = 0;
 	if ((child->pc + val % IDX_MOD) < 0)
 	{
-		printf("so its not negative? %d %x %p\n", src, src, &src);
+		// printf("so its not negative? %d %x %p\n", src, src, &src);
 		src = ntohl(src);
+		printf("(%d) {STI} UID: %d ---  %d + %d mod %d = %d\n", taskmanager->currCycle, child->randID, child->pc, val, IDX_MOD, child->pc + val % IDX_MOD);
 		rev_write_memory(arena, (unsigned char *)&src, child->pc + val % IDX_MOD, REG_SIZE);
 		// dest = ft_rev_mem_warp(arena, child->pc, val, REG_SIZE, &val2);
 		// printf("%p (%p vs %p) (%d)\n", arena + child->pc, arena, dest, val2);
@@ -90,7 +92,7 @@ int	op_sti(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 	else
 	{
 		src = ntohl(src);
-		printf("%d + %d mod %d = %d\n", child->pc, val, IDX_MOD, child->pc + val % IDX_MOD);
+		printf("(%d) {STI} UID: %d ---  %d + %d mod %d = %d\n", taskmanager->currCycle, child->randID, child->pc, val, IDX_MOD, child->pc + val % IDX_MOD);
 		write_memory(arena, (unsigned char *)&src, child->pc + val % IDX_MOD, REG_SIZE);
 		// dest = ft_memory_warp(arena, child->pc, val, REG_SIZE, &val2);
 		// if (val2)

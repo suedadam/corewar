@@ -18,6 +18,8 @@ int	op_live(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 	t_process	*lostkid;
 
 	p_input = cmd_input->args[0];
+	// printf("(%d) {STI} %d + %d mod %d = %d\n", taskmanager->currCycle, child->pc, val, IDX_MOD, child->pc + val % IDX_MOD);
+	printf("(%d) {LIVE} UID: %d --- %d\n", taskmanager->currCycle, child->randID, p_input);
 	printf("Player = %d\n", p_input);
 	child->die_check = 1;
 	if (p_input <= taskmanager->totalPlayers)

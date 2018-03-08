@@ -12,6 +12,10 @@
 
 #include "vm.h"
 
+//lol remove me
+#include <time.h>
+#include <stdlib.h>
+//EO-Remove me.
 t_taskmanager	*taskmanager;
 
 void	*init(int champc, char **champv)
@@ -62,6 +66,7 @@ int	main(int argc, char *argv[])
 {
 	void	*arena;
 
+	srand(time(NULL));
 	//Make a library parse flags func.
 	if (argc < 2)
 	{

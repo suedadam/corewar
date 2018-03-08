@@ -12,8 +12,14 @@
 
 #include "vm.h"
 
+//Remove me
+#include <time.h>
+#include <stdlib.h>
+//EO-Remove me.
+
 int	op_fork(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 {
+	static int 	penis = 1;
 	t_process	*new;
 	short 		negswap;
 
@@ -22,6 +28,7 @@ int	op_fork(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 		printf("Memory issue ;c\n");
 		return (-1);
 	}
+	printf("(%d) {FORK}\n", taskmanager->currCycle);
 	memcpy(new, child, sizeof(t_process));
 	if ((short)((cmd_input->args)[0]) < 0)
 	{
@@ -43,6 +50,8 @@ int	op_fork(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 		else
 			new->pc = child->pc + (short)((cmd_input->args)[0]) % IDX_MOD;
 	}
+	new->randID = penis++;
+	printf("(%d) Created UID: %d\n", taskmanager->currCycle, new->randID);
 	new->pID = child->pID;
 	new->next = taskmanager->processes;
 	taskmanager->processes = new;
@@ -55,6 +64,6 @@ int	op_fork(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 	}
 	printf("\n======\n");
 	// exit(5);
-	raincheck(arena, new);
+	raincheck(arena, new, 1);
 	return (0);
 }

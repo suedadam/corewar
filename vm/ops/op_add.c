@@ -14,6 +14,7 @@
 
 int	op_add(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 {
+	printf("(%d) {ADD}\n", taskmanager->currCycle);
 	child->regs[(cmd_input->args)[2]] = child->regs[(cmd_input->args)[0]] + child->regs[(cmd_input->args)[1]];
 	if (child->regs[(cmd_input->args)[2]])
 		child->carry = 1;

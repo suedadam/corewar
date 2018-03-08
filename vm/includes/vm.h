@@ -40,6 +40,7 @@ typedef struct		s_op
 typedef struct	s_process
 {
 	uint8_t				pID;
+	int					randID; //Remove me.
 	int					regs[REG_NUMBER + 1]; // (I refuse to do reg - 1 each time).
 	int64_t				pc;
 	uint8_t				carry;
@@ -88,12 +89,9 @@ int				add_scheduler(uint8_t opcode);
 /*
 ** utils.c
 */
-int				copy_memory_fwd_off(void *dest, unsigned char *arena, t_process *child, size_t size, int offset);
 
-void			*ft_memory_warp(void *arena, uint64_t base, uint64_t seek, uint64_t size,
-								int *frag);
-void			*ft_rev_mem_warp(void *arena, int64_t base, int seek, int size,
-								int *frag);
+void			copy_memory_fwd_off(void *dst, unsigned char *src, int offset, int size);
+
 /*
 ** war/
 */
@@ -101,12 +99,10 @@ void			*ft_rev_mem_warp(void *arena, int64_t base, int seek, int size,
 int				init_war(void *arena);
 int				run_operation(int pID, void *arena, t_process *child);
 int 			HextoDec(unsigned char hex);
-void			raincheck(void *arena, t_process *child);
+void	raincheck(void *arena, t_process *child, uint8_t penis);
 
 void 			rev_write_memory(void *arena, unsigned char *src, int offset, int size);
 void			write_memory(void *arena, unsigned char *src, int offset, int size);
-void	test_copy_memory_fwd_off(void *dst, unsigned char *src, int offset, int size);
-
 /*
 ** op/
 */

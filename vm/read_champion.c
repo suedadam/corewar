@@ -94,8 +94,10 @@ static int	load_to_mem(int fd, size_t size, void *arena, int playerID)
 			child = child->next;
 		child->next = ft_memalloc(sizeof(t_process));
 	}
-	child->pID = playerID;
-	child->regs[1] = playerID;
+	child->pID = -1;
+	child->regs[1] = -1;
+	// child->pID = playerID;
+	// child->regs[1] = playerID;
 	child->pc = placement;
 	return (0);
 }
