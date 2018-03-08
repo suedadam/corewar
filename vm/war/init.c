@@ -65,27 +65,21 @@ int	init_war(void *arena)
 	i = 0;
 	while (1)
 	{
-		if (!(taskmanager->currCycle % taskmanager->c_to_die) && taskmanager->currCycle > 0)
-		{
-			if ((p_left = remove_dead()) <= 0)
-			{
-				printf("GAME OVER BITCHES player %d won!\n", taskmanager->lastlive);
-				return (0);
-			}
-			else
-			{
-				printf("%d players left\n", p_left);
-			}
-		}
-		if ((taskmanager->currCycle - taskmanager->lastnbrlive) == NBR_LIVE)
-		{
-			// printf("REDUCED!!!\n");
-			// if (taskmanager->c_to_die - CYCLE_DELTA >= taskmanager->c_to_die)
-			// 	taskmanager->c_to_die = 0;
-			// else
-			// 	taskmanager->c_to_die -= CYCLE_DELTA;
-			// taskmanager->lastnbrlive = taskmanager->currCycle;
-		}
+		// if (!taskmanager->c_to_die)
+		// {
+		// 	printf("\nCycle %d done\n", taskmanager->currCycle);
+		// 		int j;
+		// 		unsigned char* byte_array = arena;
+
+		// 		j = 0;
+		// 		while (j < MEM_SIZE)
+		// 		// while (j < 1024)
+		// 		{
+		// 			printf("%02x ",(unsigned)byte_array[j]);
+		// 			j++;
+		// 		}
+		// 	exit(2);
+		// }
 		if (!(child = taskmanager->processes))
 		{
 			printf("Everyjuan is dead O.o\n");
@@ -99,22 +93,63 @@ int	init_war(void *arena)
 		}
 		if (!child)
 		{
-			(taskmanager->currCycle)++;
-			// if (taskmanager->currCycle > 2829) //1126
-			if (taskmanager->currCycle > 3000) //1126
+			if (!(taskmanager->c_diecycles % taskmanager->c_to_die) && taskmanager->c_diecycles > 0)
+			// if (taskmanager->c_to_die <= 0 || (!(taskmanager->currCycle % taskmanager->c_to_die) && taskmanager->currCycle > 0))
 			{
-				int j;
-				unsigned char* byte_array = arena;
-
-				j = 0;
-				while (j < MEM_SIZE)
-				// while (j < 1024)
+				if ((p_left = remove_dead()) <= 0)
 				{
-					printf("%02x ",(unsigned)byte_array[j]);
-					j++;
+					printf("GAME OVER BITCHES player %d won!\n", taskmanager->lastlive);
+					int j;
+					unsigned char* byte_array = arena;
+
+					j = 0;
+					while (j < MEM_SIZE)
+					// while (j < 1024)
+					{
+						printf("%02x ",(unsigned)byte_array[j]);
+						j++;
+					}
+					return (0);
 				}
-				exit(1);
+				else
+				{
+					printf("%d players left\n", p_left);
+				}
+				if (taskmanager->currCycle == 21806)
+				{
+					printf("%d >= %d\n", taskmanager->lastnbrlive, NBR_LIVE);
+					printf("penis\n");
+					exit(1);
+				}
+				if (taskmanager->lastnbrlive >= NBR_LIVE || (taskmanager->c_checks + 1) == MAX_CHECKS)
+				{
+					printf("{GCCF} (%d;%d) %d -> %d\n", taskmanager->currCycle, taskmanager->c_diecycles, taskmanager->c_to_die, taskmanager->c_to_die - CYCLE_DELTA);
+					taskmanager->c_to_die -= CYCLE_DELTA;
+					taskmanager->lastnbrlive = 0;
+					taskmanager->c_checks = 0;
+				}
+				else
+					taskmanager->c_checks++;
+				taskmanager->c_diecycles = 0;
 			}
+			// if (!(taskmanager->lastnbrlive % NBR_LIVE) && taskmanager->lastnbrlive > 0)
+			(taskmanager->currCycle)++;
+			(taskmanager->c_diecycles)++;
+			// if (taskmanager->currCycle > 2829) //1126
+			// if (taskmanager->currCycle > 60000) //1126
+			// {
+			// 	int j;
+			// 	unsigned char* byte_array = arena;
+
+			// 	j = 0;
+			// 	while (j < MEM_SIZE)
+			// 	// while (j < 1024)
+			// 	{
+			// 		printf("%02x ",(unsigned)byte_array[j]);
+			// 		j++;
+			// 	}
+			// 	exit(1);
+			// }
 		}
 	}
 }

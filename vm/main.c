@@ -28,6 +28,7 @@ void	*init(int champc, char **champv)
 	taskmanager->c_to_die = CYCLE_TO_DIE;
 	taskmanager->totalPlayers = champc;
 	taskmanager->lastlive = -1;
+	taskmanager->lastnbrlive = 0;
 	i = 0;
 	while (i < champc)
 	{

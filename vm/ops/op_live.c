@@ -37,6 +37,7 @@ int	op_live(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 			printf("Player is dead\n");
 		else
 			taskmanager->lastlive = p_input;
+		taskmanager->lastnbrlive++;
 		// if (!((taskmanager->players)[p_input]))
 			// printf("Player is dead!\n");
 		// else

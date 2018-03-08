@@ -57,7 +57,9 @@ typedef struct	s_taskmanager
 	uint32_t	totalPlayers;
 	t_process	*processes;
 	int8_t		lastlive; //Default -1;
-	size_t		c_to_die;
+	int			c_to_die;
+	int			c_diecycles;
+	int			c_checks;	
 }				t_taskmanager;
 
 typedef struct	s_operation

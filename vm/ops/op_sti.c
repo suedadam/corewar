@@ -90,6 +90,7 @@ int	op_sti(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
 	else
 	{
 		src = ntohl(src);
+		printf("%d + %d mod %d = %d\n", child->pc, val, IDX_MOD, child->pc + val % IDX_MOD);
 		write_memory(arena, (unsigned char *)&src, child->pc + val % IDX_MOD, REG_SIZE);
 		// dest = ft_memory_warp(arena, child->pc, val, REG_SIZE, &val2);
 		// if (val2)

@@ -14,22 +14,18 @@
 
 void rev_write_memory(void *arena, unsigned char *src, int offset, int size)
 {
-	unsigned char	*dst;
-
-	offset = (MEM_SIZE + offset - 1) % MEM_SIZE;
-	dst = arena;
+	offset = (offset + MEM_SIZE) % MEM_SIZE;
 	while (size--)
 	{
 		if (offset > (MEM_SIZE - 1))
 			offset = 0;
-		*(dst + offset++) = *src++;
+		*((unsigned char *)arena + offset++) = *src++;
 	}
 }
 
 void	write_memory(void *arena, unsigned char *src, int offset, int size)
 {
-	if (offset > (MEM_SIZE - 1))
-		offset = offset % MEM_SIZE;
+	offset = offset % MEM_SIZE;
 	while (size--)
 	{
 		if (offset > (MEM_SIZE - 1))
@@ -40,8 +36,7 @@ void	write_memory(void *arena, unsigned char *src, int offset, int size)
 
 void	test_copy_memory_fwd_off(void *dst, unsigned char *src, int offset, int size)
 {
-	if (offset > (MEM_SIZE - 1))
-		offset = offset % MEM_SIZE;
+	offset = offset % MEM_SIZE;
 	while (size--)
 	{
 		if (offset > (MEM_SIZE - 1))
