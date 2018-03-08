@@ -6,18 +6,24 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 21:46:04 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/07 07:30:54 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 03:01:45 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include "core.h"
+#include "ft_printf.h"
 
 void			fatal_error(char *msg)
 {
-	write(2, msg, ft_strlen(msg));
-	write(2, "\n", 1);
+	ft_printf("%s\n", msg);
+	exit(1);
+}
+
+void			lexical_error(int line, int col)
+{
+	ft_printf("Lexical error at [%03d:%03d]\n", line, col);
 	exit(1);
 }
 
@@ -36,6 +42,15 @@ unsigned int	reverse_bytes(unsigned int n, ssize_t size)
 		++i;
 	}
 	return (*(unsigned int *)res);
+}
+
+void			syntax_error(int line, int col, char *type, char *val)
+{
+	ft_printf("Syntax error at token [TOKEN][%03d:%03d] %s", line, col, type);
+	if (*val)
+		ft_printf(" \"%s\"", val);
+	ft_printf("\n");
+	exit(1);
 }
 
 #define IS_WSPACE(x,i)	x[i] && (x[i] == ' ' || x[i] == '\t')

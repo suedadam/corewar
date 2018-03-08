@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 00:32:11 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 03:02:04 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,18 @@ t_state				fsm_syntax_error(t_parse *parse);
 t_state				fsm_build_header(t_parse *parse);
 
 /*
+**	fsm_label.c
+*/
+
+t_state				fsm_build_label(t_parse *parse);
+
+/*
+** fsm_op.c
+*/
+
+t_state				fsm_build_op(t_parse *parse);
+
+/*
 ** load.c
 */
 
@@ -131,6 +143,8 @@ t_token				*tokenize(t_line *line, char *delim);
 */
 
 void				fatal_error(char *msg);
+void				lexical_error(int line, int col);
 unsigned int		reverse_bytes(unsigned int n, ssize_t size);
+void				syntax_error(int line, int col, char *type, char *val);
 int					trim(char *arg);
 #endif

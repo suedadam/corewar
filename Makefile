@@ -15,6 +15,8 @@ ASM_SRC = \
 	asm\
 	fsm\
 	fsm_header\
+	fsm_label\
+	fsm_op\
 	load\
 	token\
 	util

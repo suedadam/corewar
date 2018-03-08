@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/07 14:28:28 by sgardner          #+#    #+#             */
-/*   Updated: 2017/10/24 20:22:30 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 02:10:41 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,12 @@ int				print_int(t_arg *arg, int base, t_bool is_signed)
 	pad = arg->width - len - prefix_len;
 	if (!F(F_MINUS) && (!F(F_ZERO) || F(F_PRECISE)))
 		out_len += write_pad(pad, ' ');
-	out_len += write(1, arg->prefix, prefix_len);
+	out_len += write(2, arg->prefix, prefix_len);
 	if (F(F_ZERO) && !F((F_MINUS | F_PRECISE)))
 		out_len += write_pad(pad, '0');
 	if (arg->conv == 'X')
 		ft_strupcase(num);
-	out_len += write(1, num, len);
+	out_len += write(2, num, len);
 	if (F(F_MINUS))
 		out_len += write_pad(pad, ' ');
 	free(num);

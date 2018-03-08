@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/03 20:27:22 by sgardner          #+#    #+#             */
-/*   Updated: 2017/10/24 13:53:30 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 02:08:26 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int		print_line(const char *format, va_list *ap, t_bool *error)
 		end = format;
 		while (*end && *end != '%')
 			end++;
-		len += write(1, format, end - format);
+		len += write(2, format, end - format);
 		if (*end == '%')
 		{
 			end++;
@@ -70,9 +70,9 @@ int				dispatch(t_arg *arg)
 	out_len = 0;
 	if (F(F_ESCAPE))
 	{
-		out_len += write(1, "\x1B[", 2);
+		out_len += write(2, "\x1B[", 2);
 		esc = va_arg(*arg->ap, char *);
-		out_len += write(1, esc, ft_strlen(esc));
+		out_len += write(2, esc, ft_strlen(esc));
 	}
 	i = 0;
 	while (i < g_disp_count)
@@ -82,7 +82,7 @@ int				dispatch(t_arg *arg)
 			out_len += (disp.handle(arg));
 	}
 	if (F(F_ESCAPE))
-		out_len += write(1, "\x1b[0m", 4);
+		out_len += write(2, "\x1b[0m", 4);
 	return (out_len);
 }
 
@@ -128,7 +128,7 @@ int				write_pad(int size, char c)
 	if (size < 1 || !(pad = (char *)malloc(size)))
 		return (0);
 	ft_memset(pad, c, size);
-	write(1, pad, size);
+	write(2, pad, size);
 	free(pad);
 	return (size);
 }

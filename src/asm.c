@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 20:50:57 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 00:43:47 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 04:37:11 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,13 @@ static void	print_usage(char *prog_name)
 	exit(1);
 }
 
-static void	print_tokens(t_token *tokens)
+static void	print_debug(t_parse *parse)
 {
+	t_token	*tokens;
+
+	printf("Name: %s\nDesc: %s\n", parse->header.name, parse->header.desc);
+	printf("-----------------------------------\n");
+	tokens = parse->tokens;
 	while (tokens)
 	{
 		printf("%02d:%02d (%02d) %s\n", tokens->line_num, tokens->col_num,
@@ -53,9 +58,8 @@ int			main(int ac, char **av)
 	while (++i < ac)
 	{
 		init_parse(&parse, av[i]);
-		print_tokens(parse.tokens);
-		UNUSED(print_tokens);
 		fsm_run(&parse);
+		print_debug(&parse);
 		destroy_tokens(parse.tokens);
 		unload_lines(parse.lines);
 	}

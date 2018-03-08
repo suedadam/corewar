@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/16 11:44:30 by sgardner          #+#    #+#             */
-/*   Updated: 2017/10/24 12:50:23 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 02:09:21 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ int			print_float(t_arg *arg)
 	pad = arg->width - len - prefix_len;
 	if (!F(F_MINUS))
 		out_len += write_pad(pad, ' ');
-	out_len += write(1, arg->prefix, prefix_len);
-	out_len += write(1, num, len);
+	out_len += write(2, arg->prefix, prefix_len);
+	out_len += write(2, num, len);
 	if (F(F_MINUS))
 		out_len += write_pad(pad, ' ');
 	if (!F(F_SPECIAL))
