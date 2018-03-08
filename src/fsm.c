@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 18:07:31 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 04:35:30 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 05:41:16 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,35 +23,35 @@
 ** START
 */
 
-t_state			(*g_trans[NSTATES][NEVENTS])(t_parse *parse) = {
-	{ // BUILD_HEADER
+static t_state	(*g_trans[NSTATES][NEVENTS])(t_parse *parse) = {
+	{
 		fsm_build_label,
 		fsm_build_op,
 		fsm_build_header
 	},
-	{ // BUILD_LABEL
+	{
 		fsm_build_label,
 		fsm_build_op,
 		fsm_syntax_error
 	},
-	{  // BUILD_OP
+	{
 		fsm_build_label,
 		fsm_build_op,
 		fsm_syntax_error
 	},
-	{ // QUIT
+	{
 		NULL,
 		NULL,
 		NULL
 	},
-	{ // START
+	{
 		fsm_syntax_error,
 		fsm_syntax_error,
 		fsm_build_header
 	}
 };
 
-char			*g_symnames[NSYMBOLS] = {
+static char		*g_symnames[NSYMBOLS] = {
 	"COMMAND_NAME",
 	"COMMAND_COMMENT",
 	"DIRECT_PARAM",

@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 03:02:04 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 06:13:12 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,36 @@ typedef enum		e_state
 	START,
 	NSTATES
 }					t_state;
+
+typedef enum		e_optype
+{
+	OP_LIVE,
+	OP_LD,
+	OP_ST,
+	OP_ADD,
+	OP_SUB,
+	OP_AND,
+	OP_OR,
+	OP_XOR,
+	OP_ZJMP,
+	OP_LDI,
+	OP_STI,
+	OP_FORK,
+	OP_LLD,
+	OP_LLDI,
+	OP_LFORK,
+	OP_AFF
+}					t_optype;
+
+typedef struct		s_op
+{
+	char		*name;
+	int			args;
+	int			id;
+	t_optype	type;
+	t_bool		coding;
+	t_bool		truncate;
+}					t_op;
 
 typedef struct		s_header
 {
@@ -147,4 +177,6 @@ void				lexical_error(int line, int col);
 unsigned int		reverse_bytes(unsigned int n, ssize_t size);
 void				syntax_error(int line, int col, char *type, char *val);
 int					trim(char *arg);
+
+extern const t_op	g_ops[];
 #endif
