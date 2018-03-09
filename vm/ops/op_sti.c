@@ -6,143 +6,91 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 18:07:00 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/08 21:15:25 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-/*
-** (20370+130)%20480
-** Read all the encoding for the right variables.
-*/ 
-
-// rev_write_memory(arena, child->pc, val, REG_SIZE);
-int	op_sti(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
+static int	sti_reg(t_process *child, t_andop *op_data)
 {
-	int				val;
-	int				val2;
-	int				j;
-	unsigned char	byte;
-	unsigned char	tmp;
-	int				src;
-	unsigned char	*dest;
-
-	printf("{STI} %p \n", &src);
-	j = 0;
-	val = 0;
-	byte = cmd_input->encbyte;
-	while (byte)
-	{
-		tmp = byte & 0xC0;
-		if (tmp == (unsigned char)SHIFT_T_DIR)
-		{
-			if (op_tab[child->opcode - 1].encbool)
-			{
-				val += ((short)((cmd_input->args)[j]));
-				// printf("{TRUNC} IND = %d\n", (short)((cmd_input->args)[j]));
-			}
-			else
-			{
-				// printf("DIR = %d\n", (cmd_input->args)[j]);
-				val += (cmd_input->args)[j];				
-			}
-
-			//Insert solution here.
-		}
-		else if (tmp == (unsigned char)SHIFT_T_IND)
-		{
-			val2 = 0;
-			copy_memory_fwd_off(&val2, arena, (child->pc + (cmd_input->args)[j] % IDX_MOD), F_IND_SIZE);
-			// copy_memory_fwd_off(&val2, arena, child, F_IND_SIZE, (cmd_input->args)[j]);
-			val += (short)val2;
-			// printf("IND = %d\n", val2);
-		}
-		else
-		{
-			// printf("REG\n");
-			if (!j)
-				src = (int)child->regs[(cmd_input->args)[j]];
-			else
-				val += child->regs[(cmd_input->args)[j]];
-		}
-		j++;
-		byte = byte << 2;
-	}
-	// printf("Src  - %d (%02x); offset = %d (%d)\n", src, src, val, child->pc + val % IDX_MOD);
-	val2 = 0;
-	if ((child->pc + val % IDX_MOD) < 0)
-	{
-		// printf("so its not negative? %d %x %p\n", src, src, &src);
-		src = ntohl(src);
-		printf("(%d) {STI} UID: %d ---  %d + %d mod %d = %d\n", taskmanager->currCycle, child->randID, child->pc, val, IDX_MOD, child->pc + val % IDX_MOD);
-		rev_write_memory(arena, (unsigned char *)&src, child->pc + val % IDX_MOD, REG_SIZE);
-		// dest = ft_rev_mem_warp(arena, child->pc, val, REG_SIZE, &val2);
-		// printf("%p (%p vs %p) (%d)\n", arena + child->pc, arena, dest, val2);
-		// if (val2)
-		// {
-		// 	printf("cunt\n");
-		// 	memcpy(dest, &src, val2);
-		// 	dest = (arena + (MEM_SIZE - 1));
-		// }
-		// if (val == -186)
-		// 	src = ~(src);
-		// memcpy(dest, &src + val2, REG_SIZE - val2);
-	}
+	if (!op_data->argi)
+		op_data->dest = &(child->regs[*(op_data->arg)]);
+	else if (op_data->argi == 1)
+		op_data->val = child->regs[*(op_data->arg)];
 	else
-	{
-		src = ntohl(src);
-		printf("(%d) {STI} UID: %d ---  %d + %d mod %d = %d\n", taskmanager->currCycle, child->randID, child->pc, val, IDX_MOD, child->pc + val % IDX_MOD);
-		write_memory(arena, (unsigned char *)&src, child->pc + val % IDX_MOD, REG_SIZE);
-		// dest = ft_memory_warp(arena, child->pc, val, REG_SIZE, &val2);
-		// if (val2)
-		// {
-		// 	memcpy(dest, &src, val2);
-		// 	dest = arena;
-		// 	// dest = arena + (MEM_SIZE - 1);
-		// }
-		// memcpy(dest, &src + val2, REG_SIZE - val2);
-	}
-	// dest = ft_memory_warp
+		op_data->val += child->regs[*(op_data->arg)];
+	printf("(%zu) {STI_REG} op_data->val = %d REg: %d\n", g_taskmanager->currCycle, op_data->val, child->regs[*(op_data->arg)]);
 	return (0);
 }
 
-// int	op_sti(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
-// {
-// 	ssize_t	seek;
-// 	void	*wrap;
-// 	int		bigE;
-// 	int		frag;
+static int	sti_ind(unsigned char *arena, t_process *child, t_andop *op_data)
+{
+	int	tmp;
 
-// 	wrap = NULL;
-// 	frag = 0;
-// 	if (cmd_input->args[0] < 1 || cmd_input->args[0] > REG_NUMBER)
-// 	{
-// 		printf("Invalid register %d\n", cmd_input->args[0]);
-// 		return (-1);
-// 	}
-// 	bigE = htonl(child->regs[cmd_input->args[0]]);
-// 	seek = (short)cmd_input->args[1] + (short)cmd_input->args[2];
-// 	// printf("seek mod = %d\n", seek % IDX_MOD);
-// 	printf("Seek = %d total offset = %d\n", seek, child->pc + seek % IDX_MOD);
-// 	wrap = ft_memory_warp(arena, child->pc, seek % IDX_MOD, REG_SIZE, &frag);
-// 	if (frag)
-// 	{
-// 		memcpy(wrap, &bigE, frag);
-// 		wrap = arena;
-// 	}
-// 	memcpy(wrap, &bigE + frag, REG_SIZE - frag);
-// 	printf("{STI} = %d %x\n", ntohl(*(int *)wrap), *(int *)wrap);
-// 	// exit(1);
-// 	// int j;
-// 	// unsigned char* byte_array = arena + child->pc;
+	if (op_data->argi == 1)
+	{
+		tmp = 0;
+		copy_memory_fwd_off(&tmp, arena,
+				child->pc + *op_data->arg % IDX_MOD, sizeof(short));
+		op_data->val = ntohs(tmp);
+	}
+	else if (op_data->argi > 1)
+	{
+		tmp = 0;
+		copy_memory_fwd_off(&tmp, arena,
+				child->pc + *op_data->arg % IDX_MOD, sizeof(short));
+		op_data->val += ntohs(tmp);
+	}
+	return (0);
+}
 
-// 	// j = 0;
-// 	// while (j < 100)
-// 	// {
-// 	// 	printf("%02X ",(unsigned)byte_array[j]);
-// 	// 	j++;
-// 	// }
-// 	// exit(1);
-// 	return (0);
-// }
+static int	sti_dir(t_process *child, t_andop *op_data)
+{
+	if (op_data->argi == 1)
+		op_data->val = (short)*(op_data->arg);
+	else if (op_data->argi > 1)
+		op_data->val += (short)*(op_data->arg);
+	return (0);
+}
+
+static int	sti_decider(void *arena, t_process *child, t_andop *op_data)
+{
+	unsigned char	byte;
+
+	byte = (op_data->encbyte << (2 * op_data->argi) & 0xC0);
+	if (byte == (unsigned char)SHIFT_T_REG)
+		sti_reg(child, op_data);
+	else if (byte == (unsigned char)SHIFT_T_IND)
+		sti_ind(arena, child, op_data);
+	else
+		sti_dir(child, op_data);
+	return (0);
+}
+
+int			op_sti(t_operation *cmd_input, void *arena,
+				uint8_t plid, t_process *child)
+{
+	int				i;
+	unsigned char	byte;
+	int				byteswap;
+	t_andop			op_data;
+
+	bzero(&op_data, sizeof(t_andop));
+	op_data.encbyte = cmd_input->encbyte;
+	byte = cmd_input->encbyte;
+	i = 0;
+	while (byte)
+	{
+		op_data.arg = &((cmd_input->args)[i]);
+		op_data.argi = i;
+		if (!sti_decider(arena, child, &op_data))
+			i++;
+		byte = byte << 2;
+	}
+	byteswap = htonl(*(op_data.dest));
+	printf("(%zu) {STI_WRITE} Offset: %lld Val : %d\n", g_taskmanager->currCycle, child->pc + op_data.val % IDX_MOD, op_data.val);
+	write_memory(arena, (unsigned char *)&byteswap,
+				child->pc + op_data.val % IDX_MOD, REG_SIZE);
+	return (0);
+}

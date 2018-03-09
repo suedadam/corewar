@@ -1,24 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   op_add.c                                           :+:      :+:    :+:   */
+/*   invalid.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/08 16:43:19 by asyed            ###   ########.fr       */
+/*   Created: 2018/03/08 16:40:21 by asyed             #+#    #+#             */
+/*   Updated: 2018/03/08 18:52:30 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-int	op_add(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child)
+int	invalid_opcode(t_process *child)
 {
-	child->regs[(cmd_input->args)[2]] =
-		child->regs[(cmd_input->args)[0]] + child->regs[(cmd_input->args)[1]];
-	if (child->regs[(cmd_input->args)[2]])
-		child->carry = 1;
+	if (child->pc == (MEM_SIZE - 1))
+		child->pc = 0;
 	else
-		child->carry = 0;
+		child->pc++;
+	return (0);
+}
+
+int	invalid_acb(t_process *child, int size)
+{
+	child->pc = ((child->pc + size) + MEM_SIZE) % MEM_SIZE;
+	child->opcode = 0;
+	child->run_op = 0;
 	return (0);
 }

@@ -16,7 +16,7 @@
 #include <time.h>
 #include <stdlib.h>
 //EO-Remove me.
-t_taskmanager	*taskmanager;
+t_taskmanager	*g_taskmanager;
 
 void	*init(int champc, char **champv)
 {
@@ -24,41 +24,25 @@ void	*init(int champc, char **champv)
 	int				i;
 	t_taskmanager	*l_taskmanager;
 
-	taskmanager = l_taskmanager;
 	if (!(arena = init_arena()))
 		return (NULL);
-	if (!(taskmanager = ft_memalloc(sizeof(t_taskmanager))))
+	if (!(l_taskmanager = ft_memalloc(sizeof(t_taskmanager))))
 		return (NULL);
-	taskmanager->c_to_die = CYCLE_TO_DIE;
-	taskmanager->totalPlayers = champc;
-	taskmanager->lastlive = -1;
-	taskmanager->lastnbrlive = 0;
+	g_taskmanager = l_taskmanager;
+	g_taskmanager->c_to_die = CYCLE_TO_DIE;
+	g_taskmanager->totalPlayers = champc;
+	g_taskmanager->lastlive = -1;
+	g_taskmanager->lastnbrlive = 0;
 	i = 0;
 	while (i < champc)
 	{
-		printf("[ID: %d] Champ = \"%s\"\n", i, champv[champc - i]);
 		if (read_champion(champv[champc - i], arena, i) == -1)
 		{
-			printf("wow fail\n");
 			free(arena);
 			return (NULL);
 		}
-		else
-			printf("Read champion \"%s\" into memory\n", champv[champc - i]);
-		printf("[ID: %d] loaded into memory!\n", i);
 		i++;
 	}
-	printf("Printing arena: \n");
-	int j;
-	unsigned char* byte_array = arena;
-
-	j = 0;
-	while (j < MEM_SIZE)
-	{
-		printf("%02X",(unsigned)byte_array[j]);
-		j++;
-	}
-	// exit(1);
 	return (arena);
 }
 
@@ -67,7 +51,6 @@ int	main(int argc, char *argv[])
 	void	*arena;
 
 	srand(time(NULL));
-	//Make a library parse flags func.
 	if (argc < 2)
 	{
 		printf("No champions listed\n");
