@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 21:23:25 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 02:24:40 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 03:27:40 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,37 +15,37 @@
 
 #define IS_DIGIT(x) ((unsigned int)(x - '0') < 10)
 
-static int		*cw_atoi(t_token *tok)
+static int		*cw_atoi(char *data)
 {
-	char	*data;
-	int		*n;
-	int		sign;
-	int		i;
+	int	*res;
+	int	n;
+	int	sign;
+	int	i;
 
 	i = 0;
-	data = tok->data;
-	if (!(n = ft_memalloc(sizeof(int))))
-		DEFAULT_ERROR;
+	n = 0;
 	sign = (data[i] == '-') ? -1 : 1;
 	if (data[i] == '-')
 		++i;
+	if (!data[i])
+		return (NULL);
 	while (data[i])
 	{
 		if (!IS_DIGIT(data[i]))
-		{
-			free(n);
-			syntax_error(tok->line_num, tok->col_num + i, "INSTRUCTION",
-					&data[i]);
-		}
-		*n = (*n * 10) + ((data[i++] - '0') * sign);
+			return (NULL);
+		n = (n * 10) + ((data[i++] - '0') * sign);
 	}
-	return (n);
+	if (!(res = ft_memalloc(sizeof(int))))
+		DEFAULT_ERROR;
+	*res = n;
+	return (res);
 }
 
 t_bool			read_reg(t_token *arg)
 {
 	ft_memmove(arg->data, arg->data + 1, arg->len--);
-	arg->data = (char *)cw_atoi(arg);
+	if (!(arg->data = (char *)cw_atoi(arg->data)))
+		return (FALSE);
 	if (*arg->data < 1 || *arg->data > REG_NUMBER)
 	{
 		free(arg->data);
@@ -61,7 +61,6 @@ static t_bool	validate_label(t_token *arg)
 
 	i = 0;
 	ft_memmove(arg->data, arg->data + 1, arg->len--);
-	++arg->col_num;
 	while (arg->data[i])
 	{
 		if (!ft_strchr(LABEL_CHARS, arg->data[i]))
@@ -71,10 +70,11 @@ static t_bool	validate_label(t_token *arg)
 	return (TRUE);
 }
 
-t_bool			read_direct(t_token *arg)
+t_bool			read_direct(t_token *arg, t_bool truncate)
 {
+	int	*res;
+
 	ft_memmove(arg->data, arg->data + 1, arg->len--);
-	++arg->col_num;
 	if (*arg->data == ':')
 	{
 		if (!validate_label(arg))
@@ -82,7 +82,11 @@ t_bool			read_direct(t_token *arg)
 		arg->type = SYM_DLABEL;
 		return (TRUE);
 	}
-	arg->data = (char *)cw_atoi(arg);
+	if (!(res = cw_atoi(arg->data)))
+		return (FALSE);
+	if (truncate)
+		*res = (short)*res;
+	arg->data = (char *)res;
 	arg->type = SYM_DIRECT;
 	return (TRUE);
 }
@@ -98,7 +102,8 @@ t_bool			read_indirect(t_token *arg)
 		arg->type = SYM_INDLABEL;
 		return (TRUE);
 	}
-	res = cw_atoi(arg);
+	if (!(res = cw_atoi(arg->data)))
+		return (FALSE);
 	*res = (short)*res;
 	arg->data = (char *)res;
 	arg->type = SYM_IND;

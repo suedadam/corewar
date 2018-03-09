@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 02:24:42 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 03:28:11 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ typedef struct		s_parse
 */
 
 t_bool				read_reg(t_token *arg);
-t_bool				read_direct(t_token *arg);
+t_bool				read_direct(t_token *arg, t_bool truncate);
 t_bool				read_indirect(t_token *arg);
 
 /*

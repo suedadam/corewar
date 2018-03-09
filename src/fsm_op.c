@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:44:41 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 23:11:22 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 03:27:42 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ static t_token	*validate_params(t_token *tok, const t_op *op)
 		arg = arg->next;
 		data = arg->data;
 		if (((op->allowed[i] & T_REG) && *data == 'r' && read_reg(arg))
-			|| ((op->allowed[i] & T_DIR) && *data == '%' && read_direct(arg))
+			|| ((op->allowed[i] & T_DIR) && *data == '%'
+				&& read_direct(arg, op->truncate))
 			|| ((op->allowed[i] & T_IND) && read_indirect(arg)))
 		{
 			++i;
