@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   op_ldi.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/08 21:15:02 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/09 03:15:09 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@ static int	ldi_reg(unsigned char *arena, t_process *child, t_andop *op_data)
 	else if (op_data->argi == 1)
 	{
 		op_data->val += child->regs[*(op_data->arg)];
-		tmp = 0;
-		copy_memory_fwd_off(&tmp, arena, child->pc + op_data->val % IDX_MOD,
-			sizeof(short));
-		op_data->val = ntohs(tmp);
+		// tmp = 0;
+		// copy_memory_fwd_off(&tmp, arena, child->pc + op_data->val % IDX_MOD,
+		// 	sizeof(short));
+		// op_data->val = ntohs(tmp);
 	}
 	else
 		op_data->dest = &(child->regs[*(op_data->arg)]);
@@ -45,10 +45,10 @@ static int	ldi_dir(unsigned char *arena, t_process *child, t_andop *op_data)
 	else if (op_data->argi == 1)
 	{
 		op_data->val += (short)*(op_data->arg);
-		tmp = 0;
-		copy_memory_fwd_off(&tmp, arena, MEM_WARP(child->pc + op_data->val % IDX_MOD),
-			sizeof(short));
-		op_data->val = ntohs(tmp);
+		// tmp = 0;
+		// copy_memory_fwd_off(&tmp, arena, MEM_WARP(child->pc + op_data->val % IDX_MOD),
+		// 	sizeof(short));
+		// op_data->val = ntohs(tmp);
 	}
 	return (0);
 }

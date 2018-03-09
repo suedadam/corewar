@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   war_op.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/08 22:12:04 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/09 05:22:21 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,16 @@ static int	decode_acb(unsigned char *arena, t_operation *cmd_input,
 			j++;
 		byte = byte << 2;
 	}
+	//This check is broken/causing issues.
 	if ((cmd_input->encbyte >> (8 - (2 * g_op_tab[child->opcode - 1].argc))) == 00)
 	{
+		printf("(%zu) {Invalid} Test here. L 81 %d vs %d\n", g_taskmanager->currCycle, j, g_op_tab[child->opcode - 1].argc);
 		invalid_acb(child, 2);
 		return (-1);
 	}
 	else if (j != g_op_tab[child->opcode - 1].argc)
 	{
-		printf("Test here. L 86 %d vs %d\n", j, g_op_tab[child->opcode - 1].argc);
+		printf("(%zu) {Invalid} Test here. L 86 %d vs %d\n", g_taskmanager->currCycle, j, g_op_tab[child->opcode - 1].argc);
 		invalid_acb(child, size + calc_enc_size(child, cmd_input->encbyte));
 		return (-1);
 	}
@@ -137,7 +139,7 @@ int			run_operation(int plid, unsigned char *arena, t_process *child)
 		if (g_opdispatch[child->opcode - 1].func(&cmd_input, arena,
 											plid, child) == -1)
 		{
-			printf("(%zu) Invalid Function return\n", g_taskmanager->currCycle);
+			printf("(%zu) Invalid Function return %d\n", g_taskmanager->currCycle, child->opcode);
 			return (-1);
 		}
 		if (child->opcode != 9 || (child->opcode == 9 && !child->carry))
@@ -150,20 +152,20 @@ int			run_operation(int plid, unsigned char *arena, t_process *child)
 	t_process *childrenlol = g_taskmanager->processes;
 	while (childrenlol)
 	{
-		printf("(%zu) ID: %d (%02x)PC: %lld(%02x) CachedOP: %d Wait: %zu\n", g_taskmanager->currCycle, childrenlol->plid, *(unsigned char *)(arena + childrenlol->pc - 1), childrenlol->pc, *(unsigned char *)(arena + childrenlol->pc), childrenlol->opcode, childrenlol->run_op);
-		printf("----= Registers =---\n");
-		int j;
-		j = 1;
-		while (j < 16)
-		{
-			printf("(%zu) R%d = %d\n", g_taskmanager->currCycle, j, childrenlol->regs[j]);
-			j++;
-		}
-		printf("----= EO-Registers =---\n");
+		printf("(%zu) ID: %d (%02x)PC: %lld(%02x) CachedOP: %d Wait: %zu\n", g_taskmanager->currCycle, childrenlol->plid, *(unsigned char *)(arena + MEM_WARP(childrenlol->pc - 1)), childrenlol->pc, *(unsigned char *)(arena + childrenlol->pc), childrenlol->opcode, childrenlol->run_op);
+		// printf("----= Registers =---\n");
+		// int j;
+		// j = 1;
+		// while (j < 16)
+		// {
+		// 	printf("(%zu) R%d = %d\n", g_taskmanager->currCycle, j, childrenlol->regs[j]);
+		// 	j++;
+		// }
+		// printf("----= EO-Registers =---\n");
 		childrenlol = childrenlol->next;
 	}
 	printf("\n======\n");
-	if (g_taskmanager->currCycle == 2810)
+	if (g_taskmanager->currCycle == 15399)
 	{
 		printf("==========\n (%zu)", g_taskmanager->currCycle);
 		int j;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   invalid.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 16:40:21 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/08 18:52:30 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/09 04:41:43 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int	invalid_opcode(t_process *child)
 		child->pc = 0;
 	else
 		child->pc++;
+	child->opcode = 0;
+	child->run_op = 0;
 	return (0);
 }
 

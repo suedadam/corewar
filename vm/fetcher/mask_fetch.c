@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mask_fetch.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 07:41:59 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/08 22:03:15 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/09 04:16:26 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int			fetch_decider(unsigned char *arena, t_operation *cmd_input,
 		if ((g_op_tab[child->opcode - 1].encbyte[j] & T_REG) != T_REG)
 		{
 			printf("(%zu) L54\n", g_taskmanager->currCycle);
-			invalid_opcode(child);
+			// invalid_opcode(child);
 			return (-1);
 		}
 		handle_reg(arena, child, &((cmd_input->args)[j]), size);
@@ -65,7 +65,7 @@ int			fetch_decider(unsigned char *arena, t_operation *cmd_input,
 		if ((g_op_tab[child->opcode - 1].encbyte[j] & T_DIR) != T_DIR)
 		{
 			printf("(%zu) L64\n", g_taskmanager->currCycle);
-			invalid_opcode(child);
+			// invalid_opcode(child);
 			return (-1);
 		}
 		handle_dir(arena, child, &((cmd_input->args)[j]), size);
@@ -77,7 +77,7 @@ int			fetch_decider(unsigned char *arena, t_operation *cmd_input,
 			(g_op_tab[child->opcode - 1].encbyte[j] & T_DIR) != T_DIR)
 		{
 			printf("(%zu) L76\n", g_taskmanager->currCycle);
-			invalid_opcode(child);
+			// invalid_opcode(child);
 			return (-1);
 		}
 		handle_ind(arena, child, &((cmd_input->args)[j]), size);

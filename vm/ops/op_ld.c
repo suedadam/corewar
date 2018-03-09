@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   op_ld.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/08 22:17:59 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/09 03:30:37 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,15 @@ int	op_ld(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child)
 		val = ntohs(val);
 		printf("(%zu) {ld} Val = %02x\n", g_taskmanager->currCycle, val);
 	}
-	test = 0;
-	copy_memory_fwd_off(&test, arena, MEM_WARP(child->pc + val % IDX_MOD), REG_SIZE);
-	test = ntohl(test);
-	child->regs[(cmd_input->args)[1]] = test;
-	printf("(%zu) {ld} Into Reg: PC %lld -> %lld Val[%d]: %d\n", g_taskmanager->currCycle, child->pc, MEM_WARP(child->pc + val % IDX_MOD), cmd_input->args[1], child->regs[(cmd_input->args)[1]]);
+	// test = 0;
+	// copy_memory_fwd_off(&test, arena, MEM_WARP(child->pc + val % IDX_MOD), REG_SIZE);
+	// test = ntohl(test);
+	child->regs[(cmd_input->args)[1]] = val;
+	// printf("(%zu) {ld} Into Reg: PC %lld -> %lld Val[%d]: %d\n", g_taskmanager->currCycle, child->pc, MEM_WARP(child->pc + val % IDX_MOD), cmd_input->args[1], child->regs[(cmd_input->args)[1]]);
 	if (!(child->regs[(cmd_input->args)[1]]))
 		child->carry = 1;
 	else
 		child->carry = 0;
+	printf("(%zu) {ld} RegVal: %d Carry: %d\n", g_taskmanager->currCycle, (child->regs[(cmd_input->args)[1]]), child->carry);
 	return (0);
 }
