@@ -6,10 +6,11 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 20:50:57 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 01:57:59 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 04:13:09 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include "core.h"
@@ -53,9 +54,36 @@ static void	init_parse(t_parse *parse, char *file)
 {
 	static char	delim[4] = { SEPARATOR_CHAR, ' ', '\t', '\0' };
 
+	ft_memset(&parse->header, 0, sizeof(t_header));
 	parse->header.magic = reverse_bytes(COREWAR_EXEC_MAGIC, sizeof(int));
 	parse->lines = load_file(file);
 	parse->tokens = tokenize(parse->lines, delim);
+}
+
+static char	*build_name(char *file)
+{
+	char	*new;
+	char	*end;
+	int		len;
+
+	end = ft_strrchr(file, '.');
+	len = (end) ? (end - file) : ft_strlen(file);
+	if (!(new = ft_memalloc(len + 5)))
+		DEFAULT_ERROR;
+	end = ft_stpncpy(new, file, len);
+	ft_stpcpy(end, ".cor");
+	return (new);
+}
+
+static void	write_file(t_parse *parse, char *file)
+{
+	int	fd;
+
+	if ((fd = open(file, O_WRONLY | O_CREAT, 0600)) < 0)
+		DEFAULT_ERROR;
+	write(fd, &parse->header, sizeof(t_header));
+	close(fd);
+	free(file);
 }
 
 int			main(int ac, char **av)
@@ -71,6 +99,7 @@ int			main(int ac, char **av)
 		init_parse(&parse, av[i]);
 		fsm_run(&parse);
 		print_debug(&parse);
+		write_file(&parse, build_name(av[i]));
 		destroy_tokens(parse.tokens);
 		unload_lines(parse.lines);
 	}

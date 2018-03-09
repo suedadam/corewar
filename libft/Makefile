@@ -25,11 +25,13 @@ SRC = \
 	ft_printf\
 	ft_printf_parser\
 	ft_stpcpy\
+	ft_stpncpy\
 	ft_strchr\
 	ft_strcmp\
 	ft_strdup\
 	ft_strlen\
 	ft_strnlen\
+	ft_strrchr\
 	ft_strsub\
 	ft_strupcase\
 	ft_tolower\
