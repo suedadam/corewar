@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 18:07:31 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 05:41:16 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 01:11:20 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ static t_event	get_event(t_token *tok)
 	}
 	else if (data[tok->len - 1] == LABEL_CHAR)
 	{
+		data[--tok->len] = '\0';
 		tok->type = SYM_LABEL;
 		return (EV_LABEL);
 	}

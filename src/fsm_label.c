@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:45:45 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 05:18:28 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 01:14:57 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_state		fsm_build_label(t_parse *parse)
 
 	i = 0;
 	tok = parse->curr;
-	while (i < tok->len - 1)
+	while (i < tok->len)
 	{
 		if (!ft_strchr(LABEL_CHARS, tok->data[i]))
 			lexical_error(tok->line_num, tok->col_num + i);

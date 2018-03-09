@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 20:50:57 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 23:28:51 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 01:57:59 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@ static void	print_debug(t_parse *parse)
 			tokens->len, tokens->data);
 		if (tokens->type == SYM_REGISTER)
 			ft_printf("R%d\n", *tokens->data);
+		else if (tokens->type == SYM_IND)
+			ft_printf("%hd\n", *tokens->data);
+		else if (tokens->type == SYM_DIRECT)
+			ft_printf("%%%d\n", *tokens->data);
 		else if (tokens->type == SYM_OP)
 			ft_printf("%s\n", g_ops[*(int *)tokens->data - 1].name);
 		else
