@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:06:25 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/07 16:00:09 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 03:53:28 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@ void			destroy_tokens(t_token *tokens)
 	while (tokens)
 	{
 		next = tokens->next;
+		if (tokens->type == SYM_DIRECT
+			|| tokens->type == SYM_IND
+			|| tokens->type == SYM_REGISTER)
+			free(tokens->data);
 		free(tokens);
 		tokens = next;
 	}
