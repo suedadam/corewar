@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 20:50:57 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 07:54:11 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 23:28:51 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,14 @@ static void	print_debug(t_parse *parse)
 	tokens = parse->tokens;
 	while (tokens)
 	{
-		ft_printf("%02d:%02d (%02d) %s\n", tokens->line_num, tokens->col_num,
+		ft_printf("%02d:%02d (%02d) ", tokens->line_num, tokens->col_num,
 			tokens->len, tokens->data);
+		if (tokens->type == SYM_REGISTER)
+			ft_printf("R%d\n", *tokens->data);
+		else if (tokens->type == SYM_OP)
+			ft_printf("%s\n", g_ops[*(int *)tokens->data - 1].name);
+		else
+			ft_printf("%s\n", tokens->data);
 		tokens = tokens->next;
 	}
 	ft_printf("-----------------------------------\n");

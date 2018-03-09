@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 07:53:30 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 21:52:23 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,13 +88,13 @@ typedef enum		e_optype
 
 typedef struct		s_op
 {
-	char		*name;
-	t_optype	type;
-	int			id;
-	int			num_args;
-	int			allowed[3];
-	t_bool		coding;
-	t_bool		truncate;
+	char			*name;
+	t_optype		type;
+	int				id;
+	int				num_args;
+	int				allowed[3];
+	t_bool			coding;
+	t_bool			truncate;
 }					t_op;
 
 typedef struct		s_header
@@ -132,6 +132,14 @@ typedef struct		s_parse
 	t_state			state;
 	t_event			event;
 }					t_parse;
+
+/*
+** arg_validate.c
+*/
+
+t_bool				read_reg(t_token *arg);
+t_bool				read_direct(t_token *arg);
+t_bool				read_indirect(t_token *arg);
 
 /*
 ** fsm.c

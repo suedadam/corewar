@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:44:41 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 08:20:32 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/08 23:11:22 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,29 @@ static t_token	*invalid_op(t_token *tok)
 
 static t_token	*validate_params(t_token *tok, const t_op *op)
 {
-	UNUSED(tok);
-	UNUSED(op);
-	return (tok);
+	t_token	*arg;
+	char	*data;
+	int		i;
+
+	i = 0;
+	arg = tok;
+	while (i < op->num_args)
+	{
+		arg = arg->next;
+		data = arg->data;
+		if (((op->allowed[i] & T_REG) && *data == 'r' && read_reg(arg))
+			|| ((op->allowed[i] & T_DIR) && *data == '%' && read_direct(arg))
+			|| ((op->allowed[i] & T_IND) && read_indirect(arg)))
+		{
+			++i;
+			continue ;
+		}
+		ft_printf("%s %d [%03d:%03d] for instruction \"%s\"\n",
+			"Invalid parameter", i + 1, arg->line_num, arg->col_num,
+			tok->data);
+		exit(1);
+	}
+	return (arg);
 }
 
 t_state			fsm_build_op(t_parse *parse)
@@ -70,7 +90,7 @@ t_state			fsm_build_op(t_parse *parse)
 	}
 	if (!op->name)
 		invalid_op(tok);
-	tok->data = (char *)&op->id;
 	parse->curr = validate_params(tok, op);
+	tok->data = (char *)&op->id;
 	return (BUILD_OP);
 }

@@ -13,6 +13,7 @@ LIBFT = libft/libft.a
 SRC_DIR = src
 ASM_SRC = \
 	asm\
+	arg_validate\
 	fsm\
 	fsm_header\
 	fsm_label\
