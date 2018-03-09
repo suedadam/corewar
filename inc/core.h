@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 21:52:23 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 02:24:42 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # define LABEL_CHARS		"abcdefghijklmnopqrstuvwxyz_0123456789"
 # define NAME_CMD_STRING	".name"
 # define COMMENT_CMD_STRING	".comment"
+# define REG_NUMBER			16
 # define T_REG				1
 # define T_DIR				2
 # define T_IND				4

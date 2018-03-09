@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 21:23:25 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 02:06:45 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 02:24:40 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_bool			read_reg(t_token *arg)
 {
 	ft_memmove(arg->data, arg->data + 1, arg->len--);
 	arg->data = (char *)cw_atoi(arg);
-	if (*arg->data < 1 || *arg->data > 16)
+	if (*arg->data < 1 || *arg->data > REG_NUMBER)
 	{
 		free(arg->data);
 		return (FALSE);
@@ -55,7 +55,7 @@ t_bool			read_reg(t_token *arg)
 	return (TRUE);
 }
 
-static void		validate_label(t_token *arg)
+static t_bool	validate_label(t_token *arg)
 {
 	int		i;
 
@@ -65,9 +65,10 @@ static void		validate_label(t_token *arg)
 	while (arg->data[i])
 	{
 		if (!ft_strchr(LABEL_CHARS, arg->data[i]))
-			lexical_error(arg->line_num, arg->col_num + i);
+			return (FALSE);
 		++i;
 	}
+	return (TRUE);
 }
 
 t_bool			read_direct(t_token *arg)
@@ -76,7 +77,8 @@ t_bool			read_direct(t_token *arg)
 	++arg->col_num;
 	if (*arg->data == ':')
 	{
-		validate_label(arg);
+		if (!validate_label(arg))
+			return (FALSE);
 		arg->type = SYM_DLABEL;
 		return (TRUE);
 	}
@@ -91,7 +93,8 @@ t_bool			read_indirect(t_token *arg)
 
 	if (*arg->data == ':')
 	{
-		validate_label(arg);
+		if (!validate_label(arg))
+			return (FALSE);
 		arg->type = SYM_INDLABEL;
 		return (TRUE);
 	}
