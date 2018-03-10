@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:45:45 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 00:47:27 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 13:18:00 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ t_state		fsm_build_label(t_parse *parse)
 		}
 		curr = curr->next;
 	}
+	tok->cbyte = parse->header.size;
 	return (BUILD_LABEL);
 }

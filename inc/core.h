@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 23:30:17 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 13:43:10 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@
 # define T_REG				1
 # define T_DIR				2
 # define T_IND				4
+# define REG_CODE			1
+# define DIR_CODE			2
+# define IND_CODE			3
 
 typedef enum		e_event
 {
@@ -120,6 +123,7 @@ typedef struct		s_token
 	int				len;
 	int				col_num;
 	int				line_num;
+	int				cbyte;
 	struct s_token	*next;
 }					t_token;
 
@@ -137,9 +141,9 @@ typedef struct		s_parse
 ** arg_validate.c
 */
 
-t_bool				read_reg(t_token *arg);
-t_bool				read_direct(t_token *arg, t_bool truncate);
-t_bool				read_indirect(t_token *arg);
+t_bool				read_reg(t_token *op, t_token *arg);
+t_bool				read_direct(t_token *op, t_token *arg, t_bool truncate);
+t_bool				read_indirect(t_token *op, t_token *arg);
 
 /*
 ** fsm.c

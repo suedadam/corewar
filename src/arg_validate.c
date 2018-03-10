@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 21:23:25 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 03:27:40 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 13:42:42 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int		*cw_atoi(char *data)
 	return (res);
 }
 
-t_bool			read_reg(t_token *arg)
+t_bool			read_reg(t_token *op, t_token *arg)
 {
 	ft_memmove(arg->data, arg->data + 1, arg->len--);
 	if (!(arg->data = (char *)cw_atoi(arg->data)))
@@ -52,6 +52,8 @@ t_bool			read_reg(t_token *arg)
 		return (FALSE);
 	}
 	arg->type = SYM_REGISTER;
+	arg->len = 4;
+	op->cbyte = (op->cbyte << 2) + REG_CODE;
 	return (TRUE);
 }
 
@@ -70,7 +72,7 @@ static t_bool	validate_label(t_token *arg)
 	return (TRUE);
 }
 
-t_bool			read_direct(t_token *arg, t_bool truncate)
+t_bool			read_direct(t_token *op, t_token *arg, t_bool truncate)
 {
 	int	*res;
 
@@ -80,18 +82,23 @@ t_bool			read_direct(t_token *arg, t_bool truncate)
 		if (!validate_label(arg))
 			return (FALSE);
 		arg->type = SYM_DLABEL;
-		return (TRUE);
 	}
-	if (!(res = cw_atoi(arg->data)))
-		return (FALSE);
-	if (truncate)
-		*res = (short)*res;
-	arg->data = (char *)res;
-	arg->type = SYM_DIRECT;
+	else
+	{
+		if (!(res = cw_atoi(arg->data)))
+			return (FALSE);
+		if (truncate)
+			*res = (short)*res;
+		arg->data = (char *)res;
+		arg->type = SYM_DIRECT;
+	}
+	arg->len = (truncate) ? 2 : 4;
+	op->cbyte = (op->cbyte << 2) + DIR_CODE;
+
 	return (TRUE);
 }
 
-t_bool			read_indirect(t_token *arg)
+t_bool			read_indirect(t_token *op, t_token *arg)
 {
 	int	*res;
 
@@ -100,12 +107,16 @@ t_bool			read_indirect(t_token *arg)
 		if (!validate_label(arg))
 			return (FALSE);
 		arg->type = SYM_INDLABEL;
-		return (TRUE);
 	}
-	if (!(res = cw_atoi(arg->data)))
-		return (FALSE);
-	*res = (short)*res;
-	arg->data = (char *)res;
-	arg->type = SYM_IND;
+	else
+	{
+		if (!(res = cw_atoi(arg->data)))
+			return (FALSE);
+		*res = (short)*res;
+		arg->data = (char *)res;
+		arg->type = SYM_IND;
+	}
+	arg->len = 2;
+	op->cbyte = (op->cbyte << 2) + IND_CODE;
 	return (TRUE);
 }

@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:44:41 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 00:48:13 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 13:48:11 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ const t_op		g_ops[] = {
 	{ 0, 0, 0, 0, { 0 }, FALSE, FALSE }
 };
 
-static t_token	*invalid_op(t_token *tok)
+static void		invalid_op(t_token *tok)
 {
 	ft_printf("%&s %s[%03d:%03d] INSTRUCTION \"%s\"\n",
 		"1;31m", "ERROR:", "Invalid instruction at token [TOKEN]",
@@ -48,7 +48,15 @@ static t_token	*invalid_op(t_token *tok)
 	exit(1);
 }
 
-static t_token	*validate_params(t_token *tok, const t_op *op)
+static void		invalid_param(t_token *op, t_token *arg, int i)
+{
+	ft_printf("%&s %s %d [%03d:%03d] for instruction \"%s\"\n",
+		"1;31m", "ERROR:", "Invalid parameter", i + 1, arg->line_num,
+		arg->col_num, op->data);
+	exit(1);
+}
+
+static t_token	*validate_params(t_parse *parse, t_token *tok, const t_op *op)
 {
 	t_token	*arg;
 	char	*data;
@@ -60,18 +68,16 @@ static t_token	*validate_params(t_token *tok, const t_op *op)
 	{
 		arg = arg->next;
 		data = arg->data;
-		if (((op->allowed[i] & T_REG) && *data == 'r' && read_reg(arg))
+		if (((op->allowed[i] & T_REG) && *data == 'r' && read_reg(tok, arg))
 			|| ((op->allowed[i] & T_DIR) && *data == '%'
-				&& read_direct(arg, op->truncate))
-			|| ((op->allowed[i] & T_IND) && read_indirect(arg)))
+				&& read_direct(tok, arg, op->truncate))
+			|| ((op->allowed[i] & T_IND) && read_indirect(tok, arg)))
 		{
 			++i;
+			parse->header.size += arg->len;
 			continue ;
 		}
-		ft_printf("%s %d [%03d:%03d] for instruction \"%s\"\n",
-			"Invalid parameter", i + 1, arg->line_num, arg->col_num,
-			tok->data);
-		exit(1);
+		invalid_param(tok, arg, i);
 	}
 	return (arg);
 }
@@ -91,7 +97,9 @@ t_state			fsm_build_op(t_parse *parse)
 	}
 	if (!op->name)
 		invalid_op(tok);
-	parse->curr = validate_params(tok, op);
+	parse->curr = validate_params(parse, tok, op);
+	parse->header.size += 1;
 	tok->data = (char *)&op->id;
+	tok->len = 1;
 	return (BUILD_OP);
 }
