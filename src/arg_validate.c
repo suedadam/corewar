@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 21:23:25 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 13:42:42 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 14:20:51 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ t_bool			read_reg(t_token *op, t_token *arg)
 		return (FALSE);
 	}
 	arg->type = SYM_REGISTER;
-	arg->len = 4;
+	arg->len = 1;
 	op->cbyte = (op->cbyte << 2) + REG_CODE;
 	return (TRUE);
 }
@@ -94,7 +94,6 @@ t_bool			read_direct(t_token *op, t_token *arg, t_bool truncate)
 	}
 	arg->len = (truncate) ? 2 : 4;
 	op->cbyte = (op->cbyte << 2) + DIR_CODE;
-
 	return (TRUE);
 }
 

@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:44:41 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 13:48:11 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 14:40:13 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,8 @@ t_state			fsm_build_op(t_parse *parse)
 	if (!op->name)
 		invalid_op(tok);
 	parse->curr = validate_params(parse, tok, op);
-	parse->header.size += 1;
 	tok->data = (char *)&op->id;
-	tok->len = 1;
+	tok->len = 1 + (op->coding == TRUE);
+	parse->header.size += tok->len;
 	return (BUILD_OP);
 }

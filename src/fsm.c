@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 18:07:31 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 01:11:20 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 13:57:03 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static char		*g_symnames[NSYMBOLS] = {
 	"UNDEFINED"
 };
 
-static t_event	get_event(t_token *tok)
+static t_event	get_event(t_parse *parse, t_token *tok)
 {
 	char	*data;
 
@@ -83,6 +83,7 @@ static t_event	get_event(t_token *tok)
 	{
 		data[--tok->len] = '\0';
 		tok->type = SYM_LABEL;
+		tok->cbyte = parse->header.size;
 		return (EV_LABEL);
 	}
 	else
@@ -98,7 +99,7 @@ void			fsm_run(t_parse *parse)
 	parse->curr = parse->tokens;
 	while (parse->curr)
 	{
-		parse->event = get_event(parse->curr);
+		parse->event = get_event(parse, parse->curr);
 		parse->state = g_trans[parse->state][parse->event](parse);
 		parse->curr = parse->curr->next;
 	}

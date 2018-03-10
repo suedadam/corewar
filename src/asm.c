@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 20:50:57 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 00:45:38 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 14:51:49 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ static void	print_debug(t_parse *parse)
 	t_token	*tokens;
 
 	ft_printf("Name: %s\nDesc: %s\n", parse->header.name, parse->header.desc);
+	ft_printf("Size: %d\n", parse->header.size);
 	ft_printf("-----------------------------------\n");
 	tokens = parse->tokens;
 	while (tokens)
