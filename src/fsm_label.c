@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:45:45 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 01:14:57 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 00:47:27 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ t_state		fsm_build_label(t_parse *parse)
 	{
 		if (curr->type == SYM_LABEL && !ft_strcmp(curr->data, tok->data))
 		{
-			ft_printf("Duplicate label at [%03d:%03d]\n",
-				tok->line_num, tok->col_num);
+			ft_printf("%&s Duplicate label at [%03d:%03d]\n",
+				"1;31m", "ERROR:", tok->line_num, tok->col_num);
 			exit(1);
 		}
 		curr = curr->next;

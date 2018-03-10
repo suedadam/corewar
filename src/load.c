@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 18:57:42 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/07 18:02:12 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 23:58:46 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void		read_file(t_line **head, int fd)
 	int		res;
 
 	line_num = 1;
-	while ((res = get_next_line(fd, &line) > 0))
+	while ((res = get_next_line(fd, &line)) > 0)
 	{
 		if (!(*head = ft_memalloc(sizeof(t_line))))
 			DEFAULT_ERROR;
@@ -68,8 +68,11 @@ t_line			*load_file(char *file)
 
 	if ((fd = open(file, O_RDONLY)) < 0)
 		DEFAULT_ERROR;
+	head = NULL;
 	read_file(&head, fd);
 	close(fd);
+	if (!head)
+		fatal_error("Empty or invalid input file");
 	return (head);
 }
 

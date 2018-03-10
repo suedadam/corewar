@@ -20,7 +20,8 @@ ASM_SRC = \
 	fsm_op\
 	load\
 	token\
-	util
+	util\
+	write
 CORE_SRC = 
 OBJ_DIR = $(SRC_DIR)/obj
 CORE_OBJ = $(patsubst %, $(OBJ_DIR)/%.o, $(CORE_SRC))

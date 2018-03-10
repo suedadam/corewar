@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 03:28:11 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/09 23:30:17 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@
 # define T_REG				1
 # define T_DIR				2
 # define T_IND				4
-# define T_LAB				8
 
 typedef enum		e_event
 {
@@ -102,7 +101,7 @@ typedef struct		s_header
 {
 	unsigned int	magic;
 	char			name[PROG_NAME_LENGTH + 1];
-	unsigned short	size;
+	unsigned int	size;
 	char			desc[COMMENT_LENGTH + 1];
 }					t_header;
 
@@ -190,6 +189,12 @@ void				lexical_error(int line, int col);
 unsigned int		reverse_bytes(unsigned int n, ssize_t size);
 void				syntax_error(int line, int col, char *type, char *val);
 int					trim(char *arg);
+
+/*
+** write.c
+*/
+
+void				write_file(t_parse *parse, char *file);
 
 extern const t_op	g_ops[];
 #endif

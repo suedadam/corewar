@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:44:41 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 03:27:42 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 00:48:13 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ const t_op		g_ops[] = {
 
 static t_token	*invalid_op(t_token *tok)
 {
-	ft_printf("%s[%03d:%03d] INSTRUCTION \"%s\"\n",
-		"Invalid instruction at token [TOKEN]",
+	ft_printf("%&s %s[%03d:%03d] INSTRUCTION \"%s\"\n",
+		"1;31m", "ERROR:", "Invalid instruction at token [TOKEN]",
 		tok->line_num, tok->col_num, tok->data);
 	exit(1);
 }
