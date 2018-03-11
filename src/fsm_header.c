@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/07 22:13:10 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/08 04:53:12 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 14:18:23 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static char	*build_val(t_token *start, t_token *end, int len)
 
 static void	missing_param(t_token *tok)
 {
-	syntax_error(tok->line_num, tok->col_num + tok->len, "ENDLINE", "");
+	syntax_error(tok->row, tok->col + tok->len, "ENDLINE", "");
 }
 
 static char	*get_val(t_parse *parse, int max_len)
@@ -49,21 +49,21 @@ static char	*get_val(t_parse *parse, int max_len)
 
 	len = 0;
 	curr = parse->curr;
-	if (*curr->data != '\"')
-		lexical_error(curr->line_num, curr->col_num);
+	if (*(char *)curr->data != '\"')
+		lexical_error(curr->row, curr->col);
 	start = curr;
-	ft_memmove(start->data, start->data + 1, start->len);
+	ft_memmove(start->data, start->data + 1, start->len--);
 	while (TRUE)
 	{
 		len += curr->len + (curr->next != NULL);
 		if (!curr->next)
 			missing_param(curr);
-		if (curr->data[curr->len - 1] == '\"')
+		if (((char *)curr->data)[curr->len - 1] == '\"')
 			break ;
 		curr = curr->next;
 	}
 	end = curr;
-	end->data[end->len - 1] = '\0';
+	((char *)end->data)[end->len - 1] = '\0';
 	parse->curr = end;
 	len -= 2;
 	return ((len > max_len) ? NULL : build_val(start, end, len));
@@ -71,7 +71,8 @@ static char	*get_val(t_parse *parse, int max_len)
 
 static void	oversized(char *type, int max_len)
 {
-	ft_printf("Champion %s too long (Max length %d)\n", type, max_len);
+	ft_printf("%&s Champion %s too long (Max length %d)\n", "1;31m", "ERROR:",
+		type, max_len);
 	exit(1);
 }
 

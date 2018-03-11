@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 18:07:31 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 21:35:22 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 04:31:38 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,19 +51,6 @@ static t_state	(*g_trans[NSTATES][NEVENTS])(t_parse *parse) = {
 	}
 };
 
-static char		*g_symnames[NSYMBOLS] = {
-	"COMMAND_NAME",
-	"COMMAND_COMMENT",
-	"DIRECT_PARAM",
-	"DIRECT_LABEL",
-	"INDIRECT_PARAM",
-	"INDIRECT_LABEL",
-	"LABEL",
-	"INSTRUCTION",
-	"REGISTER",
-	"UNDEFINED"
-};
-
 static t_event	get_event(t_token *tok)
 {
 	char	*data;
@@ -81,7 +68,6 @@ static t_event	get_event(t_token *tok)
 	}
 	else if (data[tok->len - 1] == LABEL_CHAR)
 	{
-		data[--tok->len] = '\0';
 		tok->type = SYM_LABEL;
 		return (EV_LABEL);
 	}
@@ -102,14 +88,32 @@ void			fsm_run(t_parse *parse)
 		parse->state = g_trans[parse->state][parse->event](parse);
 		parse->curr = parse->curr->next;
 	}
+	parse->curr = parse->tokens;
+	while (parse->curr->type == SYM_COMMAND_NAME
+		|| parse->curr->type == SYM_COMMAND_COMMENT
+		|| parse->curr->type == UNDEFINED)
+		parse->curr = parse->curr->next;
 }
 
 t_state			fsm_syntax_error(t_parse *parse)
 {
+	static char		*symnames[NSYMBOLS] = {
+		"COMMAND_NAME",
+		"COMMAND_COMMENT",
+		"DIRECT_PARAM",
+		"DIRECT_LABEL",
+		"INDIRECT_PARAM",
+		"INDIRECT_LABEL",
+		"LABEL",
+		"INSTRUCTION",
+		"REGISTER",
+		"UNDEFINED"
+	};
+
 	syntax_error(
-		parse->curr->line_num,
-		parse->curr->col_num,
-		g_symnames[parse->curr->type],
+		parse->curr->row,
+		parse->curr->col,
+		symnames[parse->curr->type],
 		parse->curr->data);
 	return (QUIT);
 }

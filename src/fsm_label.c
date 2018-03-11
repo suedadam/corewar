@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:45:45 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 21:34:54 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 06:14:41 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,44 @@
 #include "core.h"
 #include "ft_printf.h"
 
+static void	find_duplicate(t_parse *parse, t_token *seek)
+{
+	t_token	*iter;
+
+	iter = parse->tokens;
+	while (iter != seek)
+	{
+		if (iter->type == SYM_LABEL && !ft_strcmp(iter->data, seek->data))
+		{
+			ft_printf("[%03d:%03d] %&s Duplicate label\n",
+				seek->row, seek->col, "1;31m", "ERROR:");
+			exit(1);
+		}
+		iter = iter->next;
+	}
+}
+
 t_state		fsm_build_label(t_parse *parse)
 {
 	t_token	*tok;
-	t_token	*curr;
-	int		i;
 
-	i = 0;
 	tok = parse->curr;
-	while (i < tok->len)
-	{
-		if (!ft_strchr(LABEL_CHARS, tok->data[i]))
-			lexical_error(tok->line_num, tok->col_num + i);
-		++i;
-	}
-	curr = parse->tokens;
-	while (curr != tok)
-	{
-		if (curr->type == SYM_LABEL && !ft_strcmp(curr->data, tok->data))
-		{
-			ft_printf("%&s Duplicate label at [%03d:%03d]\n",
-				"1;31m", "ERROR:", tok->line_num, tok->col_num);
-			exit(1);
-		}
-		curr = curr->next;
-	}
+	validate_label_chars(tok);
+	find_duplicate(parse, tok);
 	tok->cbyte = parse->header.size;
 	return (BUILD_LABEL);
+}
+
+void		validate_label_chars(t_token *arg)
+{
+	char	*data;
+
+	data = arg->data;
+	data[--arg->len] = '\0';
+	while (*data)
+	{
+		if (!ft_strchr(LABEL_CHARS, *data))
+			lexical_error(arg->row, arg->col + (data - (char *)arg->data));
+		++data;
+	}
 }

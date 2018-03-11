@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 21:23:25 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 20:21:20 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 04:38:08 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,18 @@ static int		*cw_atoi(char *data)
 	int	*res;
 	int	n;
 	int	sign;
-	int	i;
 
-	i = 0;
 	n = 0;
-	sign = (data[i] == '-') ? -1 : 1;
-	if (data[i] == '-')
-		++i;
-	if (!data[i])
+	sign = (*data == '-') ? -1 : 1;
+	if (*data == '-')
+		++data;
+	if (!*data)
 		return (NULL);
-	while (data[i])
+	while (*data)
 	{
-		if (!IS_DIGIT(data[i]))
+		if (!IS_DIGIT(*data))
 			return (NULL);
-		n = (n * 10) + ((data[i++] - '0') * sign);
+		n = (n * 10) + ((*data++ - '0') * sign);
 	}
 	if (!(res = ft_memalloc(sizeof(int))))
 		DEFAULT_ERROR;
@@ -43,32 +41,20 @@ static int		*cw_atoi(char *data)
 
 t_bool			read_reg(t_token *op, t_token *arg)
 {
-	ft_memmove(arg->data, arg->data + 1, arg->len--);
-	if (!(arg->data = (char *)cw_atoi(arg->data)))
+	int	*res;
+
+	ft_memmove(arg->data, arg->data + 1, arg->len);
+	if (!(res = cw_atoi(arg->data)))
 		return (FALSE);
-	if (*arg->data < 1 || *arg->data > REG_NUMBER)
+	if (*res < 1 || *res > REG_NUMBER)
 	{
-		free(arg->data);
+		free(res);
 		return (FALSE);
 	}
+	arg->data = res;
 	arg->type = SYM_REGISTER;
-	arg->len = 1;
+	arg->len = REG_SIZE;
 	op->cbyte = (op->cbyte << 2) + REG_CODE;
-	return (TRUE);
-}
-
-static t_bool	validate_label(t_token *arg)
-{
-	int		i;
-
-	i = 0;
-	ft_memmove(arg->data, arg->data + 1, arg->len--);
-	while (arg->data[i])
-	{
-		if (!ft_strchr(LABEL_CHARS, arg->data[i]))
-			return (FALSE);
-		++i;
-	}
 	return (TRUE);
 }
 
@@ -76,21 +62,23 @@ t_bool			read_direct(t_token *op, t_token *arg, t_bool truncate)
 {
 	int	*res;
 
-	ft_memmove(arg->data, arg->data + 1, arg->len--);
-	if (*arg->data == ':')
+	ft_memmove(arg->data, arg->data + 1, arg->len);
+	++arg->col;
+	if (*(char *)arg->data == LABEL_CHAR)
 	{
-		if (!validate_label(arg))
-			return (FALSE);
+		ft_memmove(arg->data, arg->data + 1, arg->len);
+		++arg->col;
+		validate_label_chars(arg);
 		arg->type = SYM_DLABEL;
 	}
 	else
 	{
 		if (!(res = cw_atoi(arg->data)))
 			return (FALSE);
-		arg->data = (char *)res;
+		arg->data = res;
 		arg->type = SYM_DIRECT;
 	}
-	arg->len = (truncate) ? 2 : 4;
+	arg->len = (truncate) ? IND_SIZE : DIR_SIZE;
 	op->cbyte = (op->cbyte << 2) + DIR_CODE;
 	return (TRUE);
 }
@@ -99,20 +87,21 @@ t_bool			read_indirect(t_token *op, t_token *arg)
 {
 	int	*res;
 
-	if (*arg->data == ':')
+	if (*(char *)arg->data == LABEL_CHAR)
 	{
-		if (!validate_label(arg))
-			return (FALSE);
+		ft_memmove(arg->data, arg->data + 1, arg->len);
+		++arg->col;
+		validate_label_chars(arg);
 		arg->type = SYM_INDLABEL;
 	}
 	else
 	{
 		if (!(res = cw_atoi(arg->data)))
 			return (FALSE);
-		arg->data = (char *)res;
+		arg->data = res;
 		arg->type = SYM_IND;
 	}
-	arg->len = 2;
+	arg->len = IND_SIZE;
 	op->cbyte = (op->cbyte << 2) + IND_CODE;
 	return (TRUE);
 }

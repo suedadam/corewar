@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 20:50:57 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 21:48:42 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 14:09:50 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static char	*build_filename(char *file)
 
 static void	init_parse(t_parse *parse, char *file)
 {
-	static char	delim[4] = { SEPARATOR_CHAR, ' ', '\t', '\0' };
+	static char	delim[4] = { SEPARATOR_CHAR, ' ', '\t' };
 
 	ft_printf("Compiling %s...\n > ", file);
 	ft_memset(&parse->header, 0, sizeof(t_header));
@@ -42,29 +42,29 @@ static void	init_parse(t_parse *parse, char *file)
 
 static void	print_debug(t_parse *parse)
 {
-	t_token	*tokens;
+	static char	*sep = "-----------------------------------\n";
+	t_token		*tok;
 
+	tok = parse->tokens;
 	ft_printf("Name: %s\nDesc: %s\n", parse->header.name, parse->header.desc);
 	ft_printf("Size: %d\n", parse->header.size);
-	ft_printf("-----------------------------------\n");
-	tokens = parse->tokens;
-	while (tokens)
+	ft_printf(sep);
+	while (tok)
 	{
-		ft_printf("%02d:%02d (%02d) ", tokens->line_num, tokens->col_num,
-			tokens->len, tokens->data);
-		if (tokens->type == SYM_REGISTER)
-			ft_printf("R%d\n", *tokens->data);
-		else if (tokens->type == SYM_IND)
-			ft_printf("%hd\n", *tokens->data);
-		else if (tokens->type == SYM_DIRECT)
-			ft_printf("%%%d\n", *tokens->data);
-		else if (tokens->type == SYM_OP)
-			ft_printf("%s\n", g_ops[*(int *)tokens->data - 1].name);
+		ft_printf("%02d:%02d (%02d) ", tok->row, tok->col, tok->len, tok->data);
+		if (tok->type == SYM_REGISTER)
+			ft_printf("R%d\n", *(int *)tok->data);
+		else if (tok->type == SYM_IND)
+			ft_printf("%hd\n", *(int *)tok->data);
+		else if (tok->type == SYM_DIRECT)
+			ft_printf("%%%d\n", *(int *)tok->data);
+		else if (tok->type == SYM_OP)
+			ft_printf("%s\n", g_ops[*(int *)tok->data - 1].name);
 		else
-			ft_printf("%s\n", tokens->data);
-		tokens = tokens->next;
+			ft_printf("%s\n", tok->data);
+		tok = tok->next;
 	}
-	ft_printf("-----------------------------------\n");
+	ft_printf(sep);
 }
 
 static void	print_usage(char *prog_name)
@@ -76,20 +76,16 @@ static void	print_usage(char *prog_name)
 int			main(int ac, char **av)
 {
 	t_parse	parse;
-	char	*ofile_name;
-	int		i;
+	char	*file;
 
 	UNUSED(print_debug);
 	if (ac < 2)
 		print_usage(av[0]);
-	i = 0;
-	while (++i < ac)
+	while ((file = *(++av)))
 	{
-		init_parse(&parse, av[i]);
+		init_parse(&parse, file);
 		fsm_run(&parse);
-		ofile_name = build_filename(av[i]);
-		write_file(&parse, ofile_name);
-		free(ofile_name);
+		write_file(&parse, build_filename(file));
 		destroy_tokens(parse.tokens);
 		unload_lines(parse.lines);
 		ft_printf("%&s", "1;32m", "DONE\n");

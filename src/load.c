@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 18:57:42 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 23:58:46 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 14:31:30 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,17 @@ static char		*strip_comments(char *arg)
 static void		read_file(t_line **head, int fd)
 {
 	char	*line;
-	int		line_num;
+	int		row;
 	int		res;
 
-	line_num = 1;
+	row = 1;
 	while ((res = get_next_line(fd, &line)) > 0)
 	{
 		if (!(*head = ft_memalloc(sizeof(t_line))))
 			DEFAULT_ERROR;
 		(*head)->data = strip_comments(line);
-		(*head)->col_num = trim(line) + 1;
-		(*head)->line_num = line_num++;
+		(*head)->col = trim(line) + 1;
+		(*head)->row = row++;
 		if (*(*head)->data)
 		{
 			head = &(*head)->next;

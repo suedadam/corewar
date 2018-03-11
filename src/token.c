@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:06:25 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/09 03:53:28 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 14:31:32 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static t_token	*create_token(char *data, t_symbol type)
 	return (tok);
 }
 
-static t_token	*split(char *data, char *delim, int line_num, int col_num)
+static t_token	*split(char *data, char *delim, int row, int col)
 {
 	t_token	**curr;
 	t_token	*head;
@@ -56,9 +56,9 @@ static t_token	*split(char *data, char *delim, int line_num, int col_num)
 		if (data[i])
 		{
 			*curr = create_token(data + i, UNDEFINED);
-			(*curr)->line_num = line_num;
-			(*curr)->col_num = col_num + trim((*curr)->data) + i + 1;
-			if (*(*curr)->data)
+			(*curr)->row = row;
+			(*curr)->col = col + trim((*curr)->data) + i;
+			if (*(char *)(*curr)->data)
 				curr = &(*curr)->next;
 			else
 				ft_memdel((void **)curr);
@@ -79,7 +79,7 @@ t_token			*tokenize(t_line *lines, char *delim)
 	curr = &head;
 	while (lines)
 	{
-		tokens = split(lines->data, delim, lines->line_num, lines->col_num - 1);
+		tokens = split(lines->data, delim, lines->row, lines->col);
 		if (tokens)
 			*curr = tokens;
 		while (*curr)

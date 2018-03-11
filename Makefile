@@ -7,7 +7,7 @@
 ASM = asm
 COREWAR = corewar
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS += -Wall -Werror -Wextra
 INC = -I inc -I libft/inc
 LIBFT = libft/libft.a
 SRC_DIR = src
@@ -40,7 +40,7 @@ YELLOW = \033[1;33m
 # RULES                                                                        #
 ################################################################################
 
-all: $(ASM) $(COREWAR)
+all: $(ASM) #$(COREWAR)
 
 $(ASM): $(LIBFT) $(ASM_OBJ)
 	@printf "$(YELLOW)%-35s$(NC)" "Building $@... "

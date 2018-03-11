@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 21:46:04 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 20:08:14 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 14:23:28 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@ void			fatal_error(char *msg)
 
 void			lexical_error(int line, int col)
 {
-	ft_printf("%&s Lexical error at [%03d:%03d]\n",
-		"1;31m", "ERROR:", line, col);
+	ft_printf("[%03d:%03d] %&s Lexical error\n", line, col, "1;31m", "ERROR:");
 	exit(1);
 }
 
@@ -47,8 +46,8 @@ int				reverse_bytes(int n, ssize_t size)
 
 void			syntax_error(int line, int col, char *type, char *val)
 {
-	ft_printf("%&s Syntax error at token [TOKEN][%03d:%03d] %s",
-		"1;31m", "ERROR:", line, col, type);
+	ft_printf("[%03d:%03d] %&s Syntax error [%s]", line, col, "1;31m", "ERROR:",
+		type);
 	if (*val)
 		ft_printf(" \"%s\"", val);
 	ft_printf("\n");
