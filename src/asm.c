@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 20:50:57 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 14:51:49 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 20:44:19 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int			main(int ac, char **av)
 	char	*ofile_name;
 	int		i;
 
-	UNUSED(print_debug);
+//	UNUSED(print_debug);
 	if (ac < 2)
 		print_usage(av[0]);
 	i = 0;
@@ -87,6 +87,7 @@ int			main(int ac, char **av)
 	{
 		init_parse(&parse, av[i]);
 		fsm_run(&parse);
+print_debug(&parse);
 		ofile_name = build_filename(av[i]);
 		write_file(&parse, ofile_name);
 		free(ofile_name);

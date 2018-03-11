@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 21:23:25 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 14:20:51 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 20:21:20 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,6 @@ t_bool			read_direct(t_token *op, t_token *arg, t_bool truncate)
 	{
 		if (!(res = cw_atoi(arg->data)))
 			return (FALSE);
-		if (truncate)
-			*res = (short)*res;
 		arg->data = (char *)res;
 		arg->type = SYM_DIRECT;
 	}
@@ -111,7 +109,6 @@ t_bool			read_indirect(t_token *op, t_token *arg)
 	{
 		if (!(res = cw_atoi(arg->data)))
 			return (FALSE);
-		*res = (short)*res;
 		arg->data = (char *)res;
 		arg->type = SYM_IND;
 	}

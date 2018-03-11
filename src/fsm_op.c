@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 01:44:41 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 14:40:13 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 15:56:13 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ static t_token	*validate_params(t_parse *parse, t_token *tok, const t_op *op)
 		}
 		invalid_param(tok, arg, i);
 	}
+	tok->cbyte <<= (8 - (2 * op->num_args));
 	return (arg);
 }
 

@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 13:43:10 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 19:51:12 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ t_token				*tokenize(t_line *line, char *delim);
 
 void				fatal_error(char *msg);
 void				lexical_error(int line, int col);
-unsigned int		reverse_bytes(unsigned int n, ssize_t size);
+int					reverse_bytes(int n, ssize_t size);
 void				syntax_error(int line, int col, char *type, char *val);
 int					trim(char *arg);
 

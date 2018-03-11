@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 21:46:04 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/10 00:45:31 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/10 20:08:14 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void			lexical_error(int line, int col)
 	exit(1);
 }
 
-unsigned int	reverse_bytes(unsigned int n, ssize_t size)
+int				reverse_bytes(int n, ssize_t size)
 {
 	char	*bytes;
 	char	res[4];
@@ -42,7 +42,7 @@ unsigned int	reverse_bytes(unsigned int n, ssize_t size)
 		res[i] = bytes[size - i - 1];
 		++i;
 	}
-	return (*(unsigned int *)res);
+	return (*(int *)res);
 }
 
 void			syntax_error(int line, int col, char *type, char *val)
