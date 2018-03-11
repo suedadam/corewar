@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/11 06:20:26 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 15:06:27 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,55 +21,47 @@
 # define DEFAULT_ERROR		FATAL_ERROR(strerror(errno))
 
 /*
-** arg_validate.c
-*/
-
-t_bool				read_reg(t_token *op, t_token *arg);
-t_bool				read_direct(t_token *op, t_token *arg, t_bool truncate);
-t_bool				read_indirect(t_token *op, t_token *arg);
-
-/*
-** fsm.c
+** asm_fsm.c
 */
 
 void				fsm_run(t_parse *parse);
 t_state				fsm_syntax_error(t_parse *parse);
 
 /*
-** fsm_header.c
+** asm_header.c
 */
 
 t_state				fsm_build_header(t_parse *parse);
 
 /*
-**	fsm_label.c
+**	asm_label.c
 */
 
 t_state				fsm_build_label(t_parse *parse);
 void				validate_label_chars(t_token *arg);
 
 /*
-** fsm_op.c
-*/
-
-t_state				fsm_build_op(t_parse *parse);
-
-/*
-** load.c
+** asm_load.c
 */
 
 t_line				*load_file(char *file);
 void				unload_lines(t_line *lines);
 
 /*
-** token.c
+** asm_op.c
+*/
+
+t_state				fsm_build_op(t_parse *parse);
+
+/*
+** asm_token.c
 */
 
 void				destroy_tokens(t_token *tokens);
 t_token				*tokenize(t_line *line, char *delim);
 
 /*
-** util.c
+** asm_util.c
 */
 
 void				fatal_error(char *msg);
@@ -79,7 +71,15 @@ void				syntax_error(int line, int col, char *type, char *val);
 int					trim(char *arg);
 
 /*
-** write.c
+** asm_validate_arg.c
+*/
+
+t_bool				read_reg(t_token *op, t_token *arg);
+t_bool				read_direct(t_token *op, t_token *arg, t_bool truncate);
+t_bool				read_indirect(t_token *op, t_token *arg);
+
+/*
+** asm_write.c
 */
 
 void				write_file(t_parse *parse, char *file);

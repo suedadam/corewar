@@ -13,15 +13,15 @@ LIBFT = libft/libft.a
 SRC_DIR = src
 ASM_SRC = \
 	asm\
-	arg_validate\
-	fsm\
-	fsm_header\
-	fsm_label\
-	fsm_op\
-	load\
-	token\
-	util\
-	write
+	asm_fsm\
+	asm_header\
+	asm_label\
+	asm_load\
+	asm_op\
+	asm_token\
+	asm_util\
+	asm_validate_arg\
+	asm_write
 CORE_SRC = 
 OBJ_DIR = $(SRC_DIR)/obj
 CORE_OBJ = $(patsubst %, $(OBJ_DIR)/%.o, $(CORE_SRC))

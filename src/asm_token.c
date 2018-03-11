@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:06:25 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/11 14:31:32 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 14:50:08 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,7 @@ t_token			*tokenize(t_line *lines, char *delim)
 	curr = &head;
 	while (lines)
 	{
-		tokens = split(lines->data, delim, lines->row, lines->col);
-		if (tokens)
+		if ((tokens = split(lines->data, delim, lines->row, lines->col)))
 			*curr = tokens;
 		while (*curr)
 		{
