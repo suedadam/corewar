@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 12:35:03 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 12:58:57 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,16 @@ static int		size_check(int fd)
 	start = lseek(fd, 0, SEEK_CUR);
 	size = lseek(fd, 0, SEEK_END);
 	if (((size - start) - sizeof(header_t)) > CHAMP_MAX_SIZE)
+	{
+		printf("File has too large a code (%d bytes > %d bytes)\n",
+				((size - start) - sizeof(header_t)), CHAMP_MAX_SIZE);
 		return (-1);
+	}
 	if (lseek(fd, start, SEEK_SET) == -1)
+	{
+		printf("Failed to calculate size (skip failure)\n");
 		return (-1);
+	}
 	return (size - start);
 }
 
@@ -32,12 +39,12 @@ static int		validate_header(void *player, size_t size)
 	header_t	*player_h;
 
 	player_h = (header_t *)player;
-	if (player_h->magic != ntohl(COREWAR_EXEC_MAGIC))
+	if (player_h->magic != ft_longswap(COREWAR_EXEC_MAGIC))
 		return (-1);
-	if (ntohl(player_h->prog_size) != size - sizeof(header_t))
+	if (ft_longswap(player_h->prog_size) != size - sizeof(header_t))
 	{
 		printf("Error: Too large a code (%d bytes > %d bytes)\n",
-			ntohl(player_h->prog_size), (int)(size - sizeof(header_t)));
+			ft_longswap(player_h->prog_size), (int)(size - sizeof(header_t)));
 		return (-1);
 	}
 	return (0);
@@ -77,11 +84,9 @@ static int		load_to_mem(int fd, size_t size, void *arena, int player_id)
 	ft_memcpy(arena + placement, player, size);
 	free(player - sizeof(header_t));
 	child = link_last();
-	child->pid = pid++; //Remove me.
 	child->plid = player_id;
 	child->regs[1] = player_id;
 	child->pc = placement;
-	// printf("PID = %d\n", child->pid);
 	return (0);
 }
 
@@ -91,7 +96,10 @@ int				read_champion(char *filename, void *arena, int player_id)
 	off_t	size;
 
 	if ((fd = open(filename, O_RDONLY)) == -1)
+	{
+		printf("Failed to open file.\n");
 		return (-1);
+	}
 	if ((size = size_check(fd)) == -1)
 	{
 		close(fd);

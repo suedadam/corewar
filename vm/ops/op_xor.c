@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   op_xor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 02:18:36 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 12:59:49 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ static int	xor_ind(unsigned char *arena, t_process *child, t_andop *op_data)
 		tmp = 0;
 		copy_memory_fwd_off(&tmp, arena,
 				child->pc + *op_data->arg % IDX_MOD, sizeof(short));
-		op_data->val = ntohs(tmp);
+		op_data->val = ft_shortswap(tmp);
 	}
 	else if (op_data->argi == 1)
 	{
 		tmp = 0;
 		copy_memory_fwd_off(&tmp, arena,
 				child->pc + *op_data->arg % IDX_MOD, sizeof(short));
-		op_data->val = op_data->val ^ ntohs(tmp);
+		op_data->val = op_data->val ^ ft_shortswap(tmp);
 	}
 	return (0);
 }

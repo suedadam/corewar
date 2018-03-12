@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:49:32 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 13:05:46 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 12:40:57 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,7 @@ int	main(int argc, char *argv[])
 		return (-1);
 	}
 	if (!(arena = init(argc - 1, argv)))
-	{
-		printf("Failed to read.\n");
 		return (-1);
-	}
 	init_war(arena);
 	return (0);
 }

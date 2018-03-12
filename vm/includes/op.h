@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/10/04 11:33:27 by zaz               #+#    #+#             */
-/*   Updated: 2018/03/06 02:44:07 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 13:01:15 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #define F_DIR_SIZE				REG_SIZE
 
 #define IND_SIZE				2
-#define REG_SIZE				4 // 1 byte. (fetching)
+#define REG_SIZE				4
 #define DIR_SIZE				REG_SIZE
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vm.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/11 14:37:31 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 12:50:14 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,9 @@ typedef struct		s_op
 	uint8_t		trunc:1;
 }					t_op;
 
-/*
-** OMG WHY DON'T WE HAVE GENERICS FUCKKKKKKKKKK D: ;_;
-** FUcking hell just check each value to see if it is larger than blah size ;) 
-** I mean that sucks but whatever ya know? We can haz a sanitization function boi 
-*/
-
 typedef struct	s_process
 {
 	uint8_t				plid;
-	int					pid; //Remove me too.
 	int					regs[REG_NUMBER + 1];
 	int64_t				pc;
 	uint8_t				carry;
@@ -68,7 +61,7 @@ typedef struct	s_taskmanager
 	size_t		lastnbrlive;
 	uint32_t	totalPlayers;
 	t_process	*processes;
-	int8_t		lastlive; //Default -1;
+	int8_t		lastlive;
 	int			c_to_die;
 	int			c_diecycles;
 	int			c_checks;	
