@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/17 19:02:54 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/11 15:06:27 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 21:17:49 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void				fatal_error(char *msg);
 void				lexical_error(int line, int col);
 int					reverse_bytes(int n, ssize_t size);
 void				syntax_error(int line, int col, char *type, char *val);
-int					trim(char *arg);
+int					trim(char *arg, char *delim);
 
 /*
 ** asm_validate_arg.c

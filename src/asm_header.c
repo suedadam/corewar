@@ -1,18 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fsm_header.c                                       :+:      :+:    :+:   */
+/*   asm_header.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/07 22:13:10 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/11 14:18:23 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/12 00:38:09 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "core.h"
 #include "ft_printf.h"
+
+#define ERR_EOF(x) syntax_error(x->row, x->col + x->len, "ENDLINE", "")
+#define CPTR(x) (char *)x->data
 
 static char	*build_val(t_token *start, t_token *end, int len)
 {
@@ -35,38 +38,29 @@ static char	*build_val(t_token *start, t_token *end, int len)
 	}
 }
 
-static void	missing_param(t_token *tok)
-{
-	syntax_error(tok->row, tok->col + tok->len, "ENDLINE", "");
-}
-
-static char	*get_val(t_parse *parse, int max_len)
+static int	command_len(t_token *start, t_token **end)
 {
 	t_token	*curr;
-	t_token	*start;
-	t_token	*end;
+	char	*pos;
 	int		len;
 
 	len = 0;
-	curr = parse->curr;
-	if (*(char *)curr->data != '\"')
-		lexical_error(curr->row, curr->col);
-	start = curr;
-	ft_memmove(start->data, start->data + 1, start->len--);
-	while (TRUE)
+	curr = start;
+	while ((curr = curr->next))
 	{
-		len += curr->len + (curr->next != NULL);
+		len += curr->len + 1;
 		if (!curr->next)
-			missing_param(curr);
-		if (((char *)curr->data)[curr->len - 1] == '\"')
+			ERR_EOF(curr);
+		if ((pos = ft_strchr(curr->data, '\"')))
+		{
+			if (pos != CPTR(curr) + curr->len - 1)
+				lexical_error(curr->row, curr->col + (pos - CPTR(curr)) + 1);
+			--len;
 			break ;
-		curr = curr->next;
+		}
 	}
-	end = curr;
-	((char *)end->data)[end->len - 1] = '\0';
-	parse->curr = end;
-	len -= 2;
-	return ((len > max_len) ? NULL : build_val(start, end, len));
+	*end = curr;
+	return (len);
 }
 
 static void	oversized(char *type, int max_len)
@@ -74,6 +68,32 @@ static void	oversized(char *type, int max_len)
 	ft_printf("%&s Champion %s too long (Max length %d)\n", "1;31m", "ERROR:",
 		type, max_len);
 	exit(1);
+}
+
+static char	*get_val(t_parse *parse, char *type, int max_len)
+{
+	t_token	*start;
+	t_token	*end;
+	char	*val;
+	int		len;
+
+	start = parse->curr;
+	len = start->len;
+	end = start;
+	if (*(char *)start->data != '\"')
+		lexical_error(start->row, start->col);
+	if (ft_strrchr(start->data, '\"') == start->data)
+		++len;
+	if (len > start->len)
+		len += command_len(start, &end);
+	if (len - 2 > max_len)
+		oversized(type, max_len);
+	val = build_val(start, end, len);
+	if (val[len - 1] != '\"')
+		lexical_error(end->row, end->col + (ft_strrchr(val, '\"') - val) + 1);
+	trim(val, " \t\n\"");
+	parse->curr = end;
+	return (val);
 }
 
 t_state		fsm_build_header(t_parse *parse)
@@ -95,10 +115,10 @@ t_state		fsm_build_header(t_parse *parse)
 	if (*data)
 		fsm_syntax_error(parse);
 	if (!parse->curr->next)
-		missing_param(parse->curr);
+		ERR_EOF(parse->curr);
 	parse->curr = parse->curr->next;
-	if (!(val = get_val(parse, max_len)))
-		oversized((data == parse->header.name) ? "name" : "comment", max_len);
+	val = get_val(parse, (data == parse->header.name) ? "name" : "comment",
+		max_len);
 	ft_stpcpy(data, val);
 	free(val);
 	return (BUILD_HEADER);

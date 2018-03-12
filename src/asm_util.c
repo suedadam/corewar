@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   util.c                                             :+:      :+:    :+:   */
+/*   asm_util.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 21:46:04 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/11 14:23:28 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 21:17:31 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,21 +54,19 @@ void			syntax_error(int line, int col, char *type, char *val)
 	exit(1);
 }
 
-#define IS_WSPACE(x,i)	x[i] && (x[i] == ' ' || x[i] == '\t')
-
-int				trim(char *arg)
+int				trim(char *arg, char *delim)
 {
 	char	*tmp;
 	int		off;
 	int		len;
 
 	off = 0;
-	while (IS_WSPACE(arg, off))
+	while (arg[off] && ft_strchr(delim, arg[off]))
 		++off;
 	tmp = arg + off;
-	if ((len = ft_strlen(tmp)))
+	if ((len = ft_strlen(tmp)) > 0)
 		--len;
-	while (IS_WSPACE((tmp), len))
+	while (tmp[len] && ft_strchr(delim, tmp[len]))
 		--len;
 	ft_memmove(arg, tmp, ++len);
 	arg[len] = '\0';

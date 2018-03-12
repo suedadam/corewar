@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token.c                                            :+:      :+:    :+:   */
+/*   asm_token.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:06:25 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/11 14:50:08 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/11 23:12:24 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static t_token	*split(char *data, char *delim, int row, int col)
 		{
 			*curr = create_token(data + i, UNDEFINED);
 			(*curr)->row = row;
-			(*curr)->col = col + trim((*curr)->data) + i;
+			(*curr)->col = col + trim((*curr)->data, " \t\n") + i;
 			if (*(char *)(*curr)->data)
 				curr = &(*curr)->next;
 			else
