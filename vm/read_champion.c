@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   read_champion.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/08 21:23:42 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/10 22:38:03 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ static int		load_to_mem(int fd, size_t size, void *arena, int player_id)
 	free(player - sizeof(header_t));
 	child = link_last();
 	child->plid = -1;
+	child->pid = 1; //Remove me.
 	child->regs[1] = -1;
 	// child->plid = player_id;
 	// child->regs[1] = player_id;

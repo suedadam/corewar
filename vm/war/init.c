@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/08 19:08:45 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/11 23:27:56 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,14 @@ static int	remove_dead(void)
 	children = g_taskmanager->processes;
 	while (children)
 	{
+		// printf("Checking child %d\n", children->pid);
 		if (!children->die_check)
 		{
+			printf("Process %d hasn't lived for <whatever> cycles (CTD %d)\n", children->pid, g_taskmanager->c_to_die);
+			// printf("PID: %d Hasn't lived!\n", children->pid);
 			if (children == g_taskmanager->processes)
 			{
-				printf("(%zu) Process = %d never called live\n", g_taskmanager->currCycle, children->plid);
+				// printf("(%zu) Process = %d never called live\n", g_taskmanager->currCycle, children->plid);
 				g_taskmanager->processes = children->next;
 				free(children);
 				prevp = NULL;
@@ -65,9 +68,9 @@ static int	cleanup(void)
 		g_taskmanager->c_to_die -= CYCLE_DELTA;
 		g_taskmanager->lastnbrlive = 0;
 		g_taskmanager->c_checks = 0;
+		printf("Cycle to die is now %d\n", g_taskmanager->c_to_die);
 	}
-	else
-		g_taskmanager->c_checks++;
+	g_taskmanager->c_checks++;
 	g_taskmanager->c_diecycles = 0;
 	return (0);
 }
@@ -96,6 +99,7 @@ int			init_war(void *arena)
 			}
 			(g_taskmanager->currCycle)++;
 			(g_taskmanager->c_diecycles)++;
+			printf("It is now cycle %zu\n", g_taskmanager->currCycle);
 		}
 	}
 }

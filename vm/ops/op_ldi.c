@@ -6,28 +6,39 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/09 03:15:09 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/11 13:23:46 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
+
+char arg1[1024];
+char arg2[1024];
+char arg3[1024];
 
 static int	ldi_reg(unsigned char *arena, t_process *child, t_andop *op_data)
 {
 	int	tmp;
 
 	if (!op_data->argi)
+	{
 		op_data->val = child->regs[*(op_data->arg)];
+		sprintf(arg1, "%d", child->regs[*(op_data->arg)]);
+	}
 	else if (op_data->argi == 1)
 	{
 		op_data->val += child->regs[*(op_data->arg)];
+		sprintf(arg2, "%d", child->regs[*(op_data->arg)]);
 		// tmp = 0;
 		// copy_memory_fwd_off(&tmp, arena, child->pc + op_data->val % IDX_MOD,
 		// 	sizeof(short));
 		// op_data->val = ntohs(tmp);
 	}
 	else
+	{
 		op_data->dest = &(child->regs[*(op_data->arg)]);
+		sprintf(arg3, "r%d", *(op_data->arg));
+	}
 	return (0);
 }
 
@@ -41,10 +52,14 @@ static int	ldi_dir(unsigned char *arena, t_process *child, t_andop *op_data)
 	int	tmp;
 
 	if (!op_data->argi)
+	{
 		op_data->val = (short)*(op_data->arg);
+		sprintf(arg1, "%d", (short)*(op_data->arg));
+	}
 	else if (op_data->argi == 1)
 	{
 		op_data->val += (short)*(op_data->arg);
+		sprintf(arg2, "%d", (short)*(op_data->arg));
 		// tmp = 0;
 		// copy_memory_fwd_off(&tmp, arena, MEM_WARP(child->pc + op_data->val % IDX_MOD),
 		// 	sizeof(short));
@@ -73,6 +88,7 @@ int			op_ldi(t_operation *cmd_input, void *arena,
 	unsigned char	byte;
 	t_andop			op_data;
 
+	printf("ldi ");
 	bzero(&op_data, sizeof(t_andop));
 	op_data.encbyte = cmd_input->encbyte;
 	byte = cmd_input->encbyte;
@@ -85,6 +101,7 @@ int			op_ldi(t_operation *cmd_input, void *arena,
 			i++;
 		byte = byte << 2;
 	}
+	printf("%s %s %s\n       | -> load from %s + %s = %d (with pc and mod %lld)\n", arg1, arg2, arg3, arg1, arg2, op_data.val, MEM_WARP(child->pc + op_data.val % IDX_MOD));
 	*(op_data.dest) = 0;
 	copy_memory_fwd_off(op_data.dest, arena,
 		MEM_WARP(child->pc + op_data.val % IDX_MOD), sizeof(int));

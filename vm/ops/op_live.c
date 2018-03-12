@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   op_live.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 05:29:10 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/08 19:08:56 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/11 23:01:42 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@ int	op_live(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child)
 
 	p_input = cmd_input->args[0];
 	child->die_check = 1;
-	printf("(%zu) {LIVE}\n", g_taskmanager->currCycle);
+	printf("live %d\n", p_input);
+	g_taskmanager->lastnbrlive++;
+	// printf("(%zu) {LIVE}\n", g_taskmanager->currCycle);
 	if (p_input <= g_taskmanager->totalPlayers)
 	{
 		if (!(lostkid = g_taskmanager->processes))
@@ -35,7 +37,6 @@ int	op_live(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child)
 		}
 		if (lostkid)
 			g_taskmanager->lastlive = p_input;
-		g_taskmanager->lastnbrlive++;
 	}
 	return (0);
 }

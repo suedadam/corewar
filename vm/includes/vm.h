@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vm.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/08 21:07:07 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/11 14:37:31 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct		s_op
 typedef struct	s_process
 {
 	uint8_t				plid;
+	int					pid; //Remove me too.
 	int					regs[REG_NUMBER + 1];
 	int64_t				pc;
 	uint8_t				carry;
@@ -156,5 +157,6 @@ int				op_aff(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child
 extern t_op				g_op_tab[17];
 extern t_opdispatch		g_opdispatch[17];
 extern t_taskmanager	*g_taskmanager;
+extern unsigned char	*g_arena;
 
 #endif
