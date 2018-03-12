@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   war_op.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 02:39:50 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 12:08:34 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	calc_enc_size(t_process *child, unsigned char byte)
 			size += F_REG_SIZE;
 		else if (tmp == (unsigned char)SHIFT_T_DIR)
 		{
-			if (g_op_tab[child->opcode - 1].encbool)
+			if (g_op_tab[child->opcode - 1].trunc)
 				size += F_IND_SIZE;
 			else
 				size += F_DIR_SIZE;

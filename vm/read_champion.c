@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   read_champion.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/10 22:38:03 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 12:35:03 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ static int		load_to_mem(int fd, size_t size, void *arena, int player_id)
 	void		*player;
 	size_t		placement;
 	t_process	*child;
+	static int	pid = 1;
 
 	if (!(player = ft_memalloc(size + 1)) ||
 		read(fd, player, size) == -1 || validate_header(player, size))
@@ -76,12 +77,11 @@ static int		load_to_mem(int fd, size_t size, void *arena, int player_id)
 	ft_memcpy(arena + placement, player, size);
 	free(player - sizeof(header_t));
 	child = link_last();
-	child->plid = -1;
-	child->pid = 1; //Remove me.
-	child->regs[1] = -1;
-	// child->plid = player_id;
-	// child->regs[1] = player_id;
+	child->pid = pid++; //Remove me.
+	child->plid = player_id;
+	child->regs[1] = player_id;
 	child->pc = placement;
+	// printf("PID = %d\n", child->pid);
 	return (0);
 }
 
