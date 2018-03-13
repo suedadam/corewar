@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 23:24:31 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 14:38:03 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void		raincheck(void *arena, t_process *child)
 
 	opcode = 0;
 	copy_memory_fwd_off(&opcode, arena, child->pc, sizeof(unsigned char));
-	if ((opcode > 15 || opcode <= 0))
+	if ((opcode > 16 || opcode < 1))
 	{
 		invalid_opcode(child);
 		return ;
