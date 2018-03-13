@@ -6,16 +6,14 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 13:00:45 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 23:08:22 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-static int	ldi_reg(unsigned char *arena, t_process *child, t_andop *op_data)
+static int	ldi_reg(t_process *child, t_andop *op_data)
 {
-	int	tmp;
-
 	if (!op_data->argi)
 		op_data->val = child->regs[*(op_data->arg)];
 	else if (op_data->argi == 1)
@@ -30,10 +28,8 @@ static int	ldi_reg(unsigned char *arena, t_process *child, t_andop *op_data)
 ** even tho truncation :/
 */
 
-static int	ldi_dir(unsigned char *arena, t_process *child, t_andop *op_data)
+static int	ldi_dir(t_andop *op_data)
 {
-	int	tmp;
-
 	if (!op_data->argi)
 		op_data->val = (short)*(op_data->arg);
 	else if (op_data->argi == 1)
@@ -41,26 +37,29 @@ static int	ldi_dir(unsigned char *arena, t_process *child, t_andop *op_data)
 	return (0);
 }
 
-static int	ldi_decoder(void *arena, t_process *child, t_andop *op_data)
+static int	ldi_decoder(t_process *child, t_andop *op_data)
 {
 	unsigned char	byte;
 
 	byte = ((op_data->encbyte << (2 * op_data->argi)) & 0xC0);
 	if (byte == (unsigned char)SHIFT_T_REG)
-		ldi_reg(arena, child, op_data);
+		ldi_reg(child, op_data);
 	else if (byte == (unsigned char)SHIFT_T_IND ||
 			byte == (unsigned char)SHIFT_T_DIR)
-		ldi_dir(arena, child, op_data);
+		ldi_dir(op_data);
 	return (0);
 }
 
-int			op_ldi(t_operation *cmd_input, void *arena,
-					uint8_t plid, t_process *child)
+int			op_ldi(t_operation *cmd_input, void *arena, uint8_t plid,
+	t_process *child)
 {
 	int				i;
 	unsigned char	byte;
 	t_andop			op_data;
 
+	UNUSED(arena);
+	UNUSED(plid);
+	UNUSED(child);
 	bzero(&op_data, sizeof(t_andop));
 	op_data.encbyte = cmd_input->encbyte;
 	byte = cmd_input->encbyte;
@@ -69,7 +68,7 @@ int			op_ldi(t_operation *cmd_input, void *arena,
 	{
 		op_data.arg = &((cmd_input->args)[i]);
 		op_data.argi = i;
-		if (!ldi_decoder(arena, child, &op_data))
+		if (!ldi_decoder(child, &op_data))
 			i++;
 		byte = byte << 2;
 	}

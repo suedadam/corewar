@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 21:49:12 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/12 22:45:06 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,9 @@ int				add_scheduler(uint8_t opcode);
 */
 
 void			copy_memory_fwd_off(void *dst, unsigned char *src, int offset, int size);
+
+uint32_t		ft_longswap(uint32_t const byte);
+uint16_t		ft_shortswap(uint16_t const byte);
 
 /*
 ** invalid.c

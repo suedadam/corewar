@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 12:44:01 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 23:23:05 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ static int	cleanup(void)
 
 int			init_war(void *arena)
 {
-	int			p_left;
 	t_process	*child;
 
 	while (1)

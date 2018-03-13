@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 21:48:08 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/12 23:24:31 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ void		raincheck(void *arena, t_process *child)
 
 int			run_operation(int plid, unsigned char *arena, t_process *child)
 {
-	unsigned char	*ophex;
 	t_operation		cmd_input;
 	int				size;
 
@@ -122,7 +121,7 @@ int			run_operation(int plid, unsigned char *arena, t_process *child)
 		else if ((size = fetch_input(arena, &cmd_input, child)) == -1)
 			return (-1);
 		if (g_opdispatch[child->opcode - 1].func(&cmd_input, arena,
-											plid, child) == -1);
+			plid, child) == -1)
 			return (-1);
 		if (child->opcode != 9 || (child->opcode == 9 && !child->carry))
 			child->pc = MEM_WARP(child->pc + size);
@@ -130,6 +129,5 @@ int			run_operation(int plid, unsigned char *arena, t_process *child)
 		child->opcode = 0;
 		raincheck(arena, child);
 	}
-	t_process *childrenlol = g_taskmanager->processes;
 	return (0);
 }

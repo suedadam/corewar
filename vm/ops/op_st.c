@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 13:00:03 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 23:15:35 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	st_reg(t_process *child, t_andop *op_data)
 	return (0);
 }
 
-static int	st_decider(void *arena, t_process *child, t_andop *op_data)
+static int	st_decider(t_process *child, t_andop *op_data)
 {
 	unsigned char	byte;
 
@@ -41,6 +41,7 @@ int			op_st(t_operation *cmd_input, void *arena,
 	unsigned char	byte;
 	t_andop			op_data;
 
+	UNUSED(plid);
 	bzero(&op_data, sizeof(t_andop));
 	op_data.encbyte = cmd_input->encbyte;
 	byte = cmd_input->encbyte;
@@ -49,7 +50,7 @@ int			op_st(t_operation *cmd_input, void *arena,
 	{
 		op_data.arg = &((cmd_input->args)[i]);
 		op_data.argi = i;
-		if (!st_decider(arena, child, &op_data))
+		if (!st_decider(child, &op_data))
 			i++;
 		byte = byte << 2;
 	}

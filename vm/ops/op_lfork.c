@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 12:45:27 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 23:08:49 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	op_lfork(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child
 {
 	t_process	*new;
 
+	UNUSED(plid);
 	if (!(new = ft_memalloc(sizeof(t_process))))
 		exit(1);
 	memcpy(new, child, sizeof(t_process));

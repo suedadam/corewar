@@ -70,17 +70,17 @@ YELLOW = \033[1;33m
 all: $(ASM) $(COREWAR)
 
 $(ASM): $(LIBFT) $(ASM_OBJ)
-	@printf "$(YELLOW)%-35s$(NC)" "Building $@... "
+	@printf "$(YELLOW)%-50s$(NC)" "Building $@... "
 	@$(CC) $(CFLAGS) $(LIBFT) $(ASM_OBJ) -o $@
 	@echo "$(GREEN)DONE$(NC)"
 
 $(COREWAR): $(LIBFT) $(CORE_OBJ)
-	@printf "$(YELLOW)%-35s$(NC)" "Building $@... "
+	@printf "$(YELLOW)%-50s$(NC)" "Building $@... "
 	@$(CC) $(CFLAGS) $(LIBFT) $(CORE_OBJ) -o $@
 	@echo "$(GREEN)DONE$(NC)"
 
 $(LIBFT):
-	@printf "$(YELLOW)%-35s$(NC)" "Building $@... "
+	@printf "$(YELLOW)%-50s$(NC)" "Building $@... "
 	@make -C libft
 
 $(ASM_DIR)/obj/%.o: $(ASM_DIR)/src/%.c

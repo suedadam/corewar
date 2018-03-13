@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 13:00:26 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 23:11:03 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ int	op_lld(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child)
 {
 	unsigned char	byte;
 	int				val;
-	int				test;
 
+	UNUSED(plid);
 	byte = cmd_input->encbyte;
 	val = 0;
 	if ((byte & 0xC0) == (unsigned char)SHIFT_T_DIR)

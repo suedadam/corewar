@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 13:01:03 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 23:04:28 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	and_ind(unsigned char *arena, t_process *child, t_andop *op_data)
 	return (0);
 }
 
-static int	and_dir(t_process *child, t_andop *op_data)
+static int	and_dir(t_andop *op_data)
 {
 	if (!op_data->argi)
 		op_data->val = *(op_data->arg);
@@ -63,17 +63,18 @@ static int	and_decider(void *arena, t_process *child, t_andop *op_data)
 	else if (byte == (unsigned char)SHIFT_T_IND)
 		and_ind(arena, child, op_data);
 	else
-		and_dir(child, op_data);
+		and_dir(op_data);
 	return (0);
 }
 
 int			op_and(t_operation *cmd_input, void *arena, uint8_t plid,
-				t_process *child)
+	t_process *child)
 {
 	int				i;
 	unsigned char	byte;
 	t_andop			op_data;
 
+	UNUSED(plid);
 	bzero(&op_data, sizeof(t_andop));
 	op_data.encbyte = cmd_input->encbyte;
 	byte = cmd_input->encbyte;

@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 12:59:49 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 23:19:08 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	xor_ind(unsigned char *arena, t_process *child, t_andop *op_data)
 	return (0);
 }
 
-static int	xor_dir(t_process *child, t_andop *op_data)
+static int	xor_dir(t_andop *op_data)
 {
 	if (!op_data->argi)
 		op_data->val = *(op_data->arg);
@@ -63,7 +63,7 @@ static int	xor_decider(void *arena, t_process *child, t_andop *op_data)
 	else if (byte == (unsigned char)SHIFT_T_IND)
 		xor_ind(arena, child, op_data);
 	else
-		xor_dir(child, op_data);
+		xor_dir(op_data);
 	return (0);
 }
 
@@ -74,6 +74,7 @@ int			op_xor(t_operation *cmd_input, void *arena, uint8_t plid,
 	unsigned char	byte;
 	t_andop			op_data;
 
+	UNUSED(plid);
 	bzero(&op_data, sizeof(t_andop));
 	op_data.encbyte = cmd_input->encbyte;
 	byte = cmd_input->encbyte;
