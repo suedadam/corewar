@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 22:45:06 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 13:16:25 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FT_VM_H
 #include "libft.h"
 #include "op.h"
+#include "flags.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
