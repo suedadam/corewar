@@ -6,13 +6,23 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 07:25:16 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 12:45:34 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-int	op_fork(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
+int	op_fork(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child)
 {
-	return (-1);
+	t_process	*new;
+
+	if (!(new = ft_memalloc(sizeof(t_process))))
+		exit(1);
+	memcpy(new, child, sizeof(t_process));
+	new->pc = MEM_WARP(child->pc + (short)cmd_input->args[0] % IDX_MOD);
+	new->plid = child->plid;
+	new->next = g_taskmanager->processes;
+	g_taskmanager->processes = new;
+	raincheck(arena, new);
+	return (0);
 }

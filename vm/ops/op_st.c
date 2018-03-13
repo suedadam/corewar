@@ -6,13 +6,55 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 07:25:38 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 13:00:03 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-int	op_st(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child)
+static int	st_reg(t_process *child, t_andop *op_data)
 {
-	return (-1);
+	if (!op_data->argi)
+		op_data->val = child->regs[*(op_data->arg)];
+	else if (op_data->argi == 1)
+		op_data->dest = &child->regs[*(op_data->arg)];
+	return (0);
+}
+
+static int	st_decider(void *arena, t_process *child, t_andop *op_data)
+{
+	unsigned char	byte;
+
+	byte = (op_data->encbyte << (2 * op_data->argi) & 0xC0);
+	if (byte == (unsigned char)SHIFT_T_REG)
+		st_reg(child, op_data);
+	else
+		op_data->dest = op_data->arg;
+	return (0);
+}
+
+int			op_st(t_operation *cmd_input, void *arena,
+				uint8_t plid, t_process *child)
+{
+	int				i;
+	int				byteswap;
+	unsigned char	byte;
+	t_andop			op_data;
+
+	bzero(&op_data, sizeof(t_andop));
+	op_data.encbyte = cmd_input->encbyte;
+	byte = cmd_input->encbyte;
+	i = 0;
+	while (byte)
+	{
+		op_data.arg = &((cmd_input->args)[i]);
+		op_data.argi = i;
+		if (!st_decider(arena, child, &op_data))
+			i++;
+		byte = byte << 2;
+	}
+	byteswap = ft_longswap(op_data.val);
+	write_memory(arena, (unsigned char *)&byteswap,
+				MEM_WARP(child->pc + *op_data.dest), REG_SIZE);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 07:18:49 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 12:44:01 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,97 +15,85 @@
 static int	remove_dead(void)
 {
 	int			player;
-	int			left;
-	int			p_left;
+	t_process	*prevp;
 	t_process	*children;
-	void		*tmp;
 
 	player = 0;
-	left = 0;
-	while ((taskmanager->players)[player])
+	children = g_taskmanager->processes;
+	while (children)
 	{
-		p_left = 0;
-		children = (taskmanager->players)[player]->processes;
-		while (children)
+		if (!children->die_check)
 		{
-			if (!children->die_check)
+			if (children == g_taskmanager->processes)
 			{
-				tmp = children;
-				children = children->next;
-				free(tmp);
-				if ((taskmanager->players)[player]->processes == tmp)
-					(taskmanager->players)[player]->processes = children;
+				g_taskmanager->processes = children->next;
+				free(children);
+				prevp = NULL;
+				children = g_taskmanager->processes;
 			}
 			else
 			{
-				p_left++;
-				children->die_check = 0;
-				children = children->next;
+				prevp->next = children->next;
+				free(children);
+				children = prevp->next;
 			}
 		}
-		if (p_left)
-			left++;
 		else
 		{
-			free((taskmanager->players)[player]);
-			(taskmanager->players)[player] = NULL;
+			player++;
+			children->die_check = 0;
+			prevp = children;
+			children = children->next;
 		}
-		player++;
 	}
-	return (left);
+	return (player);
 }
 
-/*
-** Itterate and run through ->processes (children/forks) 
-** that are present.
-*/
-
-int	init_war(void *arena)
+static int	cleanup(void)
 {
-	//Lets start this BITCHESSS.'C:'
-	int			i;
+	int	p_left;
+
+	if ((p_left = remove_dead()) <= 0)
+	{
+		printf("Player %d, has won!\n", g_taskmanager->lastlive);
+		return (1);
+	}
+	if (g_taskmanager->lastnbrlive >= NBR_LIVE ||
+		(g_taskmanager->c_checks + 1) == MAX_CHECKS)
+	{
+		g_taskmanager->c_to_die -= CYCLE_DELTA;
+		g_taskmanager->lastnbrlive = 0;
+		g_taskmanager->c_checks = 0;
+	}
+	g_taskmanager->c_checks++;
+	g_taskmanager->c_diecycles = 0;
+	return (0);
+}
+
+int			init_war(void *arena)
+{
 	int			p_left;
 	t_process	*child;
 
-	i = 0;
 	while (1)
 	{
-		if (!(taskmanager->currCycle % taskmanager->c_to_die) && taskmanager->currCycle > 0)
+		if (!(child = g_taskmanager->processes))
+			return (0);
+		while (child)
 		{
-			if ((p_left = remove_dead()) <= 0)
-			{
-				printf("GAME OVER BITCHES player %d won!\n", taskmanager->lastlive);
-				return (0);
-			}
-			else
-			{
-				printf("%d players left\n", p_left);
-			}
+			run_operation(child->plid, arena, child);
+			child = child->next;
 		}
-		if ((taskmanager->currCycle - taskmanager->lastnbrlive) == NBR_LIVE)
+		if (!child)
 		{
-			printf("REDUCED!!!\n");
-			if (taskmanager->c_to_die - CYCLE_DELTA >= taskmanager->c_to_die)
-				taskmanager->c_to_die = 0;
-			else
-				taskmanager->c_to_die -= CYCLE_DELTA;
-			taskmanager->lastnbrlive = taskmanager->currCycle;
-		}
-		if ((taskmanager->players)[i] && (taskmanager->players)[i]->processes)
-		{
-			child = (taskmanager->players)[i]->processes;
-			while (child)
+			if (!(g_taskmanager->c_diecycles % g_taskmanager->c_to_die)
+				&& g_taskmanager->c_diecycles > 0)
 			{
-				run_operation(i, arena, child);
-				child = child->next;
+				if (cleanup())
+					return (0);
 			}
-			// printf("playerID = %d\n", (taskmanager->players)[i]->pID);
-			i++;
-		}
-		else
-		{
-			(taskmanager->currCycle)++;
-			i = 0;
+			(g_taskmanager->currCycle)++;
+			(g_taskmanager->c_diecycles)++;
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/06 15:00:46 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 12:50:14 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+
+#define MEM_WARP(x) ((x + MEM_SIZE) % MEM_SIZE)
 
 typedef struct		s_op
 {
@@ -31,15 +33,10 @@ typedef struct		s_op
 	uint8_t		trunc:1;
 }					t_op;
 
-/*
-** OMG WHY DON'T WE HAVE GENERICS FUCKKKKKKKKKK D: ;_;
-** FUcking hell just check each value to see if it is larger than blah size ;) 
-** I mean that sucks but whatever ya know? We can haz a sanitization function boi 
-*/
-
 typedef struct	s_process
 {
-	int					regs[REG_NUMBER + 1]; // (I refuse to do reg - 1 each time).
+	uint8_t				plid;
+	int					regs[REG_NUMBER + 1];
 	int64_t				pc;
 	uint8_t				carry;
 	size_t				run_op;
@@ -48,34 +45,52 @@ typedef struct	s_process
 	struct s_process	*next;
 }				t_process;
 
-typedef struct	s_player
+typedef struct	s_andop
 {
-	uint8_t		pID;
-	t_process	*processes;
-}				t_player;
+	int					*dest;
+	int					val;
+	int32_t				*arg;
+	int					argi;
+	unsigned char		encbyte;
+}				t_andop;
 
 typedef struct	s_taskmanager
 {
 	size_t		currCycle;
+	void		*arena;
 	size_t		lastnbrlive;
 	uint32_t	totalPlayers;
-	t_player	**players;
-	int8_t		lastlive; //Default -1;
-	size_t		c_to_die;
+	t_process	*processes;
+	int8_t		lastlive;
+	int			c_to_die;
+	int			c_diecycles;
+	int			c_checks;	
 }				t_taskmanager;
 
 typedef struct	s_operation
 {
 	unsigned char	encbyte;
-	uint32_t		args[3];
+	int32_t			args[3];
 }				t_operation;
 
 typedef struct	s_opdispatch
 {
 	int			opcode;
-	int 		(*func)(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child);
+	int 		(*func)(t_operation *cmd_input, void *arena,
+					uint8_t pID, t_process *child);
 }				t_opdispatch;
 
+/*
+** fetcher/
+*/
+void			handle_reg(unsigned char *arena, t_process *child, 
+							int32_t *storage, int *size);
+void			handle_dir(unsigned char *arena, t_process *child, 
+							int32_t *storage, int *size);
+void			handle_ind(unsigned char *arena, t_process *child, 
+							int32_t *storage, int *size);
+int				fetch_decider(unsigned char *arena, t_operation *cmd_input,
+						t_process *child, int j, int *size);
 /*
 ** main.c
 */
@@ -91,17 +106,25 @@ int				add_scheduler(uint8_t opcode);
 ** utils.c
 */
 
-void			*ft_memory_warp(void *arena, uint64_t base, uint64_t seek, uint64_t size,
-								int *frag);
+void			copy_memory_fwd_off(void *dst, unsigned char *src, int offset, int size);
+
+/*
+** invalid.c
+*/
+int				invalid_acb(t_process *child, int size);
+int				invalid_opcode(t_process *child);
 
 /*
 ** war/
 */
 
 int				init_war(void *arena);
-int				run_operation(int pID, void *arena, t_process *child);
+int				run_operation(int plid, unsigned char *arena, t_process *child);
 int 			HextoDec(unsigned char hex);
+void			raincheck(void *arena, t_process *child);
 
+void 			rev_write_memory(void *arena, unsigned char *src, int offset, int size);
+void			write_memory(void *arena, unsigned char *src, int offset, int size);
 /*
 ** op/
 */
@@ -124,8 +147,9 @@ int				op_lfork(t_operation *cmd_input, void *arena, uint8_t pID, t_process *chi
 int				op_aff(t_operation *cmd_input, void *arena, uint8_t pID, t_process *child);
 
 
-extern t_op				op_tab[17];
-extern t_opdispatch		opdispatch[17];
-extern t_taskmanager	*taskmanager;
+extern t_op				g_op_tab[17];
+extern t_opdispatch		g_opdispatch[17];
+extern t_taskmanager	*g_taskmanager;
+extern unsigned char	*g_arena;
 
 #endif
