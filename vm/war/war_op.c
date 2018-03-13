@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 14:38:03 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 16:36:51 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void		raincheck(void *arena, t_process *child)
 					g_op_tab[(opcode - 1)].waitcycles;
 }
 
-int			run_operation(int plid, unsigned char *arena, t_process *child)
+int			run_operation(unsigned char *arena, t_process *child)
 {
 	t_operation		cmd_input;
 	int				size;
@@ -121,7 +121,7 @@ int			run_operation(int plid, unsigned char *arena, t_process *child)
 		else if ((size = fetch_input(arena, &cmd_input, child)) == -1)
 			return (-1);
 		if (g_opdispatch[child->opcode - 1].func(&cmd_input, arena,
-			plid, child) == -1)
+			child) == -1)
 			return (-1);
 		if (child->opcode != 9 || (child->opcode == 9 && !child->carry))
 			child->pc = MEM_WARP(child->pc + size);

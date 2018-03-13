@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 15:51:02 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 16:36:49 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ typedef struct	s_opdispatch
 {
 	int			opcode;
 	int 		(*func)(t_operation *cmd_input, void *arena,
-					uint8_t plid, t_process *child);
+					t_process *child);
 }				t_opdispatch;
 
 /*
@@ -122,22 +122,22 @@ int				add_scheduler(uint8_t opcode);
 ** op/
 */
 
-int				op_live(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_ld(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_st(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_add(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_sub(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_and(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_or(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_xor(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_zjmp(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_ldi(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_sti(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_fork(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_lld(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_lldi(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_lfork(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
-int				op_aff(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child);
+int				op_live(t_operation *cmd_input, void *arena, t_process *child);
+int				op_ld(t_operation *cmd_input, void *arena, t_process *child);
+int				op_st(t_operation *cmd_input, void *arena, t_process *child);
+int				op_add(t_operation *cmd_input, void *arena, t_process *child);
+int				op_sub(t_operation *cmd_input, void *arena, t_process *child);
+int				op_and(t_operation *cmd_input, void *arena, t_process *child);
+int				op_or(t_operation *cmd_input, void *arena, t_process *child);
+int				op_xor(t_operation *cmd_input, void *arena, t_process *child);
+int				op_zjmp(t_operation *cmd_input, void *arena, t_process *child);
+int				op_ldi(t_operation *cmd_input, void *arena, t_process *child);
+int				op_sti(t_operation *cmd_input, void *arena, t_process *child);
+int				op_fork(t_operation *cmd_input, void *arena, t_process *child);
+int				op_lld(t_operation *cmd_input, void *arena, t_process *child);
+int				op_lldi(t_operation *cmd_input, void *arena, t_process *child);
+int				op_lfork(t_operation *cmd_input, void *arena, t_process *child);
+int				op_aff(t_operation *cmd_input, void *arena, t_process *child);
 
 /*
 ** utils.c
@@ -155,7 +155,7 @@ uint16_t		ft_shortswap(uint16_t const byte);
 */
 
 int				init_war(void *arena);
-int				run_operation(int plid, unsigned char *arena, t_process *child);
+int				run_operation(unsigned char *arena, t_process *child);
 int 			HextoDec(unsigned char hex);
 void			raincheck(void *arena, t_process *child);
 

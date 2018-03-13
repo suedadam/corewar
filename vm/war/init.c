@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 15:52:02 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 16:37:26 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int			init_war(void *arena)
 			return (0);
 		while (child)
 		{
-			run_operation(child->plid, arena, child);
+			run_operation(arena, child);
 			child = child->next;
 		}
 		if (!child)
@@ -96,7 +96,7 @@ int			init_war(void *arena)
 			(g_taskmanager->currCycle)++;
 			(g_taskmanager->c_diecycles)++;
 		}
-		if (g_taskmanager->currCycle > (unsigned long)*dump)
+		if (dump && g_taskmanager->currCycle > (unsigned long)*dump)
 		{
 			dump_memory(arena);
 			return (0);

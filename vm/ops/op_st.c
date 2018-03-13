@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 23:15:35 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 16:32:57 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,13 @@ static int	st_decider(t_process *child, t_andop *op_data)
 	return (0);
 }
 
-int			op_st(t_operation *cmd_input, void *arena,
-				uint8_t plid, t_process *child)
+int			op_st(t_operation *cmd_input, void *arena, t_process *child)
 {
 	int				i;
 	int				byteswap;
 	unsigned char	byte;
 	t_andop			op_data;
 
-	UNUSED(plid);
 	bzero(&op_data, sizeof(t_andop));
 	op_data.encbyte = cmd_input->encbyte;
 	byte = cmd_input->encbyte;

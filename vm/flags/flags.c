@@ -31,8 +31,13 @@ void	*fetch_result(char c, uint8_t convint)
 				return (g_pflags[i].result);
 			else
 			{
-				ret = ft_atoi(g_pflags[i].result);
-				return (&ret);
+				if (g_pflags[i].result)
+				{
+					ret = ft_atoi(g_pflags[i].result);
+					return (&ret);
+				}
+				else
+					return (NULL);
 			}
 		}
 		i++;

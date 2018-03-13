@@ -6,18 +6,17 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 01:18:12 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 16:32:03 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-int	op_lld(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child)
+int	op_lld(t_operation *cmd_input, void *arena, t_process *child)
 {
 	unsigned char	byte;
 	int				val;
 
-	UNUSED(plid);
 	byte = cmd_input->encbyte;
 	val = 0;
 	if ((byte & 0xC0) == (unsigned char)SHIFT_T_DIR)
