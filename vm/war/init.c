@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 23:23:05 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 13:13:25 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,9 @@ static int	cleanup(void)
 int			init_war(void *arena)
 {
 	t_process	*child;
+	int			*dump;
 
+	dump = fetch_result('D', 1);
 	while (1)
 	{
 		if (!(child = g_taskmanager->processes))
@@ -93,6 +95,11 @@ int			init_war(void *arena)
 			}
 			(g_taskmanager->currCycle)++;
 			(g_taskmanager->c_diecycles)++;
+		}
+		if (g_taskmanager->currCycle > *dump)
+		{
+			dump_memory(arena);
+			return (0);
 		}
 	}
 }
