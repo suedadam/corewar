@@ -8,9 +8,8 @@ ASM = asm
 COREWAR = corewar
 CC = gcc
 CFLAGS += -Wall -Werror -Wextra
-INC = -I inc -I libft/inc
 LIBFT = libft/libft.a
-SRC_DIR = src
+ASM_DIR = assembler
 ASM_SRC = \
 	asm\
 	asm_fsm\
@@ -22,10 +21,38 @@ ASM_SRC = \
 	asm_util\
 	asm_validate_arg\
 	asm_write
-CORE_SRC = 
-OBJ_DIR = $(SRC_DIR)/obj
-CORE_OBJ = $(patsubst %, $(OBJ_DIR)/%.o, $(CORE_SRC))
-ASM_OBJ = $(patsubst %, $(OBJ_DIR)/%.o, $(ASM_SRC))
+CORE_DIR = vm
+CORE_SRC = \
+	arena\
+	fetcher/mask_fetch\
+	invalid\
+	main\
+	op\
+	ops/op_add\
+	ops/op_aff\
+	ops/op_and\
+	ops/op_fork\
+	ops/op_ld\
+	ops/op_ldi\
+	ops/op_lfork\
+	ops/op_live\
+	ops/op_lld\
+	ops/op_lldi\
+	ops/op_or\
+	ops/op_st\
+	ops/op_sti\
+	ops/op_sub\
+	ops/op_xor\
+	ops/op_zjmp\
+	read_champion\
+	utils\
+	war/init\
+	war/war_op
+ASM_OBJ = $(patsubst %, $(ASM_DIR)/obj/%.o, $(ASM_SRC))
+CORE_OBJ = $(patsubst %, $(CORE_DIR)/obj/%.o, $(CORE_SRC))
+INC = -I libft/inc
+ASM_INC = -I $(ASM_DIR)/inc
+CORE_INC = -I $(CORE_DIR)/includes
 
 ################################################################################
 # COLORS                                                                       #
@@ -40,7 +67,7 @@ YELLOW = \033[1;33m
 # RULES                                                                        #
 ################################################################################
 
-all: $(ASM) #$(COREWAR)
+all: $(ASM) $(COREWAR)
 
 $(ASM): $(LIBFT) $(ASM_OBJ)
 	@printf "$(YELLOW)%-35s$(NC)" "Building $@... "
@@ -56,13 +83,19 @@ $(LIBFT):
 	@printf "$(YELLOW)%-35s$(NC)" "Building $@... "
 	@make -C libft
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
+$(ASM_DIR)/obj/%.o: $(ASM_DIR)/src/%.c
+	@mkdir -p $(dir $@)
 	@echo " > Compiling $<..."
-	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	@$(CC) $(CFLAGS) $(INC) $(ASM_INC) -c $< -o $@
+
+$(CORE_DIR)/obj/%.o: $(CORE_DIR)/%.c
+	@mkdir -p $(dir $@)
+	@echo " > Compiling $<..."
+	@$(CC) $(CFLAGS) $(INC) $(CORE_INC) -c $< -o $@
 
 clean:
-	@rm -rf $(OBJ_DIR)
+	@rm -rf $(ASM_DIR)/obj
+	@rm -rf $(CORE_DIR)/obj
 	@make -C libft clean
 	@echo "$(RED)Object files removed$(NC)"
 
