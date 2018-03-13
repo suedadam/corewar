@@ -6,16 +6,12 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:49:32 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 12:40:57 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/13 00:21:13 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-//lol remove me
-#include <time.h>
-#include <stdlib.h>
-//EO-Remove me.
 t_taskmanager	*g_taskmanager;
 
 void	*init(int champc, char **champv)
@@ -46,11 +42,10 @@ void	*init(int champc, char **champv)
 	return (arena);
 }
 
-int	main(int argc, char *argv[])
+int		main(int argc, char *argv[])
 {
 	void	*arena;
 
-	srand(time(NULL));
 	if (argc < 2)
 	{
 		printf("No champions listed\n");
