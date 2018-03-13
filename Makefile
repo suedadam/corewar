@@ -25,6 +25,7 @@ CORE_DIR = vm
 CORE_SRC = \
 	arena\
 	fetcher/mask_fetch\
+	flags/flags\
 	invalid\
 	main\
 	op\

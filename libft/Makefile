@@ -14,8 +14,10 @@ SRC = \
 	char_util\
 	float_print\
 	float_util\
+	ft_atoi\
 	ft_isdigit\
 	ft_islower\
+	ft_isspace\
 	ft_isupper\
 	ft_memalloc\
 	ft_memcpy\

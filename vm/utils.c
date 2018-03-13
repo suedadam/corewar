@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:11:42 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 13:15:29 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/13 15:38:02 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ void	dump_memory(unsigned char *arena)
 	c = 0;
 	while (i < MEM_SIZE)
 	{
-		if (j == 33)
+		if (c == 33)
 		{
 			printf("\n");
-			j = 0;
+			c = 0;
 		}
 		printf("%02x ", arena[i]);
-		j++;
+		c++;
 		i++;
 	}
 }

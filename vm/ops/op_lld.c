@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 23:11:03 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 01:18:12 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	op_lld(t_operation *cmd_input, void *arena, uint8_t plid, t_process *child)
 	else if ((byte & 0xC0) == (unsigned char)SHIFT_T_IND)
 	{
 		copy_memory_fwd_off(&val, arena,
-				MEM_WARP((child->pc + (short)(cmd_input->args)[0])), F_IND_SIZE);
+			MEM_WARP((child->pc + (short)(cmd_input->args)[0])), F_IND_SIZE);
 		val = ft_shortswap(val);
 	}
 	child->regs[(cmd_input->args)[1]] = val;

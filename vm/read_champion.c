@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 15:17:35 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 15:34:04 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@ static int		size_check(int fd)
 
 	start = lseek(fd, 0, SEEK_CUR);
 	size = lseek(fd, 0, SEEK_END) - start;
-	if (size - (off_t)sizeof(header_t) < 0)
+	if (size - (off_t)sizeof(t_header) < 0)
 	{
 		ft_printf("Invalid input file\n");
 		return (-1);
 	}
-	if (size > CHAMP_MAX_SIZE + (off_t)sizeof(header_t))
+	if (size > CHAMP_MAX_SIZE + (off_t)sizeof(t_header))
 	{
 		printf("File has too large a code (%lld bytes > %lld bytes)\n",
-			size, CHAMP_MAX_SIZE + (off_t)sizeof(header_t));
+			size, CHAMP_MAX_SIZE + (off_t)sizeof(t_header));
 		return (-1);
 	}
 	if (lseek(fd, start, SEEK_SET) == -1)
@@ -43,15 +43,15 @@ static int		size_check(int fd)
 
 static int		validate_header(void *player, size_t size)
 {
-	header_t	*player_h;
+	t_header	*player_h;
 
-	player_h = (header_t *)player;
+	player_h = (t_header *)player;
 	if (player_h->magic != ft_longswap(COREWAR_EXEC_MAGIC))
 		return (-1);
-	if (ft_longswap(player_h->prog_size) != size - sizeof(header_t))
+	if (ft_longswap(player_h->prog_size) != size - sizeof(t_header))
 	{
 		ft_printf("Error: Too large a code (%d bytes > %d bytes)\n",
-			ft_longswap(player_h->prog_size), (int)(size - sizeof(header_t)));
+			ft_longswap(player_h->prog_size), (int)(size - sizeof(t_header)));
 		return (-1);
 	}
 	return (0);
@@ -84,11 +84,11 @@ static int		load_to_mem(int fd, size_t size, void *arena, int player_id)
 	if (!(player = ft_memalloc(size + 1)) ||
 		read(fd, player, size) == -1 || validate_header(player, size))
 		return (-1);
-	size -= sizeof(header_t);
-	player += sizeof(header_t);
+	size -= sizeof(t_header);
+	player += sizeof(t_header);
 	placement = (player_id * (MEM_SIZE / g_taskmanager->totalPlayers));
 	ft_memcpy(arena + placement, player, size);
-	free(player - sizeof(header_t));
+	free(player - sizeof(t_header));
 	child = link_last();
 	child->plid = player_id;
 	child->regs[1] = player_id;
