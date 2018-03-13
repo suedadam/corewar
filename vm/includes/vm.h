@@ -6,13 +6,13 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 12:50:14 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 21:49:12 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_VM_H
 # define FT_VM_H
-#include "libft/libft.h"
+#include "libft.h"
 #include "op.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -111,7 +111,7 @@ void			copy_memory_fwd_off(void *dst, unsigned char *src, int offset, int size);
 /*
 ** invalid.c
 */
-int				invalid_acb(t_process *child, int size);
+int				invalid_acb(unsigned char *arena, t_process *child, int size);
 int				invalid_opcode(t_process *child);
 
 /*

@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 16:40:21 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 12:41:28 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 21:48:36 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,11 @@ int	invalid_opcode(t_process *child)
 	return (0);
 }
 
-int	invalid_acb(t_process *child, int size)
+int	invalid_acb(unsigned char *arena, t_process *child, int size)
 {
 	child->pc = MEM_WARP(child->pc + size);
 	child->opcode = 0;
 	child->run_op = 0;
-	raincheck(g_arena, child);
+	raincheck(arena, child);
 	return (0);
 }

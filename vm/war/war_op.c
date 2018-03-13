@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 12:43:30 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/12 21:48:08 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,12 @@ static int	decode_acb(unsigned char *arena, t_operation *cmd_input,
 	}
 	if ((cmd_input->encbyte >> (8 - (2 * g_op_tab[child->opcode - 1].argc))) == 00)
 	{
-		invalid_acb(child, 2);
+		invalid_acb(arena, child, 2);
 		return (-1);
 	}
 	else if (j != g_op_tab[child->opcode - 1].argc)
 	{
-		invalid_acb(child, 2 + calc_enc_size(child, cmd_input->encbyte));
+		invalid_acb(arena, child, 2 + calc_enc_size(child, cmd_input->encbyte));
 		return (-1);
 	}
 	return (size);
