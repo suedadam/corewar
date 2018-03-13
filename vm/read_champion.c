@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/12 23:22:40 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 15:17:35 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,20 @@
 
 static int		size_check(int fd)
 {
-	off_t	size;
 	off_t	start;
+	off_t	size;
 
 	start = lseek(fd, 0, SEEK_CUR);
-	size = lseek(fd, 0, SEEK_END);
-	if (((size - start) - sizeof(header_t)) > CHAMP_MAX_SIZE)
+	size = lseek(fd, 0, SEEK_END) - start;
+	if (size - (off_t)sizeof(header_t) < 0)
 	{
-		ft_printf("File has too large a code (%llu bytes > %d bytes)\n",
-			((size - start) - sizeof(header_t)), CHAMP_MAX_SIZE);
+		ft_printf("Invalid input file\n");
+		return (-1);
+	}
+	if (size > CHAMP_MAX_SIZE + (off_t)sizeof(header_t))
+	{
+		printf("File has too large a code (%lld bytes > %lld bytes)\n",
+			size, CHAMP_MAX_SIZE + (off_t)sizeof(header_t));
 		return (-1);
 	}
 	if (lseek(fd, start, SEEK_SET) == -1)
@@ -33,7 +38,7 @@ static int		size_check(int fd)
 		ft_printf("Failed to calculate size (skip failure)\n");
 		return (-1);
 	}
-	return (size - start);
+	return (size);
 }
 
 static int		validate_header(void *player, size_t size)
@@ -98,7 +103,7 @@ int				read_champion(char *filename, void *arena, int player_id)
 
 	if ((fd = open(filename, O_RDONLY)) == -1)
 	{
-		ft_printf("Failed to open file.\n");
+		ft_printf("Failed to open file\n");
 		return (-1);
 	}
 	if ((size = size_check(fd)) == -1)
