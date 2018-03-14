@@ -6,7 +6,7 @@
 /*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 18:57:42 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/11 23:12:35 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/14 13:40:36 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,12 @@ static void		read_file(t_line **head, int fd)
 	{
 		if (!(*head = ft_memalloc(sizeof(t_line))))
 			DEFAULT_ERROR;
-		(*head)->data = strip_comments(line);
-		(*head)->col = trim(line, " \t\n") + 1;
 		(*head)->row = row++;
+		if (*line)
+		{
+			(*head)->data = strip_comments(line);
+			(*head)->col = trim(line, " \t\n") + 1;
+		}
 		if (*(*head)->data)
 		{
 			head = &(*head)->next;

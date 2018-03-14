@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 21:46:04 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/14 01:38:01 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/14 13:45:11 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,6 @@ int				trim(char *arg, char *delim)
 	int		off;
 	int		len;
 
-	if (!arg || !*arg)
-		return (0);
 	off = 0;
 	while (arg[off] && ft_strchr(delim, arg[off]))
 		off++;
@@ -70,7 +68,7 @@ int				trim(char *arg, char *delim)
 		len--;
 	while (tmp[len] && ft_strchr(delim, tmp[len]))
 		len--;
-	ft_memmove(arg, tmp, len++);
+	ft_memmove(arg, tmp, ++len);
 	arg[len] = '\0';
 	return (off);
 }
