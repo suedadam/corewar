@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:11:42 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 20:42:21 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 21:44:49 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,6 @@ uint16_t	ft_shortswap(uint16_t const byte)
 	uint8_t data[2];
 
 	memcpy(&data, &byte, sizeof(data));
-	return (((uint32_t)data[3] << 0)
-		| ((uint32_t)data[2] << 8));
+	return (((uint32_t)data[0] << 0)
+		| ((uint32_t)data[1] << 8));
 }

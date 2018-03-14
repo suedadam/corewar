@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 17:55:10 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 21:50:12 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int		size_check(int fd)
 		ft_printf("Invalid input file\n");
 		return (-1);
 	}
-	if (size > CHAMP_MAX_SIZE + (off_t)sizeof(t_header))
+	if (size > (CHAMP_MAX_SIZE + (off_t)sizeof(t_header)))
 	{
 		printf("File has too large a code (%lld bytes > %lld bytes)\n",
 			size, CHAMP_MAX_SIZE + (off_t)sizeof(t_header));
@@ -48,10 +48,10 @@ static int		validate_header(void *player, size_t size)
 	player_h = (t_header *)player;
 	if (player_h->magic != ft_longswap(COREWAR_EXEC_MAGIC))
 		return (-1);
-	if (ft_longswap(player_h->prog_size) != size - sizeof(t_header))
+	if (ft_longswap(player_h->prog_size) != (size - sizeof(t_header)))
 	{
-		ft_printf("Error: Too large a code (%d bytes > %d bytes)\n",
-			ft_longswap(player_h->prog_size), (int)(size - sizeof(t_header)));
+		ft_printf("Error: Too large a code (%d bytes != %d bytes)\n",
+			ft_longswap(player_h->prog_size), (size - sizeof(t_header)));
 		return (-1);
 	}
 	return (0);
