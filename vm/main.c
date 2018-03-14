@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:49:32 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 20:34:05 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 22:09:13 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void	*init(int champc, char **champv)
 	i = 0;
 	while (i < champc)
 	{
-		if (read_champion(champv[champc - i], arena, i) == -1)
+		if (i > MAX_PLAYERS ||
+			read_champion(champv[champc - i], arena, i) == -1)
 		{
 			free(arena);
 			return (NULL);
@@ -51,7 +52,12 @@ int		main(int argc, char *argv[])
 		printf("No champions listed\n");
 		return (-1);
 	}
-	if (!(arena = init(argc - 1, argv)))
+	if (flag_parse(&argc, &argv))
+	{
+		printf("Flag parsing error\n");
+		return (-1);
+	}
+	if (!(arena = init(argc, argv)))
 		return (-1);
 	init_war(arena);
 	return (0);

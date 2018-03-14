@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/12 18:15:34 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 20:47:42 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 22:09:12 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int				flag_parse(int *argc, char ***argv)
 		else
 			break ;
 	}
-	*argv = &newargv[i];
+	*argv = &newargv[i - 1];
 	*argc -= i + 1;
 	return (0);
 }
