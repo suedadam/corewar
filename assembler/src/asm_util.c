@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asm_util.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/18 21:46:04 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/13 21:47:24 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/14 01:38:01 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,17 @@ int				trim(char *arg, char *delim)
 	int		off;
 	int		len;
 
+	if (!arg || !*arg)
+		return (0);
 	off = 0;
 	while (arg[off] && ft_strchr(delim, arg[off]))
-		++off;
+		off++;
 	tmp = arg + off;
 	if ((len = ft_strlen(tmp)) > 0)
-		--len;
+		len--;
 	while (tmp[len] && ft_strchr(delim, tmp[len]))
-		--len;
-	ft_memmove(arg, tmp, ++len);
+		len--;
+	ft_memmove(arg, tmp, len++);
 	arg[len] = '\0';
 	return (off);
 }
