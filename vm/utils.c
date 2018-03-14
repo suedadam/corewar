@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:11:42 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 21:44:49 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/14 13:59:50 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void		dump_memory(t_byte *arena)
 	c = 0;
 	while (i < MEM_SIZE)
 	{
-		if (c == 33)
+		if (c == 32)
 		{
 			printf("\n");
 			c = 0;
@@ -70,6 +70,6 @@ uint16_t	ft_shortswap(uint16_t const byte)
 	uint8_t data[2];
 
 	memcpy(&data, &byte, sizeof(data));
-	return (((uint32_t)data[0] << 0)
-		| ((uint32_t)data[1] << 8));
+	return (((uint32_t)data[1] << 0)
+		| ((uint32_t)data[0] << 8));
 }
