@@ -23,7 +23,7 @@ int	invalid_opcode(t_process *child)
 	return (0);
 }
 
-int	invalid_acb(unsigned char *arena, t_process *child, int size)
+int	invalid_acb(t_byte *arena, t_process *child, int size)
 {
 	child->pc = MEM_WARP(child->pc + size);
 	child->opcode = 0;

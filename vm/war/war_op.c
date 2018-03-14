@@ -6,41 +6,41 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 16:36:51 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 20:43:23 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-static int	calc_enc_size(t_process *child, unsigned char byte)
+static int	calc_enc_size(t_process *child, t_byte byte)
 {
-	int				size;
-	int				argc;
-	unsigned char	tmp;
+	int		size;
+	int		argc;
+	t_byte	tmp;
 
 	argc = g_op_tab[child->opcode - 1].argc;
 	size = 0;
 	while (argc--)
 	{
 		tmp = byte & 0xC0;
-		if (tmp == (unsigned char)SHIFT_T_REG)
+		if (tmp == (t_byte)SHIFT_T_REG)
 			size += F_REG_SIZE;
-		else if (tmp == (unsigned char)SHIFT_T_DIR)
+		else if (tmp == (t_byte)SHIFT_T_DIR)
 		{
 			if (g_op_tab[child->opcode - 1].trunc)
 				size += F_IND_SIZE;
 			else
 				size += F_DIR_SIZE;
 		}
-		else if (tmp == (unsigned char)SHIFT_T_IND)
+		else if (tmp == (t_byte)SHIFT_T_IND)
 			size += F_IND_SIZE;
 		byte = byte << 2;
 	}
 	return (size);
 }
 
-static int	fetch_input(unsigned char *arena, t_operation *cmd_input,
-						t_process *child)
+static int	fetch_input(t_byte *arena, t_operation *cmd,
+	t_process *child)
 {
 	int	size;
 
@@ -48,44 +48,41 @@ static int	fetch_input(unsigned char *arena, t_operation *cmd_input,
 	if (g_op_tab[child->opcode - 1].encbyte[0] == T_DIR)
 	{
 		if (g_op_tab[child->opcode - 1].trunc)
-			handle_ind(arena, child, &(cmd_input->args[0]), &size);
+			handle_ind(arena, child, &(cmd->args[0]), &size);
 		else
-			handle_dir(arena, child, &(cmd_input->args[0]), &size);
+			handle_dir(arena, child, &(cmd->args[0]), &size);
 	}
 	else
 		return (-1);
 	return (size);
 }
 
-static int	decode_acb(unsigned char *arena, t_operation *cmd_input,
-						t_process *child)
+static int	decode_acb(t_byte *arena, t_operation *cmd, t_process *child)
 {
-	int				j;
-	int				size;
-	unsigned char	byte;
+	t_byte	byte;
 
-	cmd_input->encbyte = 0;
-	copy_memory_fwd_off(&cmd_input->encbyte, arena, child->pc + 1, 1);
-	byte = cmd_input->encbyte;
-	j = 0;
-	size = 2;
+	cmd->encbyte = 0;
+	copy_memory_fwd_off(&cmd->encbyte, arena, child->pc + 1, 1);
+	byte = cmd->encbyte;
+	cmd->ac = 0;
+	cmd->size = 2;
 	while (byte)
 	{
-		if (!fetch_decider(arena, cmd_input, child, j, &size))
-			j++;
+		if (!fetch_decider(arena, cmd, child))
+			++cmd->ac;
 		byte = byte << 2;
 	}
-	if ((cmd_input->encbyte >> (8 - (2 * g_op_tab[child->opcode - 1].argc))) == 00)
+	if ((cmd->encbyte >> (8 - (2 * g_op_tab[child->opcode - 1].argc))) == 00)
 	{
 		invalid_acb(arena, child, 2);
 		return (-1);
 	}
-	else if (j != g_op_tab[child->opcode - 1].argc)
+	else if (cmd->ac != g_op_tab[child->opcode - 1].argc)
 	{
-		invalid_acb(arena, child, 2 + calc_enc_size(child, cmd_input->encbyte));
+		invalid_acb(arena, child, 2 + calc_enc_size(child, cmd->encbyte));
 		return (-1);
 	}
-	return (size);
+	return (cmd->size);
 }
 
 void		raincheck(void *arena, t_process *child)
@@ -93,34 +90,34 @@ void		raincheck(void *arena, t_process *child)
 	int	opcode;
 
 	opcode = 0;
-	copy_memory_fwd_off(&opcode, arena, child->pc, sizeof(unsigned char));
+	copy_memory_fwd_off(&opcode, arena, child->pc, sizeof(t_byte));
 	if ((opcode > 16 || opcode < 1))
 	{
 		invalid_opcode(child);
 		return ;
 	}
 	child->opcode = opcode;
-	child->run_op = g_taskmanager->currCycle +
+	child->run_op = g_taskmanager->curr_cycle +
 					g_op_tab[(opcode - 1)].waitcycles;
 }
 
-int			run_operation(unsigned char *arena, t_process *child)
+int			run_operation(t_byte *arena, t_process *child)
 {
-	t_operation		cmd_input;
+	t_operation		cmd;
 	int				size;
 
 	if (!(child->run_op) || !(child->opcode))
 		raincheck(arena, child);
-	else if (child->run_op == g_taskmanager->currCycle)
+	else if (child->run_op == g_taskmanager->curr_cycle)
 	{
 		if (g_op_tab[child->opcode - 1].encbool)
 		{
-			if ((size = decode_acb(arena, &cmd_input, child)) == -1)
+			if ((size = decode_acb(arena, &cmd, child)) == -1)
 				return (-1);
 		}
-		else if ((size = fetch_input(arena, &cmd_input, child)) == -1)
+		else if ((size = fetch_input(arena, &cmd, child)) == -1)
 			return (-1);
-		if (g_opdispatch[child->opcode - 1].func(&cmd_input, arena,
+		if (g_opdispatch[child->opcode - 1].func(&cmd, arena,
 			child) == -1)
 			return (-1);
 		if (child->opcode != 9 || (child->opcode == 9 && !child->carry))

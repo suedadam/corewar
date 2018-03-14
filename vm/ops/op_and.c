@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 16:30:15 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 20:38:35 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	and_reg(t_process *child, t_andop *op_data)
 	return (0);
 }
 
-static int	and_ind(unsigned char *arena, t_process *child, t_andop *op_data)
+static int	and_ind(t_byte *arena, t_process *child, t_andop *op_data)
 {
 	int	tmp;
 
@@ -55,12 +55,12 @@ static int	and_dir(t_andop *op_data)
 
 static int	and_decider(void *arena, t_process *child, t_andop *op_data)
 {
-	unsigned char	byte;
+	t_byte	byte;
 
 	byte = (op_data->encbyte << (2 * op_data->argi) & 0xC0);
-	if (byte == (unsigned char)SHIFT_T_REG)
+	if (byte == (t_byte)SHIFT_T_REG)
 		and_reg(child, op_data);
-	else if (byte == (unsigned char)SHIFT_T_IND)
+	else if (byte == (t_byte)SHIFT_T_IND)
 		and_ind(arena, child, op_data);
 	else
 		and_dir(op_data);
@@ -69,9 +69,9 @@ static int	and_decider(void *arena, t_process *child, t_andop *op_data)
 
 int			op_and(t_operation *cmd_input, void *arena, t_process *child)
 {
-	int				i;
-	unsigned char	byte;
-	t_andop			op_data;
+	int		i;
+	t_byte	byte;
+	t_andop	op_data;
 
 	bzero(&op_data, sizeof(t_andop));
 	op_data.encbyte = cmd_input->encbyte;

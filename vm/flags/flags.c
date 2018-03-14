@@ -6,18 +6,18 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/12 18:15:34 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 16:01:21 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 20:47:42 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-t_flagdefine g_pflags[] = {
+t_flagdefine	g_pflags[] = {
 	{'D', 0, 1, 1, "Just another flag", NULL},
 	{0, 0, 0, 0, NULL, NULL},
 };
 
-void	*fetch_result(char c, uint8_t convint)
+void			*fetch_result(char c, uint8_t convint)
 {
 	int			i;
 	static int	ret = 0;
@@ -40,15 +40,15 @@ void	*fetch_result(char c, uint8_t convint)
 					return (NULL);
 			}
 		}
-		i++;
+		++i;
 	}
 	return (NULL);
 }
 
-static int	is_flag(char *str, char *result)
+static int		is_flag(char *str, char *result)
 {
 	int				i;
-	static uint8_t 	toggle = 1;
+	static uint8_t	toggle = 1;
 
 	i = 0;
 	while (g_pflags[i].idchar)
@@ -66,14 +66,14 @@ static int	is_flag(char *str, char *result)
 				g_pflags[i].result = &toggle;
 			break ;
 		}
-		i++;
+		++i;
 	}
 	return (0);
 }
 
-int 	flag_parse(int *argc, char ***argv)
+int				flag_parse(int *argc, char ***argv)
 {
-	char 	**newargv;
+	char	**newargv;
 	int		i;
 	int		ret;
 
@@ -86,8 +86,8 @@ int 	flag_parse(int *argc, char ***argv)
 			if ((ret = is_flag(newargv[i], newargv[i + 1])) == -1)
 				return (-1);
 			else if (ret == 1)
-				i++;
-			i++;
+				++i;
+			++i;
 		}
 		else
 			break ;

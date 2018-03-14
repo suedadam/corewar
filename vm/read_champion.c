@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 15:34:04 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 17:55:10 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static int		load_to_mem(int fd, size_t size, void *arena, int player_id)
 		return (-1);
 	size -= sizeof(t_header);
 	player += sizeof(t_header);
-	placement = (player_id * (MEM_SIZE / g_taskmanager->totalPlayers));
+	placement = (player_id * (MEM_SIZE / g_taskmanager->total_players));
 	ft_memcpy(arena + placement, player, size);
 	free(player - sizeof(t_header));
 	child = link_last();

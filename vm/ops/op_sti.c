@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 16:33:15 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 20:37:34 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	sti_reg(t_process *child, t_andop *op_data)
 	return (0);
 }
 
-static int	sti_ind(unsigned char *arena, t_process *child, t_andop *op_data)
+static int	sti_ind(t_byte *arena, t_process *child, t_andop *op_data)
 {
 	int	tmp;
 
@@ -55,12 +55,12 @@ static int	sti_dir(t_andop *op_data)
 
 static int	sti_decider(void *arena, t_process *child, t_andop *op_data)
 {
-	unsigned char	byte;
+	t_byte	byte;
 
 	byte = (op_data->encbyte << (2 * op_data->argi) & 0xC0);
-	if (byte == (unsigned char)SHIFT_T_REG)
+	if (byte == (t_byte)SHIFT_T_REG)
 		sti_reg(child, op_data);
-	else if (byte == (unsigned char)SHIFT_T_IND)
+	else if (byte == (t_byte)SHIFT_T_IND)
 		sti_ind(arena, child, op_data);
 	else
 		sti_dir(op_data);
@@ -69,10 +69,10 @@ static int	sti_decider(void *arena, t_process *child, t_andop *op_data)
 
 int			op_sti(t_operation *cmd_input, void *arena, t_process *child)
 {
-	int				i;
-	unsigned char	byte;
-	int				byteswap;
-	t_andop			op_data;
+	int		i;
+	t_byte	byte;
+	int		byteswap;
+	t_andop	op_data;
 
 	bzero(&op_data, sizeof(t_andop));
 	op_data.encbyte = cmd_input->encbyte;
@@ -87,7 +87,7 @@ int			op_sti(t_operation *cmd_input, void *arena, t_process *child)
 		byte = byte << 2;
 	}
 	byteswap = ft_longswap(*(op_data.dest));
-	write_memory(arena, (unsigned char *)&byteswap,
+	write_memory(arena, (t_byte *)&byteswap,
 				MEM_WARP(child->pc + op_data.val % IDX_MOD), REG_SIZE);
 	return (0);
 }

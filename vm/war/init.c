@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 16:37:26 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 21:29:19 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,28 @@
 
 static int	remove_dead(void)
 {
-	int			player;
-	t_process	*prevp;
-	t_process	*children;
+	t_process	**curr;
+	t_process	*next;
+	int			count;
 
-	player = 0;
-	children = g_taskmanager->processes;
-	while (children)
+	count = 0;
+	curr = &g_taskmanager->processes;
+	while (*curr)
 	{
-		if (!children->die_check)
+		if (!(*curr)->die_check)
 		{
-			if (children == g_taskmanager->processes)
-			{
-				g_taskmanager->processes = children->next;
-				free(children);
-				prevp = NULL;
-				children = g_taskmanager->processes;
-			}
-			else
-			{
-				prevp->next = children->next;
-				free(children);
-				children = prevp->next;
-			}
+			next = (*curr)->next;
+			free(*curr);
+			*curr = next;
 		}
 		else
 		{
-			player++;
-			children->die_check = 0;
-			prevp = children;
-			children = children->next;
+			++count;
+			(*curr)->die_check = 0;
+			curr = &(*curr)->next;
 		}
 	}
-	return (player);
+	return (count);
 }
 
 static int	cleanup(void)
@@ -70,7 +59,7 @@ static int	cleanup(void)
 	return (0);
 }
 
-int			init_war(void *arena)
+void		init_war(void *arena)
 {
 	t_process	*child;
 	int			*dump;
@@ -79,7 +68,7 @@ int			init_war(void *arena)
 	while (1)
 	{
 		if (!(child = g_taskmanager->processes))
-			return (0);
+			return ;
 		while (child)
 		{
 			run_operation(arena, child);
@@ -88,18 +77,12 @@ int			init_war(void *arena)
 		if (!child)
 		{
 			if (!(g_taskmanager->c_diecycles % g_taskmanager->c_to_die)
-				&& g_taskmanager->c_diecycles > 0)
-			{
-				if (cleanup())
-					return (0);
-			}
-			(g_taskmanager->currCycle)++;
-			(g_taskmanager->c_diecycles)++;
+			&& g_taskmanager->c_diecycles > 0 && cleanup())
+				return ;
+			++g_taskmanager->curr_cycle;
+			++g_taskmanager->c_diecycles;
 		}
-		if (dump && g_taskmanager->currCycle > (unsigned long)*dump)
-		{
-			dump_memory(arena);
-			return (0);
-		}
+		if (dump && g_taskmanager->curr_cycle > (unsigned long)*dump)
+			return (dump_memory(arena));
 	}
 }

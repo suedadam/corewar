@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:49:32 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 00:21:13 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 20:34:05 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	*init(int champc, char **champv)
 		return (NULL);
 	g_taskmanager = l_taskmanager;
 	g_taskmanager->c_to_die = CYCLE_TO_DIE;
-	g_taskmanager->totalPlayers = champc;
+	g_taskmanager->total_players = champc;
 	g_taskmanager->lastlive = -1;
 	g_taskmanager->lastnbrlive = 0;
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 05:29:10 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 16:31:45 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 17:54:38 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	op_live(t_operation *cmd_input, void *arena, t_process *child)
 	p_input = cmd_input->args[0];
 	child->die_check = 1;
 	g_taskmanager->lastnbrlive++;
-	if ((uint32_t)p_input <= g_taskmanager->totalPlayers)
+	if ((uint32_t)p_input <= g_taskmanager->total_players)
 	{
 		if (!(lostkid = g_taskmanager->processes))
 		{

@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 16:32:57 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/13 20:36:42 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ static int	st_reg(t_process *child, t_andop *op_data)
 
 static int	st_decider(t_process *child, t_andop *op_data)
 {
-	unsigned char	byte;
+	t_byte	byte;
 
 	byte = (op_data->encbyte << (2 * op_data->argi) & 0xC0);
-	if (byte == (unsigned char)SHIFT_T_REG)
+	if (byte == (t_byte)SHIFT_T_REG)
 		st_reg(child, op_data);
 	else
 		op_data->dest = op_data->arg;
@@ -35,10 +35,10 @@ static int	st_decider(t_process *child, t_andop *op_data)
 
 int			op_st(t_operation *cmd_input, void *arena, t_process *child)
 {
-	int				i;
-	int				byteswap;
-	unsigned char	byte;
-	t_andop			op_data;
+	int		i;
+	int		byteswap;
+	t_byte	byte;
+	t_andop	op_data;
 
 	bzero(&op_data, sizeof(t_andop));
 	op_data.encbyte = cmd_input->encbyte;
@@ -53,7 +53,7 @@ int			op_st(t_operation *cmd_input, void *arena, t_process *child)
 		byte = byte << 2;
 	}
 	byteswap = ft_longswap(op_data.val);
-	write_memory(arena, (unsigned char *)&byteswap,
+	write_memory(arena, (t_byte *)&byteswap,
 				MEM_WARP(child->pc + *op_data.dest), REG_SIZE);
 	return (0);
 }
