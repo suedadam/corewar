@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 20:43:23 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/14 19:59:55 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,18 +66,14 @@ static int	decode_acb(t_byte *arena, t_operation *cmd, t_process *child)
 	byte = cmd->encbyte;
 	cmd->ac = 0;
 	cmd->size = 2;
-	while (byte)
+	while (cmd->ac < g_op_tab[child->opcode - 1].argc && byte)
 	{
-		if (!fetch_decider(arena, cmd, child))
-			++cmd->ac;
+		if (fetch_decider(arena, cmd, child))
+			break;
+		cmd->ac++;
 		byte = byte << 2;
 	}
-	if ((cmd->encbyte >> (8 - (2 * g_op_tab[child->opcode - 1].argc))) == 00)
-	{
-		invalid_acb(arena, child, 2);
-		return (-1);
-	}
-	else if (cmd->ac != g_op_tab[child->opcode - 1].argc)
+	if (cmd->ac != g_op_tab[child->opcode - 1].argc)
 	{
 		invalid_acb(arena, child, 2 + calc_enc_size(child, cmd->encbyte));
 		return (-1);

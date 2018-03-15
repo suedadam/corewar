@@ -6,17 +6,20 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 07:41:59 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 17:31:25 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/14 20:01:35 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vm.h"
 
-void	handle_reg(t_byte *arena, t_process *child, int32_t *storage, int *size)
+int		handle_reg(t_byte *arena, t_process *child, int32_t *storage, int *size)
 {
 	*storage = 0;
 	copy_memory_fwd_off(storage, arena, child->pc + *size, sizeof(t_byte));
+	if (*storage > REG_NUMBER || *storage < 0)
+		return (-1);
 	*size += F_REG_SIZE;
+	return (0);
 }
 
 void	handle_dir(t_byte *arena, t_process *child, int32_t *storage, int *size)
@@ -43,9 +46,9 @@ int		fetch_decider(t_byte *arena, t_operation *cmd, t_process *child)
 	byte = (cmd->encbyte << (2 * cmd->ac)) & 0xC0;
 	if (byte == (t_byte)SHIFT_T_REG)
 	{
-		if ((g_op_tab[child->opcode - 1].encbyte[cmd->ac] & T_REG) != T_REG)
+		if ((g_op_tab[child->opcode - 1].encbyte[cmd->ac] & T_REG) != T_REG ||
+			handle_reg(arena, child, &((cmd->args)[cmd->ac]), &cmd->size))
 			return (-1);
-		handle_reg(arena, child, &((cmd->args)[cmd->ac]), &cmd->size);
 	}
 	else if (byte == (t_byte)SHIFT_T_DIR && !g_op_tab[child->opcode - 1].trunc)
 	{
@@ -61,5 +64,7 @@ int		fetch_decider(t_byte *arena, t_operation *cmd, t_process *child)
 			return (-1);
 		handle_ind(arena, child, &((cmd->args)[cmd->ac]), &cmd->size);
 	}
+	else
+		return (-1);
 	return (0);
 }

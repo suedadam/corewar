@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 16:35:41 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/14 18:06:49 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 
 int	op_aff(t_operation *cmd_input, void *arena, t_process *child)
 {
+	int	c;
+
+	c = child->regs[(cmd_input->args)[0]] % 256;
+	write(1, &c, 1);
 	UNUSED(arena);
-	write(1, &(child->regs[(cmd_input->args)[0]]), 1);
 	return (0);
 }

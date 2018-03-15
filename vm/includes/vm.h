@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 20:27:16 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/14 20:01:42 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ typedef struct	s_opdispatch
 ** fetcher/
 */
 
-void			handle_reg(t_byte *arena, t_process *child, int32_t *storage,
+int				handle_reg(t_byte *arena, t_process *child, int32_t *storage,
 					int *size);
 void			handle_dir(t_byte *arena, t_process *child, int32_t *storage,
 					int *size);

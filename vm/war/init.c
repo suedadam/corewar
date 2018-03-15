@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 21:29:19 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/14 20:32:25 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,11 @@ void		init_war(void *arena)
 		}
 		if (!child)
 		{
-			if (!(g_taskmanager->c_diecycles % g_taskmanager->c_to_die)
-			&& g_taskmanager->c_diecycles > 0 && cleanup())
+			if (g_taskmanager->c_diecycles >= g_taskmanager->c_to_die &&
+				cleanup())
 				return ;
-			++g_taskmanager->curr_cycle;
-			++g_taskmanager->c_diecycles;
+			g_taskmanager->curr_cycle++;
+			g_taskmanager->c_diecycles++;
 		}
 		if (dump && g_taskmanager->curr_cycle > (unsigned long)*dump)
 			return (dump_memory(arena));

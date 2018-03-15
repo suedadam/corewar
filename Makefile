@@ -7,7 +7,7 @@
 ASM = asm
 COREWAR = corewar
 CC = gcc
-CFLAGS += -Wall -Werror -Wextra -g
+CFLAGS += -Wall -Werror -Wextra
 LIBFT = libft/libft.a
 ASM_DIR = assembler
 ASM_SRC = \
