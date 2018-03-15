@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   asm_load.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgardner <stephenbgardner@gmail.com>       +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 18:57:42 by sgardner          #+#    #+#             */
-/*   Updated: 2018/03/14 13:40:36 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/14 20:58:55 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,11 @@ static void		read_file(t_line **head, int fd)
 		{
 			(*head)->data = strip_comments(line);
 			(*head)->col = trim(line, " \t\n") + 1;
-		}
-		if (*(*head)->data)
-		{
-			head = &(*head)->next;
-			continue ;
+			if (*(*head)->data)
+			{
+				head = &(*head)->next;
+				continue ;
+			}
 		}
 		free(line);
 		ft_memdel((void **)head);
