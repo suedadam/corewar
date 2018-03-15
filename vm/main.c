@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:49:32 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 22:09:13 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/15 00:00:32 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	*init(int champc, char **champv)
 	while (i < champc)
 	{
 		if (i > MAX_PLAYERS ||
-			read_champion(champv[champc - i], arena, i) == -1)
+			read_champion(champv[i + 1], arena, -(i + 1)) == -1)
 		{
 			free(arena);
 			return (NULL);

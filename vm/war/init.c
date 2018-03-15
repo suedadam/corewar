@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 20:32:25 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/14 23:59:56 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	cleanup(void)
 
 	if ((p_left = remove_dead()) <= 0)
 	{
-		printf("Player %d, has won!\n", g_taskmanager->lastlive);
+		printf("Player %d, has won!\n", -g_taskmanager->lastlive);
 		return (1);
 	}
 	if (g_taskmanager->lastnbrlive >= NBR_LIVE ||
@@ -74,14 +74,13 @@ void		init_war(void *arena)
 			run_operation(arena, child);
 			child = child->next;
 		}
-		if (!child)
+		if (g_taskmanager->c_diecycles >= g_taskmanager->c_to_die)
 		{
-			if (g_taskmanager->c_diecycles >= g_taskmanager->c_to_die &&
-				cleanup())
-				return ;
-			g_taskmanager->curr_cycle++;
-			g_taskmanager->c_diecycles++;
+			if (cleanup())
+			return ;
 		}
+		g_taskmanager->curr_cycle++;
+		g_taskmanager->c_diecycles++;
 		if (dump && g_taskmanager->curr_cycle > (unsigned long)*dump)
 			return (dump_memory(arena));
 	}
