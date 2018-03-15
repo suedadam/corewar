@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 20:01:48 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/14 23:38:27 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,14 +65,12 @@ static void		*link_last(void)
 	{
 		child = ft_memalloc(sizeof(t_process));
 		g_taskmanager->processes = child;
+		return (child);
 	}
-	else
-	{
-		while (child && child->next)
-			child = child->next;
-		child->next = ft_memalloc(sizeof(t_process));
-	}
-	return (child);
+	while (child && child->next)
+		child = child->next;
+	child->next = ft_memalloc(sizeof(t_process));
+	return (child->next);
 }
 
 static int		load_to_mem(int fd, size_t size, void *arena, int player_id)
