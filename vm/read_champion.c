@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 23:52:56 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/15 00:46:18 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ static int		load_to_mem(int fd, size_t size, void *arena, int player_id)
 	free(player - sizeof(t_header));
 	child = link_last();
 	child->plid = player_id;
+	child->pid = -player_id;
 	child->regs[1] = player_id;
 	child->pc = placement;
 	return (0);

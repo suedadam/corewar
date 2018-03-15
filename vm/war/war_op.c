@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 19:59:55 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/15 00:46:15 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,11 +113,25 @@ int			run_operation(t_byte *arena, t_process *child)
 		}
 		else if ((size = fetch_input(arena, &cmd, child)) == -1)
 			return (-1);
+		printf("P%5d | ", child->pid);
 		if (g_opdispatch[child->opcode - 1].func(&cmd, arena,
 			child) == -1)
 			return (-1);
+		printf("%s\n", g_op_tab[child->opcode - 1].op_name);
 		if (child->opcode != 9 || (child->opcode == 9 && !child->carry))
+		{
+			printf("ADV %d (0x%04llx -> 0x%04llx) ", size, child->pc, MEM_WARP(child->pc + size));
+ 			// unsigned char *b_arr = arena + child->pc;
+ 			int start = child->pc;
+ 			int end = size + 1;
+ 			while (end--)
+ 			{
+ 				printf("%02x ", *(unsigned char *)(arena + MEM_WARP(start)));
+ 				start++;
+ 			}
+ 			printf("\n");
 			child->pc = MEM_WARP(child->pc + size);
+		}
 		child->run_op = 0;
 		child->opcode = 0;
 		raincheck(arena, child);

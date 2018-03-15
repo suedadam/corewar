@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 20:01:42 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/15 00:46:26 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct	s_op
 typedef struct	s_process
 {
 	uint8_t				plid;
+	int 				pid;
 	int					regs[REG_NUMBER + 1];
 	int64_t				pc;
 	uint8_t				carry;

@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 23:59:56 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/15 00:46:16 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ static int	cleanup(void)
 		(g_taskmanager->c_checks + 1) == MAX_CHECKS)
 	{
 		g_taskmanager->c_to_die -= CYCLE_DELTA;
+		printf("Cycle to die is now %d\n", g_taskmanager->c_to_die);
 		g_taskmanager->lastnbrlive = 0;
 		g_taskmanager->c_checks = 0;
 	}
@@ -81,6 +82,7 @@ void		init_war(void *arena)
 		}
 		g_taskmanager->curr_cycle++;
 		g_taskmanager->c_diecycles++;
+		printf("It is now cycle %zu\n", g_taskmanager->curr_cycle);
 		if (dump && g_taskmanager->curr_cycle > (unsigned long)*dump)
 			return (dump_memory(arena));
 	}
