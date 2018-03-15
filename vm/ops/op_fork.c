@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 20:01:25 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/15 14:13:22 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	op_fork(t_operation *cmd_input, void *arena, t_process *child)
 
 	if (!(new = ft_memalloc(sizeof(t_process))))
 		exit(1);
-	memcpy(new, child, sizeof(t_process));
+	ft_memcpy(new, child, sizeof(t_process));
 	new->pc = MEM_WARP(child->pc + (short)cmd_input->args[0] % IDX_MOD);
 	new->plid = child->plid;
 	new->next = g_taskmanager->processes;

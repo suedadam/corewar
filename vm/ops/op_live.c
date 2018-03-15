@@ -6,10 +6,11 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 05:29:10 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 23:56:57 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/15 14:10:02 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_printf.h"
 #include "vm.h"
 
 int	op_live(t_operation *cmd_input, void *arena, t_process *child)
@@ -25,7 +26,7 @@ int	op_live(t_operation *cmd_input, void *arena, t_process *child)
 	{
 		if (!(lostkid = g_taskmanager->processes))
 		{
-			printf("Player %d has won!\n", -g_taskmanager->lastlive);
+			ft_printf("Player %d has won!\n", -g_taskmanager->lastlive);
 			exit(1);
 		}
 		while (lostkid)

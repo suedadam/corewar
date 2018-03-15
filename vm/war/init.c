@@ -6,10 +6,11 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 23:59:56 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/15 14:09:49 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_printf.h"
 #include "vm.h"
 
 static int	remove_dead(void)
@@ -44,7 +45,7 @@ static int	cleanup(void)
 
 	if ((p_left = remove_dead()) <= 0)
 	{
-		printf("Player %d, has won!\n", -g_taskmanager->lastlive);
+		ft_printf("Player %d, has won!\n", -g_taskmanager->lastlive);
 		return (1);
 	}
 	if (g_taskmanager->lastnbrlive >= NBR_LIVE ||
@@ -77,7 +78,7 @@ void		init_war(void *arena)
 		if (g_taskmanager->c_diecycles >= g_taskmanager->c_to_die)
 		{
 			if (cleanup())
-			return ;
+				return ;
 		}
 		g_taskmanager->curr_cycle++;
 		g_taskmanager->c_diecycles++;

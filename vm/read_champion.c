@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/15 02:27:16 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/15 14:11:33 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int		size_check(int fd)
 	}
 	if (size > (CHAMP_MAX_SIZE + (off_t)sizeof(t_header)))
 	{
-		printf("File has too large a code (%lld bytes > %lld bytes)\n",
+		ft_printf("File has too large a code (%lld bytes > %lld bytes)\n",
 			size, CHAMP_MAX_SIZE + (off_t)sizeof(t_header));
 		return (-1);
 	}
@@ -50,7 +50,7 @@ static int		validate_header(void *player, size_t size)
 		return (-1);
 	if (ft_longswap(player_h->prog_size) != (size - sizeof(t_header)))
 	{
-		ft_printf("Error: Too large a code (%d bytes != %d bytes)\n",
+		ft_printf("Error: Checksum error (%d bytes != %d bytes)\n",
 			ft_longswap(player_h->prog_size), (size - sizeof(t_header)));
 		return (-1);
 	}

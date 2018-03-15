@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/12 18:15:34 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 22:09:12 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/15 14:24:04 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int				flag_parse(int *argc, char ***argv)
 	i = 0;
 	while (newargv[i] && i < *argc)
 	{
-		if (*(newargv[i]) == '-' && strlen(newargv[i]) > 1)
+		if (*(newargv[i]) == '-' && ft_strlen(newargv[i]) > 1)
 		{
 			if ((ret = is_flag(newargv[i], newargv[i + 1])) == -1)
 				return (-1);

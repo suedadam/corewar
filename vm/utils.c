@@ -6,10 +6,11 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:11:42 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 19:59:34 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/15 14:13:46 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_printf.h"
 #include "vm.h"
 
 void		dump_memory(t_byte *arena)
@@ -23,13 +24,14 @@ void		dump_memory(t_byte *arena)
 	{
 		if (c == 32)
 		{
-			printf("\n");
+			ft_printf("\n");
 			c = 0;
 		}
-		printf("%02x ", arena[i]);
+		ft_printf("%02x ", arena[i]);
 		c++;
 		i++;
 	}
+	ft_printf("\n");
 }
 
 void		write_memory(void *arena, t_byte *src, int offset, int size)
@@ -58,7 +60,7 @@ uint32_t	ft_longswap(uint32_t const byte)
 {
 	uint8_t data[4];
 
-	memcpy(&data, &byte, sizeof(data));
+	ft_memcpy(&data, &byte, sizeof(data));
 	return (((uint32_t)data[3] << 0)
 		| ((uint32_t)data[2] << 8)
 		| ((uint32_t)data[1] << 16)
@@ -69,7 +71,7 @@ uint16_t	ft_shortswap(uint16_t const byte)
 {
 	uint8_t data[2];
 
-	memcpy(&data, &byte, sizeof(data));
+	ft_memcpy(&data, &byte, sizeof(data));
 	return (((uint32_t)data[1] << 0)
 		| ((uint32_t)data[0] << 8));
 }

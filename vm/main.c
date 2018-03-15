@@ -6,10 +6,11 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:49:32 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/15 00:00:32 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/15 14:11:10 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_printf.h"
 #include "vm.h"
 
 t_taskmanager	*g_taskmanager;
@@ -49,12 +50,12 @@ int		main(int argc, char *argv[])
 
 	if (argc < 2)
 	{
-		printf("No champions listed\n");
+		ft_printf("No champions listed\n");
 		return (-1);
 	}
 	if (flag_parse(&argc, &argv))
 	{
-		printf("Flag parsing error\n");
+		ft_printf("Flag parsing error\n");
 		return (-1);
 	}
 	if (!(arena = init(argc, argv)))
