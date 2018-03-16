@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/08 07:41:59 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/15 17:53:28 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/15 21:14:42 by sgardner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ void	handle_ind(t_byte *arena, t_process *child, int32_t *storage, int *size)
 	*size += F_IND_SIZE;
 }
 
+#define NOT_OP(x) ((g_op_tab[child->opcode - 1].encbyte[cmd->ac] & x) != x)
+#define HANDLER_ARGS arena, child, &((cmd->args)[cmd->ac]), &cmd->size
+
 int		fetch_decider(t_byte *arena, t_operation *cmd, t_process *child)
 {
 	t_byte	byte;
@@ -46,23 +49,21 @@ int		fetch_decider(t_byte *arena, t_operation *cmd, t_process *child)
 	byte = (cmd->encbyte << (2 * cmd->ac)) & 0xC0;
 	if (byte == (t_byte)SHIFT_T_REG)
 	{
-		if ((g_op_tab[child->opcode - 1].encbyte[cmd->ac] & T_REG) != T_REG ||
-			handle_reg(arena, child, &((cmd->args)[cmd->ac]), &cmd->size))
+		if (NOT_OP(T_REG) || handle_reg(HANDLER_ARGS))
 			return (-1);
 	}
 	else if (byte == (t_byte)SHIFT_T_DIR && !g_op_tab[child->opcode - 1].trunc)
 	{
-		if ((g_op_tab[child->opcode - 1].encbyte[cmd->ac] & T_DIR) != T_DIR)
+		if (NOT_OP(T_DIR))
 			return (-1);
-		handle_dir(arena, child, &((cmd->args)[cmd->ac]), &cmd->size);
+		handle_dir(HANDLER_ARGS);
 	}
-	else if (byte == (t_byte)SHIFT_T_IND ||
-		(byte == (t_byte)SHIFT_T_DIR && g_op_tab[child->opcode - 1].trunc))
+	else if (byte == (t_byte)SHIFT_T_IND
+		|| (byte == (t_byte)SHIFT_T_DIR && g_op_tab[child->opcode - 1].trunc))
 	{
-		if (((g_op_tab[child->opcode - 1].encbyte[cmd->ac] & T_IND) != T_IND) &&
-			(g_op_tab[child->opcode - 1].encbyte[cmd->ac] & T_DIR) != T_DIR)
+		if (NOT_OP(T_IND) && NOT_OP(T_DIR))
 			return (-1);
-		handle_ind(arena, child, &((cmd->args)[cmd->ac]), &cmd->size);
+		handle_ind(HANDLER_ARGS);
 	}
 	else
 		return (-1);
