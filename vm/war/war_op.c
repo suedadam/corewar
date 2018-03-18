@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   war_op.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:51:03 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/15 00:46:15 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/18 14:07:38 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ int			run_operation(t_byte *arena, t_process *child)
 			printf("ADV %d (0x%04llx -> 0x%04llx) ", size, child->pc, MEM_WARP(child->pc + size));
  			// unsigned char *b_arr = arena + child->pc;
  			int start = child->pc;
- 			int end = size + 1;
+ 			int end = size;
  			while (end--)
  			{
  				printf("%02x ", *(unsigned char *)(arena + MEM_WARP(start)));
