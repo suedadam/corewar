@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vm.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/14 20:01:42 by asyed            ###   ########.fr       */
+/*   Created: 2018/03/18 16:12:03 by asyed             #+#    #+#             */
+/*   Updated: 2018/03/18 16:13:02 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct	s_op
 typedef struct	s_process
 {
 	uint8_t				plid;
-	int					regs[REG_NUMBER + 1];
+	int32_t				regs[REG_NUMBER + 1];
 	int64_t				pc;
 	uint8_t				carry;
 	size_t				run_op;
@@ -48,7 +48,7 @@ typedef struct	s_process
 
 typedef struct	s_andop
 {
-	int					*dest;
+	int32_t				*dest;
 	int					val;
 	int32_t				*arg;
 	int					argi;

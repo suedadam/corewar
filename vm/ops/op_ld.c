@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   op_ld.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 20:37:02 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/18 15:31:24 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,23 @@
 int	op_ld(t_operation *cmd_input, void *arena, t_process *child)
 {
 	t_byte	byte;
-	int		val;
+	int32_t	val;
 
 	byte = cmd_input->encbyte;
 	val = 0;
 	if ((byte & 0xC0) == (t_byte)SHIFT_T_DIR)
-		val = (cmd_input->args)[0];
+	{
+		val = (cmd_input->args)[0] % IDX_MOD;
+		child->regs[(cmd_input->args)[1]] = val;
+	}
 	else if ((byte & 0xC0) == (t_byte)SHIFT_T_IND)
 	{
 		copy_memory_fwd_off(&val, arena,
 			MEM_WARP((child->pc + (short)(cmd_input->args)[0] % IDX_MOD)),
 			F_IND_SIZE);
 		val = ft_shortswap(val);
+		child->regs[(cmd_input->args)[1]] = (short)val;
 	}
-	child->regs[(cmd_input->args)[1]] = val;
 	if (!(child->regs[(cmd_input->args)[1]]))
 		child->carry = 1;
 	else
