@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 23:42:15 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/15 00:46:16 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/18 21:01:29 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,5 +85,6 @@ void		init_war(void *arena)
 		printf("It is now cycle %zu\n", g_taskmanager->curr_cycle);
 		if (dump && g_taskmanager->curr_cycle > (unsigned long)*dump)
 			return (dump_memory(arena));
+			// return ;
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   op_ldi.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 20:38:52 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/18 20:53:08 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,20 @@
 static int	ldi_reg(t_process *child, t_andop *op_data)
 {
 	if (!op_data->argi)
+	{
 		op_data->val = child->regs[*(op_data->arg)];
+		printf(" %d", child->regs[*(op_data->arg)]);
+	}
 	else if (op_data->argi == 1)
+	{
 		op_data->val += child->regs[*(op_data->arg)];
+		printf(" %d", child->regs[*(op_data->arg)]);
+	}
 	else
+	{
 		op_data->dest = &(child->regs[*(op_data->arg)]);
+		printf(" r%d", *(op_data->arg));
+	}
 	return (0);
 }
 
@@ -34,6 +43,7 @@ static int	ldi_dir(t_andop *op_data)
 		op_data->val = (short)*(op_data->arg);
 	else if (op_data->argi == 1)
 		op_data->val += (short)*(op_data->arg);
+	printf(" %d", (short)*(op_data->arg));
 	return (0);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   read_champion.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:21:01 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/15 00:46:18 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/18 20:36:36 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,20 +57,15 @@ static int		validate_header(void *player, size_t size)
 	return (0);
 }
 
-static void		*link_last(void)
+static void		*link_first(void)
 {
 	t_process	*child;
 
-	if (!(child = (g_taskmanager->processes)))
-	{
-		child = ft_memalloc(sizeof(t_process));
-		g_taskmanager->processes = child;
-		return (child);
-	}
-	while (child && child->next)
-		child = child->next;
-	child->next = ft_memalloc(sizeof(t_process));
-	return (child->next);
+	child = ft_memalloc(sizeof(t_process));
+
+	child->next = g_taskmanager->processes;
+	g_taskmanager->processes = child;
+	return (child);
 }
 
 static int		load_to_mem(int fd, size_t size, void *arena, int player_id)
@@ -87,11 +82,12 @@ static int		load_to_mem(int fd, size_t size, void *arena, int player_id)
 	placement = ((-player_id - 1) * (MEM_SIZE / g_taskmanager->total_players));
 	ft_memcpy(arena + placement, player, size);
 	free(player - sizeof(t_header));
-	child = link_last();
+	child = link_first();
 	child->plid = player_id;
 	child->pid = -player_id;
 	child->regs[1] = player_id;
 	child->pc = placement;
+	printf("SETTING load: %d %lld (%d)\n", child->regs[1], child->pc, (-player_id - 1));
 	return (0);
 }
 

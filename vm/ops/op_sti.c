@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/18 18:26:20 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/18 20:51:17 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,20 @@
 static int	sti_reg(t_process *child, t_andop *op_data)
 {
 	if (!op_data->argi)
+	{
 		op_data->dest = &(child->regs[*(op_data->arg)]);
+		printf(" r%d", *(op_data->arg));
+	}
 	else if (op_data->argi == 1)
+	{
 		op_data->val = child->regs[*(op_data->arg)];
+		printf(" %d", child->regs[*(op_data->arg)]);
+	}
 	else
+	{
 		op_data->val += child->regs[*(op_data->arg)];
+		printf(" %d", child->regs[*(op_data->arg)]);
+	}
 	return (0);
 }
 
@@ -27,25 +36,26 @@ static int	sti_ind(t_byte *arena, t_process *child, t_andop *op_data)
 {
 	int	tmp;
 
+	tmp = 0;
 	if (op_data->argi == 1)
 	{
-		tmp = 0;
 		copy_memory_fwd_off(&tmp, arena,
 				child->pc + *op_data->arg % IDX_MOD, sizeof(short));
 		op_data->val = ft_shortswap(tmp);
 	}
 	else if (op_data->argi > 1)
 	{
-		tmp = 0;
 		copy_memory_fwd_off(&tmp, arena,
 				child->pc + *op_data->arg % IDX_MOD, sizeof(short));
 		op_data->val += ft_shortswap(tmp);
 	}
+	printf(" %d", ft_shortswap(tmp));
 	return (0);
 }
 
 static int	sti_dir(t_andop *op_data)
 {
+	printf(" %d", (short)*(op_data->arg));
 	if (op_data->argi == 1)
 		op_data->val = (short)*(op_data->arg);
 	else if (op_data->argi > 1)
@@ -86,6 +96,7 @@ int			op_sti(t_operation *cmd_input, void *arena, t_process *child)
 			i++;
 		byte = byte << 2;
 	}
+	printf("\n");
 	byteswap = ft_longswap(*(op_data.dest));
 	write_memory(arena, (t_byte *)&byteswap,
 				MEM_WARP(child->pc + op_data.val % IDX_MOD), REG_SIZE);

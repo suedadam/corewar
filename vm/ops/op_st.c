@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/18 18:26:09 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/18 20:31:48 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,15 @@ static int	st_decider(t_process *child, t_andop *op_data)
 
 	byte = (op_data->encbyte << (2 * op_data->argi) & 0xC0);
 	if (byte == (t_byte)SHIFT_T_REG)
+	{
+		printf(" r%d", *op_data->arg);
 		st_reg(child, op_data);
+	}
 	else
+	{
 		op_data->dest = op_data->arg;
+		printf(" %d", (short)*op_data->dest);
+	}
 	return (0);
 }
 
@@ -55,11 +61,13 @@ int			op_st(t_operation *cmd_input, void *arena, t_process *child)
 			i++;
 		byte = byte << 2;
 	}
+	// printf("\n");
 	if (op_data.dest)
 	{
 		byteswap = ft_longswap(op_data.val);
 		write_memory(arena, (t_byte *)&byteswap,
 					MEM_WARP(child->pc + (short)*op_data.dest % IDX_MOD), REG_SIZE);
+		// printf("\nWrote to (%lld) %lld\n", child->pc + (short)*op_data.dest % IDX_MOD, MEM_WARP(child->pc + (short)*op_data.dest % IDX_MOD));
 	}
 	return (0);
 }

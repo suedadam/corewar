@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 19:11:42 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/18 18:25:52 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/18 21:01:32 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,14 @@ void		dump_memory(t_byte *arena)
 	{
 		if (c == 32)
 		{
-			printf("\n");
+			// printf("\n");
 			c = 0;
 		}
 		printf("%02x ", arena[i]);
 		c++;
 		i++;
 	}
+	printf("\n");
 }
 
 void		write_memory(void *arena, t_byte *src, int offset, int size)

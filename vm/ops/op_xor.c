@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   op_xor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/13 20:38:14 by sgardner         ###   ########.fr       */
+/*   Updated: 2018/03/18 20:43:02 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,20 @@
 static int	xor_reg(t_process *child, t_andop *op_data)
 {
 	if (!op_data->argi)
+	{
 		op_data->val = child->regs[*(op_data->arg)];
+		printf(" %d", child->regs[*(op_data->arg)]);
+	}
 	else if (op_data->argi == 1)
+	{
 		op_data->val = op_data->val ^ child->regs[*(op_data->arg)];
+		printf(" %d", child->regs[*(op_data->arg)]);
+	}
 	else
+	{
 		op_data->dest = &(child->regs[*(op_data->arg)]);
+		printf(" r%d", *(op_data->arg));
+	}
 	return (0);
 }
 
@@ -27,20 +36,20 @@ static int	xor_ind(t_byte *arena, t_process *child, t_andop *op_data)
 {
 	int	tmp;
 
+	tmp = 0;
 	if (!op_data->argi)
 	{
-		tmp = 0;
 		copy_memory_fwd_off(&tmp, arena,
 				child->pc + *op_data->arg % IDX_MOD, sizeof(short));
 		op_data->val = ft_shortswap(tmp);
 	}
 	else if (op_data->argi == 1)
 	{
-		tmp = 0;
 		copy_memory_fwd_off(&tmp, arena,
 				child->pc + *op_data->arg % IDX_MOD, sizeof(short));
 		op_data->val = op_data->val ^ ft_shortswap(tmp);
 	}
+	printf(" %d", tmp);
 	return (0);
 }
 
@@ -50,6 +59,7 @@ static int	xor_dir(t_andop *op_data)
 		op_data->val = *(op_data->arg);
 	else if (op_data->argi == 1)
 		op_data->val = op_data->val ^ *(op_data->arg);
+	printf(" %d", *(op_data->arg));
 	return (0);
 }
 

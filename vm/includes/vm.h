@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 15:32:14 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/18 15:14:04 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/18 22:01:26 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct	s_op
 
 typedef struct	s_process
 {
-	uint8_t				plid;
+	int					plid;
 	int 				pid;
 	int32_t				regs[REG_NUMBER + 1];
 	int64_t				pc;
@@ -63,7 +63,7 @@ typedef struct	s_taskmanager
 	size_t				lastnbrlive;
 	uint32_t			total_players;
 	t_process			*processes;
-	int8_t				lastlive;
+	int					lastlive;
 	int					c_to_die;
 	int					c_diecycles;
 	int					c_checks;

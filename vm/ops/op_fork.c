@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   op_fork.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asyed <asyed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/15 00:46:21 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/18 20:46:46 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	op_fork(t_operation *cmd_input, void *arena, t_process *child)
 		exit(1);
 	memcpy(new, child, sizeof(t_process));
 	new->pc = MEM_WARP(child->pc + (short)cmd_input->args[0] % IDX_MOD);
+	printf(" %hd (%lld)", (short)(cmd_input->args[0]), MEM_WARP(child->pc + (short)cmd_input->args[0] % IDX_MOD));
 	new->plid = child->plid;
 	new->pid = pid++;
 	new->next = g_taskmanager->processes;
