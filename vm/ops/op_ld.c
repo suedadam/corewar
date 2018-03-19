@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/18 15:31:24 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/18 18:02:07 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	op_ld(t_operation *cmd_input, void *arena, t_process *child)
 	val = 0;
 	if ((byte & 0xC0) == (t_byte)SHIFT_T_DIR)
 	{
-		val = (cmd_input->args)[0] % IDX_MOD;
+		val = (cmd_input->args)[0];
 		child->regs[(cmd_input->args)[1]] = val;
 	}
 	else if ((byte & 0xC0) == (t_byte)SHIFT_T_IND)

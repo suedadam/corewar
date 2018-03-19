@@ -6,7 +6,7 @@
 /*   By: asyed <asyed@student.42.us.org>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/06 07:24:00 by asyed             #+#    #+#             */
-/*   Updated: 2018/03/18 16:08:21 by asyed            ###   ########.fr       */
+/*   Updated: 2018/03/18 18:26:09 by asyed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@ static int	st_reg(t_process *child, t_andop *op_data)
 	if (!op_data->argi)
 		op_data->val = child->regs[*(op_data->arg)];
 	else if (op_data->argi == 1)
-		op_data->dest = &child->regs[*(op_data->arg)];
+	{
+		child->regs[*(op_data->arg)] = op_data->val;
+		op_data->dest = NULL;
+	}
 	return (0);
 }
 
@@ -52,8 +55,11 @@ int			op_st(t_operation *cmd_input, void *arena, t_process *child)
 			i++;
 		byte = byte << 2;
 	}
-	byteswap = ft_longswap(op_data.val);
-	write_memory(arena, (t_byte *)&byteswap,
-				MEM_WARP(child->pc + (short)*op_data.dest % IDX_MOD), REG_SIZE);
+	if (op_data.dest)
+	{
+		byteswap = ft_longswap(op_data.val);
+		write_memory(arena, (t_byte *)&byteswap,
+					MEM_WARP(child->pc + (short)*op_data.dest % IDX_MOD), REG_SIZE);
+	}
 	return (0);
 }
